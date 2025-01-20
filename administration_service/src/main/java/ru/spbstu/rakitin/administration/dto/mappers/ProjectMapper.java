@@ -9,10 +9,22 @@ public class ProjectMapper {
 
     public Project projectDtoToProject(ProjectDto projectDto) {
         return Project.builder()
+                .id(projectDto.getId())
                 .projectName(projectDto.getProjectName())
                 .archiveQuota(projectDto.getArchiveQuota())
                 .fulltextQuota(projectDto.getFulltextQuota())
-                .monitoringQuota(projectDto.getMonitoringQuota()).build();
+                .monitoringQuota(projectDto.getMonitoringQuota())
+                .topicQuota(projectDto.getTopicQuota()).build();
+    }
+
+    public ProjectDto projectToProjectDto(Project project) {
+        return ProjectDto.builder()
+                .id(project.getId())
+                .projectName(project.getProjectName())
+                .archiveQuota(project.getArchiveQuota())
+                .fulltextQuota(project.getFulltextQuota())
+                .monitoringQuota(project.getMonitoringQuota())
+                .topicQuota(project.getTopicQuota()).build();
     }
 
 }

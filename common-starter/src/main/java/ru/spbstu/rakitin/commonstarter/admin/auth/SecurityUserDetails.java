@@ -24,6 +24,10 @@ public class SecurityUserDetails implements UserDetails {
 
     private List<String> permissions;
 
+    @Override
+    public String getPassword() {
+        return password;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

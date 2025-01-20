@@ -21,6 +21,7 @@
     <modules>
         <module>common-starter</module>
         <module>administration_service</module>
+        <module>data-managment-service</module>
         <module>user_api_service</module>
     </modules>
     <packaging>pom</packaging>

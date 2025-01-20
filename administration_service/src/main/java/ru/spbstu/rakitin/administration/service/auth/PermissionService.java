@@ -10,4 +10,6 @@ public interface PermissionService {
     Long savePermission(Permission permission) throws PermissionAlreadyExistsException;
     List<Permission> findAllPermissionsForUser(Long userId);
 
+    boolean hasUserAnyPermissionForProject(Long userId, Long projectId);
+
 }

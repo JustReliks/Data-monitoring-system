@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import ru.spbstu.rakitin.commonstarter.admin.exception.ForbiddenRequestException;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Configuration
 @ConfigurationProperties
@@ -23,18 +24,22 @@ public class AdminRequestConfiguration {
     @Value("${dms.administration.token.header:MONITORING-ADMIN-TOKEN}")
     private String adminTokenHeader;
 
+    private List<Pattern> whiteListPatterns;
+
 
     @Bean
     public RestTemplate adminRestTemplate() {
+        whiteListPatterns = whitelist.stream().map(Pattern::compile).toList();
         return new RestTemplateBuilder()
                 .rootUri(administrationServiceUrl)
                 .defaultHeader(adminTokenHeader, administrationToken)
                 .interceptors((request, body, execution) -> {
                     String path = request.getURI().getPath();
-                    if (whitelist.contains(path)) {
-                        return execution.execute(request, body);
+                    boolean matchPattern = whiteListPatterns.stream().anyMatch(pattern -> pattern.matcher(path).matches());
+                    if (!matchPattern) {
+                        throw new ForbiddenRequestException(String.format("Request %s is not available for this service", path));
                     }
-                    throw new ForbiddenRequestException(String.format("Request %s is not available for this service", path));
+                    return execution.execute(request, body);
                 })
                 .build();
     }

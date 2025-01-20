@@ -20,5 +20,6 @@ public class Project {
     private int fulltextQuota;
     private int archiveQuota;
     private int monitoringQuota;
+    private int topicQuota;
 
 }

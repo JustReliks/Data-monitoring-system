@@ -53,7 +53,7 @@ public class DefaultExceptionHandler extends DefaultErrorAttributes {
     public ResponseEntity<ErrorResponse> handleInternalRequestException(InternalRequestException exception, ServletWebRequest webRequest) {
         log.error(ExceptionUtils.getStackTrace(exception));
         try {
-            ErrorResponse errorResponse = extractErrorResponseFromInteralRequestException(exception);
+            ErrorResponse errorResponse = extractErrorResponseFromInteralRequestException(exception, webRequest);
             return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
         } catch (Exception e) {
             log.warn("Unable to parse body of internal request exception to Error response: {}", exception.getMessage(), e);
@@ -66,13 +66,23 @@ public class DefaultExceptionHandler extends DefaultErrorAttributes {
         }
     }
 
-    private ErrorResponse extractErrorResponseFromInteralRequestException(InternalRequestException exception) {
+    private ErrorResponse extractErrorResponseFromInteralRequestException(InternalRequestException exception, ServletWebRequest webRequest) {
         String message = exception.getCause().getMessage();
         Matcher matcher = INTERNAL_EXCEPTION_PATTERN.matcher(message);
         if (matcher.matches()) {
             message = matcher.group(1);
         }
-        return exceptionHandlerGson.fromJson(message, ErrorResponse.class);
+        try {
+            return exceptionHandlerGson.fromJson(message, ErrorResponse.class);
+        } catch (Exception e) {
+            return ErrorResponse.builder()
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+                    .message("Unexpected error: " + exception.getCause().getMessage())
+                    .timestamp(new Date().toString())
+                    .path(webRequest.getRequest().getRequestURL().toString()).build();
+        }
+
     }
 
 }

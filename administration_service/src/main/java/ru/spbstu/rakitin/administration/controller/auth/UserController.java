@@ -2,7 +2,12 @@ package ru.spbstu.rakitin.administration.controller.auth;
 
 import jakarta.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.spbstu.rakitin.administration.dto.UserPermissionDto;
 import ru.spbstu.rakitin.administration.dto.mappers.PermissionMapper;
@@ -33,12 +38,15 @@ public class UserController {
 
     private final JwtService jwtService;
 
-    public UserController(UserService userService, PermissionMapper permissionMapper, PermissionService permissionService, AuthenticationService authenticationService, JwtService jwtService) {
+    private final AuthenticationProvider authenticationProvider;
+
+    public UserController(UserService userService, PermissionMapper permissionMapper, PermissionService permissionService, AuthenticationService authenticationService, JwtService jwtService, PasswordEncoder passwordEncoder, AuthenticationProvider authenticationProvider) {
         this.userService = userService;
         this.permissionMapper = permissionMapper;
         this.permissionService = permissionService;
         this.authenticationService = authenticationService;
         this.jwtService = jwtService;
+        this.authenticationProvider = authenticationProvider;
     }
 
     @PostMapping("/register")
@@ -53,10 +61,10 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@Valid @RequestBody AuthUserDto userDto) throws UserNotFoundException, AuthenticationException {
-        User user = authenticationService.authenticateUser(userDto.getUsername(), userDto.getPassword());
+    public String login(@Valid @RequestBody AuthUserDto userDto) {
 
-        return jwtService.generateToken(user);
+        Authentication authenticate = authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
+        return jwtService.generateToken((UserDetails) authenticate.getPrincipal());
     }
 
 
@@ -78,7 +86,7 @@ public class UserController {
         String userName = jwtService.extractUserName(jwt);
 
         if (StringUtils.isNotEmpty(userName)) {
-            User userDetails = userService.findUserByUsername(userName);
+            User userDetails = userService.loadUserByUsername(userName);
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 return UserDto.builder()
                         .username(userName)
@@ -94,9 +102,10 @@ public class UserController {
 
     @GetMapping("/{username}")
     public UserDto getUserByUsername(@PathVariable String username) throws UserNotFoundException {
-        User userByUsername = userService.findUserByUsername(username);
+        User userByUsername = userService.loadUserByUsername(username);
         return UserDto.builder()
                 .username(userByUsername.getUsername())
+                .password(userByUsername.getPassword())
                 .isValid(true)
                 .id(userByUsername.getId())
                 .authorities(userByUsername.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList()).

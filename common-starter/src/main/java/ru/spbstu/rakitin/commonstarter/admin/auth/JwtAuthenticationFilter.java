@@ -1,4 +1,4 @@
-package ru.spbstu.rakitin.user_api_service.security;
+package ru.spbstu.rakitin.commonstarter.admin.auth;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,7 +13,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.spbstu.rakitin.commonstarter.admin.AdminRequestFactory;
-import ru.spbstu.rakitin.commonstarter.admin.auth.SecurityUserDetails;
 import ru.spbstu.rakitin.commonstarter.dto.UserDto;
 import ru.spbstu.rakitin.commonstarter.dto.ValidateUserTokenDto;
 
@@ -37,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String jwt = authHeader.substring(BEARER_PREFIX.length());
-        UserDto userDto = adminRequestFactory.doPost("/validate", new ValidateUserTokenDto(jwt), UserDto.class);
+        UserDto userDto = adminRequestFactory.doPost("/api/v1/admin/user/validate", new ValidateUserTokenDto(jwt), UserDto.class);
         if (userDto.isValid()) {
 
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -45,7 +44,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityUserDetails principal = new SecurityUserDetails();
                 principal.setId(userDto.getId());
                 principal.setPermissions(userDto.getAuthorities());
-                principal.setUsername(principal.getUsername());
+                principal.setUsername(userDto.getUsername());
+                principal.setPassword(userDto.getPassword());
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
 
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

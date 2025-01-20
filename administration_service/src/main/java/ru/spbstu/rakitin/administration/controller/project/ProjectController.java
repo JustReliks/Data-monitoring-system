@@ -2,14 +2,12 @@ package ru.spbstu.rakitin.administration.controller.project;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.spbstu.rakitin.administration.dto.ProjectDto;
 import ru.spbstu.rakitin.administration.dto.mappers.ProjectMapper;
-import ru.spbstu.rakitin.administration.model.Project;
+import ru.spbstu.rakitin.administration.exceptions.ProjectNotFoundException;
 import ru.spbstu.rakitin.administration.service.auth.ProjectService;
+import ru.spbstu.rakitin.administration.model.Project;
 
 @RestController
 @RequestMapping("/api/v1/admin/project")
@@ -23,6 +21,14 @@ public class ProjectController {
     public long createProject(@Valid @RequestBody ProjectDto projectDto) {
         Project project = projectMapper.projectDtoToProject(projectDto);
         return projectService.saveProject(project);
+    }
+
+    @GetMapping("/{id}")
+    public ProjectDto findProjectById(@PathVariable long id) throws ProjectNotFoundException {
+        Project project = projectService.findProjectById(id);
+
+        return projectMapper.projectToProjectDto(project);
+
     }
 
 }

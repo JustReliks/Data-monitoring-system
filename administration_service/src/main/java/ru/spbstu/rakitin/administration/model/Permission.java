@@ -22,7 +22,7 @@ public class Permission {
     private Project project;
 
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private User user;
 
     @Enumerated(EnumType.STRING)

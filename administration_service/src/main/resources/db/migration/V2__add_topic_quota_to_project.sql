@@ -1,0 +1,1 @@
+ALTER TABLE dms.t_project ADD COLUMN topic_quota integer not null default 0
