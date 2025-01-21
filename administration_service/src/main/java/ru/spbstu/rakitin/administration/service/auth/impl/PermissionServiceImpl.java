@@ -3,9 +3,10 @@ package ru.spbstu.rakitin.administration.service.auth.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.administration.exceptions.PermissionAlreadyExistsException;
+import ru.spbstu.rakitin.administration.model.Permission;
+import ru.spbstu.rakitin.commonstarter.admin.PermissionTypeEnum;
 import ru.spbstu.rakitin.administration.repository.auth.PermissionRepository;
 import ru.spbstu.rakitin.administration.service.auth.PermissionService;
-import ru.spbstu.rakitin.administration.model.Permission;
 
 import java.util.List;
 
@@ -34,5 +35,10 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public boolean hasUserAnyPermissionForProject(Long userId, Long projectId) {
         return permissionRepository.existsPermissionByUser_IdAndProject_Id(userId, projectId);
+    }
+
+    @Override
+    public boolean hasUserPermissionForProject(Long userId, Long projectId, PermissionTypeEnum permission) {
+        return permissionRepository.existsPermissionByUser_IdAndProject_IdAndPermission(userId, projectId, permission);
     }
 }
