@@ -7,7 +7,7 @@ import ru.spbstu.rakitin.administration.dto.ProjectDto;
 import ru.spbstu.rakitin.administration.dto.mappers.ProjectMapper;
 import ru.spbstu.rakitin.administration.exceptions.ProjectNotFoundException;
 import ru.spbstu.rakitin.administration.service.auth.ProjectService;
-import ru.spbstu.rakitin.administration.model.Project;
+import ru.spbstu.rakitin.commonentites.model.Project;
 
 @RestController
 @RequestMapping("/api/v1/admin/project")

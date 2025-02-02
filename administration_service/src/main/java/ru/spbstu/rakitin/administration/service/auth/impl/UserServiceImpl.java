@@ -6,7 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.administration.exceptions.UserAlreadyExistsException;
 import ru.spbstu.rakitin.administration.exceptions.UserNotFoundException;
-import ru.spbstu.rakitin.administration.model.User;
+import ru.spbstu.rakitin.commonentites.model.User;
 import ru.spbstu.rakitin.administration.repository.auth.UserRepository;
 import ru.spbstu.rakitin.administration.service.auth.UserService;
 

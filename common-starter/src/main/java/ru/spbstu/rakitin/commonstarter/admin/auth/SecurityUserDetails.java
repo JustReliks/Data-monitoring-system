@@ -21,7 +21,7 @@ public class SecurityUserDetails implements UserDetails {
 
     private String username;
     private String password;
-
+    private String token;
     private List<String> permissions;
 
     @Override

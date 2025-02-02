@@ -2,7 +2,7 @@ package ru.spbstu.rakitin.administration.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import ru.spbstu.rakitin.commonstarter.admin.PermissionTypeEnum;
+import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 
 @Data
 @Builder

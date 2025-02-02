@@ -30,7 +30,7 @@ services:
       timeout: 10s
       retries: 3
     networks:
-      - kafka
+      - data-infra
     logging:
       driver: "json-file"
       options:
@@ -57,7 +57,7 @@ services:
       KAFKA_CLUSTERS_2_METRICS_PORT: 19103
       DYNAMIC_CONFIG_ENABLED: 'true'
     networks:
-      - kafka
+      - data-infra
     logging:
       driver: "json-file"
       options:
@@ -88,7 +88,7 @@ services:
       timeout: 10s
       retries: 3
     networks:
-      - kafka
+      - data-infra
     logging:
       driver: "json-file"
       options:
@@ -119,7 +119,7 @@ services:
       timeout: 10s
       retries: 3
     networks:
-      - kafka
+      - data-infra
     logging:
       driver: "json-file"
       options:
@@ -150,12 +150,63 @@ services:
       timeout: 10s
       retries: 3
     networks:
-      - kafka
+      - data-infra
     logging:
       driver: "json-file"
       options:
         max-size: "1m"
+  solr1:
+    image: solr:9.5
+    container_name: solr1
+    ports:
+      - "8983:8983"
+    environment:
+      SOLR_MODE: "cloud"
+      ZK_HOST: "zookeeper:32181"
+      SOLR_HEAP: "512m"
+      SOLR_HOST: "solr1"
+      SOLR_OPTS: "-DzkClientTimeout=30000 -Dsolr.allowPaths=/var/solr/data"
+    volumes:
+      - solr_data1:/var/solr/data
+    networks:
+      - data-infra
+    depends_on:
+      - zookeeper
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8983/solr/admin/collections?action=LIST"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  solr2:
+    image: solr:9.5
+    container_name: solr2
+    ports:
+      - "8984:8983"
+    environment:
+      SOLR_MODE: "cloud"
+      ZK_HOST: "zookeeper:32181"
+      SOLR_HEAP: "512m"
+      SOLR_HOST: "solr2"
+      SOLR_OPTS: "-DzkClientTimeout=30000 -Dsolr.allowPaths=/var/solr/data"
+    volumes:
+      - solr_data2:/var/solr/data
+    networks:
+      - data-infra
+    depends_on:
+      - zookeeper
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8983/solr/admin/collections?action=LIST"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# ... остальные существующие сервисы и настройки ...
 
 networks:
-  kafka:
-    name: kafka
+  data-infra:
+    name: data-infra-network
+
+volumes:
+  solr_data1:
+  solr_data2:

@@ -20,6 +20,7 @@
     </properties>
     <modules>
         <module>common-starter</module>
+        <module>common-entites</module>
         <module>administration_service</module>
         <module>data-managment-service</module>
         <module>user_api_service</module>

@@ -1,6 +1,6 @@
 package ru.spbstu.rakitin.administration.dto.mappers;
 
-import ru.spbstu.rakitin.administration.model.User;
+import ru.spbstu.rakitin.commonentites.model.User;
 import ru.spbstu.rakitin.commonstarter.dto.AuthUserDto;
 
 public class UserMapper {

@@ -3,8 +3,8 @@ package ru.spbstu.rakitin.administration.service.auth.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.administration.exceptions.PermissionAlreadyExistsException;
-import ru.spbstu.rakitin.administration.model.Permission;
-import ru.spbstu.rakitin.commonstarter.admin.PermissionTypeEnum;
+import ru.spbstu.rakitin.commonentites.model.Permission;
+import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 import ru.spbstu.rakitin.administration.repository.auth.PermissionRepository;
 import ru.spbstu.rakitin.administration.service.auth.PermissionService;
 

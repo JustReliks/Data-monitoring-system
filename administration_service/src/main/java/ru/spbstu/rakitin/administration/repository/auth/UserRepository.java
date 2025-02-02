@@ -1,8 +1,8 @@
 package ru.spbstu.rakitin.administration.repository.auth;
 
+import ru.spbstu.rakitin.commonentites.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.spbstu.rakitin.administration.model.User;
 
 import java.util.Optional;
 

@@ -1,18 +1,14 @@
 package ru.spbstu.rakitin.commonstarter.admin.aspect;
 
-import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CheckPermission {
+@Target(ElementType.METHOD)
+public @interface LogControllerAnnotation {
 
-    PermissionTypeEnum permission() default PermissionTypeEnum.CREATOR;
-    String projectIdField();
-    String userIdField();
+    boolean debug() default false;
 
 }

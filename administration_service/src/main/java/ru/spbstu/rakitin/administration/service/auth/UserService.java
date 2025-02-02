@@ -3,7 +3,7 @@ package ru.spbstu.rakitin.administration.service.auth;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import ru.spbstu.rakitin.administration.exceptions.UserAlreadyExistsException;
 import ru.spbstu.rakitin.administration.exceptions.UserNotFoundException;
-import ru.spbstu.rakitin.administration.model.User;
+import ru.spbstu.rakitin.commonentites.model.User;
 
 public interface UserService extends UserDetailsService {
 

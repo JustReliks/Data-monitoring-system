@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.spbstu.rakitin.administration.dto.UserPermissionDto;
 import ru.spbstu.rakitin.administration.exceptions.ProjectNotFoundException;
 import ru.spbstu.rakitin.administration.exceptions.UserNotFoundException;
-import ru.spbstu.rakitin.administration.model.Permission;
+import ru.spbstu.rakitin.commonentites.model.Permission;
 import ru.spbstu.rakitin.administration.service.auth.ProjectService;
 import ru.spbstu.rakitin.administration.service.auth.UserService;
 

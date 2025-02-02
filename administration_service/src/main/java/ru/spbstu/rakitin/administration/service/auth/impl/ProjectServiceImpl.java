@@ -3,7 +3,7 @@ package ru.spbstu.rakitin.administration.service.auth.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.administration.exceptions.ProjectNotFoundException;
-import ru.spbstu.rakitin.administration.model.Project;
+import ru.spbstu.rakitin.commonentites.model.Project;
 import ru.spbstu.rakitin.administration.repository.auth.ProjectRepository;
 import ru.spbstu.rakitin.administration.service.auth.ProjectService;
 

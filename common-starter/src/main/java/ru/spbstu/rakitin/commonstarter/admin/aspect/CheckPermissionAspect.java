@@ -9,6 +9,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
+import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.admin.auth.SecurityUserDetails;
 
@@ -49,7 +50,6 @@ public class CheckPermissionAspect {
             throw new RuntimeException(String.format("Can't find neither project id field nor user id field in method %s in fields %s, %s",
                     method.getName(), projectIdField, userIdField));
         }
-
         boolean check = adminManager.canUserDoActionInProject(userId, projectId, checkPermission.permission());
         if (!check) {
             throw new AccessDeniedException(String.format("Operation in project %s is forbidden for user %s!", projectId, userId));
