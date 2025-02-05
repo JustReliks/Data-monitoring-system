@@ -15,15 +15,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import ru.spbstu.rakitin.commonstarter.admin.auth.SecurityUserDetails;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Aspect
 @Component
 @Slf4j
 public class LoggingAspect {
+
+    private final LoggingParamsStorage loggingParamsStorage;
+
+    public LoggingAspect(LoggingParamsStorage loggingParamsStorage) {
+        this.loggingParamsStorage = loggingParamsStorage;
+    }
 
     @Pointcut(value = "@annotation(logControllerAnnotation) && args(authentication,..)")
     private void loggingControllerPointcut(LogControllerAnnotation logControllerAnnotation, Authentication authentication) {
@@ -37,15 +40,15 @@ public class LoggingAspect {
             LogControllerAnnotation logAnnotation,
             Authentication authentication)
             throws Throwable {
-
         LoggingParams loggingParam = buildLoggingParams(joinPoint, authentication);
+        loggingParamsStorage.setLoggingParams(loggingParam);
         Level logLevel = logAnnotation.debug() ? Level.DEBUG : Level.INFO;
-        log.atLevel(logLevel).log("[{}] method call was initiated with args {}. User: [{}]",
-                loggingParam.getMethod(),
+        log.atLevel(logLevel).log("[{}] [{}] method call was initiated with args {}. User: [{}]",
+                loggingParam.getUuid(), loggingParam.getMethod(),
                 loggingParam.getParamToValue(), loggingParam.getUsername().orElse(null));
         Object result = joinPoint.proceed(joinPoint.getArgs());
-        log.atLevel(logLevel).log("[{}] method call was completed with args {}. User: [{}]",
-                loggingParam.getMethod(),
+        log.atLevel(logLevel).log("[{}] [{}] method call was completed with args {}. User: [{}]",
+                loggingParam.getUuid(), loggingParam.getMethod(),
                 loggingParam.getParamToValue(), loggingParam.getUsername().orElse(null));
 
         return result;
@@ -56,10 +59,10 @@ public class LoggingAspect {
             JoinPoint joinPoint,
             LogControllerAnnotation logAnnotation,
             Authentication authentication, Throwable exception) {
-        LoggingParams loggingParam = buildLoggingParams(joinPoint, authentication);
+        LoggingParams loggingParam = loggingParamsStorage.getLoggingParams();
 
-        log.warn("[{}] method call was completed with exception [{}] with args {}. User: [{}]",
-                loggingParam.getMethod(), exception.getMessage(),
+        log.warn("[{}] [{}] method call was completed with exception [{}] with args {}. User: [{}]",
+                loggingParam.getUuid(), loggingParam.getMethod(), exception,
                 loggingParam.getParamToValue(), loggingParam.getUsername().orElse(null));
 
     }
@@ -80,6 +83,7 @@ public class LoggingAspect {
             paramToValue.put(parameterNames[i], Objects.toString(args[i]));
         }
         return LoggingParams.builder()
+                .uuid(UUID.randomUUID().toString())
                 .method(method)
                 .paramToValue(paramToValue)
                 .username(username).build();
@@ -87,8 +91,9 @@ public class LoggingAspect {
 
     @Data
     @Builder
-    private static class LoggingParams {
+    public static class LoggingParams {
 
+        private String uuid;
         private String method;
         private Map<String, String> paramToValue;
         private Optional<String> username;
