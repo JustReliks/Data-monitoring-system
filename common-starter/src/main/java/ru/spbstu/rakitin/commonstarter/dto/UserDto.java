@@ -14,5 +14,6 @@ public class UserDto {
     private String password;
     private List<String> authorities;
     private boolean isValid;
+    private boolean isAdmin;
 
 }

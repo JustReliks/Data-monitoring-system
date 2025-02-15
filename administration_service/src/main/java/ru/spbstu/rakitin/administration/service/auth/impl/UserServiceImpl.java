@@ -6,9 +6,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.administration.exceptions.UserAlreadyExistsException;
 import ru.spbstu.rakitin.administration.exceptions.UserNotFoundException;
-import ru.spbstu.rakitin.commonentites.model.User;
 import ru.spbstu.rakitin.administration.repository.auth.UserRepository;
 import ru.spbstu.rakitin.administration.service.auth.UserService;
+import ru.spbstu.rakitin.commonentites.model.User;
 
 import java.util.Optional;
 
@@ -49,6 +49,16 @@ public class UserServiceImpl implements UserService {
     public User findUserById(long id) throws UserNotFoundException {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User with id %s not found!", id)));
+
+    }
+
+    @Override
+    public void flipAdmin(long userId, boolean set) throws UserNotFoundException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(String.format("User with id %s not found!", userId)));
+
+        user.setAdmin(set);
+        userRepository.save(user);
 
     }
 }

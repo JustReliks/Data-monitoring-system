@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonentites.model.Project;
 import ru.spbstu.rakitin.commonstarter.admin.auth.SecurityUserDetails;
+import ru.spbstu.rakitin.commonstarter.dto.AuthUserDto;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +48,10 @@ public class AdminManager {
             throw new AccessDeniedException(String.format("User %s dont have access to perform this operation with project %s", id, projectId));
         }
 
+    }
+
+    public String login(AuthUserDto authUserDto) {
+        return adminRequestFactory.doPost("/api/v1/admin/user/login", authUserDto, String.class);
     }
 
     public Project findProjectById(long projectId) {

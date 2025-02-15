@@ -3,10 +3,12 @@ package ru.spbstu.rakitin.administration.service.auth.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.administration.exceptions.PermissionAlreadyExistsException;
-import ru.spbstu.rakitin.commonentites.model.Permission;
-import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
+import ru.spbstu.rakitin.administration.exceptions.UserNotFoundException;
 import ru.spbstu.rakitin.administration.repository.auth.PermissionRepository;
 import ru.spbstu.rakitin.administration.service.auth.PermissionService;
+import ru.spbstu.rakitin.administration.service.auth.UserService;
+import ru.spbstu.rakitin.commonentites.model.Permission;
+import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 
 import java.util.List;
 
@@ -15,6 +17,7 @@ import java.util.List;
 public class PermissionServiceImpl implements PermissionService {
 
     private final PermissionRepository permissionRepository;
+    private final UserService userService;
 
     @Override
     public Long savePermission(Permission permission) throws PermissionAlreadyExistsException {
@@ -33,12 +36,16 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public boolean hasUserAnyPermissionForProject(Long userId, Long projectId) {
-        return permissionRepository.existsPermissionByUser_IdAndProject_Id(userId, projectId);
+    public boolean hasUserAnyPermissionForProject(Long userId, Long projectId) throws UserNotFoundException {
+        return isAdmin(userId) || permissionRepository.existsPermissionByUser_IdAndProject_Id(userId, projectId);
     }
 
     @Override
-    public boolean hasUserPermissionForProject(Long userId, Long projectId, PermissionTypeEnum permission) {
-        return permissionRepository.existsPermissionByUser_IdAndProject_IdAndPermission(userId, projectId, permission);
+    public boolean hasUserPermissionForProject(Long userId, Long projectId, PermissionTypeEnum permission) throws UserNotFoundException {
+        return isAdmin(userId) || permissionRepository.existsPermissionByUser_IdAndProject_IdAndPermission(userId, projectId, permission);
+    }
+
+    public boolean isAdmin(Long userId) throws UserNotFoundException {
+        return userService.findUserById(userId).isAdmin();
     }
 }

@@ -11,6 +11,7 @@ import ru.spbstu.rakitin.commonstarter.admin.auth.SecurityUserDetails;
 import ru.spbstu.rakitin.commonstarter.admin.exception.InternalRequestException;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @Component
 @Slf4j
@@ -24,10 +25,14 @@ public class InnerServiceRequestFactory {
         this.restTemplate = new RestTemplateBuilder().build();
     }
 
-    public <RESULT, BODY> RESULT sendRequest(ServiceName serviceName, String path, BODY body, HttpMethod method, Class<RESULT> responseClass, Authentication authentication, Object... uriVariables) {
+    public <RESULT, BODY, JWT> RESULT sendRequest(ServiceName serviceName, String path, BODY body, HttpMethod method, Class<RESULT> responseClass, JWT authentication, Object... uriVariables) {
+        return sendRequest(serviceName, path, body, method, responseClass, getJwtTokenSupplierFromAuthentication(authentication), uriVariables);
+    }
+
+    public <RESULT, BODY> RESULT sendRequest(ServiceName serviceName, String path, BODY body, HttpMethod method, Class<RESULT> responseClass, Supplier<String> jwtToken, Object... uriVariables) {
         String host = discoveryService.findServiceHost(serviceName);
         path = host + path;
-        HttpEntity<BODY> requestEntity = createHttpEntity(body, authentication);
+        HttpEntity<BODY> requestEntity = createHttpEntity(body, jwtToken);
         try {
             if (method == HttpMethod.GET) {
                 if (requestEntity.hasBody()) {
@@ -41,36 +46,54 @@ public class InnerServiceRequestFactory {
         }
     }
 
-    public <BODY> HttpStatusCode sendRequest(ServiceName serviceName, String path, BODY body, HttpMethod method, Authentication authentication, Object... uriVariables) {
+
+    public <BODY, JWT> HttpStatusCode sendRequest(ServiceName serviceName, String path, BODY body, HttpMethod method, JWT authentication, Object... uriVariables) {
         path = discoveryService.findServiceHost(serviceName) + path;
-        HttpEntity<BODY> requestEntity = createHttpEntity(body, authentication);
+        HttpEntity<BODY> requestEntity = createHttpEntity(body, getJwtTokenSupplierFromAuthentication(authentication));
         ResponseEntity<Void> response = restTemplate.exchange(path, method, requestEntity, Void.TYPE, uriVariables);
         return response.getStatusCode();
     }
 
-    public <RESULT, BODY> RESULT doPost(ServiceName serviceName, Authentication authentication, String uri, BODY body, Class<RESULT> responseClass) {
+
+    public <RESULT, BODY, JWT> RESULT doPost(ServiceName serviceName, JWT authentication, String uri, BODY body, Class<RESULT> responseClass) {
         return sendRequest(serviceName, uri, body, HttpMethod.POST, responseClass, authentication);
     }
 
-    public <RESULT> RESULT doGet(ServiceName serviceName, Authentication authentication, String uri, Class<RESULT> responseClass) {
+    public <RESULT, JWT> RESULT doGet(ServiceName serviceName, JWT authentication, String uri, Class<RESULT> responseClass) {
         return sendRequest(serviceName, uri, null, HttpMethod.GET, responseClass, authentication);
     }
 
-    public <RESULT, BODY> RESULT doPut(ServiceName serviceName, Authentication authentication, String uri, BODY body, Class<RESULT> responseClass) {
+    public <RESULT, BODY, JWT> RESULT doPut(ServiceName serviceName, JWT authentication, String uri, BODY body, Class<RESULT> responseClass) {
         return sendRequest(serviceName, uri, body, HttpMethod.PUT, responseClass, authentication);
     }
 
-    public <RESULT, BODY> RESULT doDelete(ServiceName serviceName, Authentication authentication, String uri, BODY body, Class<RESULT> responseClass) {
+    public <RESULT, BODY, JWT> RESULT doDelete(ServiceName serviceName, JWT authentication, String uri, BODY body, Class<RESULT> responseClass) {
         return sendRequest(serviceName, uri, body, HttpMethod.DELETE, responseClass, authentication);
     }
 
-    private <BODY> HttpEntity<BODY> createHttpEntity(BODY body, Authentication authentication) {
-        MultiValueMap<String, String> headers = new HttpHeaders();
+    private <JWT> Supplier<String> getJwtTokenSupplierFromAuthentication(JWT jwt) {
+        Optional<String> token;
+        if (jwt instanceof Authentication authentication) {
+            token = Optional.of(authentication).map(Authentication::getPrincipal)
+                    .map(SecurityUserDetails.class::cast)
+                    .map(SecurityUserDetails::getToken);
+        } else if (jwt instanceof String jwtStr) {
+            token = Optional.of(jwtStr);
+        } else {
+            throw new RuntimeException("Unable to get jwt token from object " + jwt);
+        }
 
-        Optional<String> tokenOptional = Optional.ofNullable(authentication).map(Authentication::getPrincipal)
-                .map(SecurityUserDetails.class::cast)
-                .map(SecurityUserDetails::getToken);
-        tokenOptional.ifPresent(token -> headers.add("Authorization", "Bearer " + token));
+        if (token.isEmpty()) {
+            return null;
+        }
+        return token::get;
+    }
+
+    private <BODY> HttpEntity<BODY> createHttpEntity(BODY body, Supplier<String> jwtSupplier) {
+        MultiValueMap<String, String> headers = new HttpHeaders();
+        if (jwtSupplier != null) {
+            headers.add("Authorization", "Bearer " + jwtSupplier.get());
+        }
         return new HttpEntity<>(body, headers);
 
     }

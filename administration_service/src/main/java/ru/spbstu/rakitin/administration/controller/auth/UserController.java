@@ -12,13 +12,16 @@ import org.springframework.web.bind.annotation.*;
 import ru.spbstu.rakitin.administration.dto.UserPermissionDto;
 import ru.spbstu.rakitin.administration.dto.mappers.PermissionMapper;
 import ru.spbstu.rakitin.administration.dto.mappers.UserMapper;
-import ru.spbstu.rakitin.administration.exceptions.*;
-import ru.spbstu.rakitin.commonentites.model.Permission;
-import ru.spbstu.rakitin.commonentites.model.User;
+import ru.spbstu.rakitin.administration.exceptions.PermissionAlreadyExistsException;
+import ru.spbstu.rakitin.administration.exceptions.ProjectNotFoundException;
+import ru.spbstu.rakitin.administration.exceptions.UserAlreadyExistsException;
+import ru.spbstu.rakitin.administration.exceptions.UserNotFoundException;
 import ru.spbstu.rakitin.administration.service.AuthenticationService;
 import ru.spbstu.rakitin.administration.service.auth.JwtService;
 import ru.spbstu.rakitin.administration.service.auth.PermissionService;
 import ru.spbstu.rakitin.administration.service.auth.UserService;
+import ru.spbstu.rakitin.commonentites.model.Permission;
+import ru.spbstu.rakitin.commonentites.model.User;
 import ru.spbstu.rakitin.commonstarter.dto.AuthUserDto;
 import ru.spbstu.rakitin.commonstarter.dto.UserDto;
 import ru.spbstu.rakitin.commonstarter.dto.ValidateUserTokenDto;
@@ -74,6 +77,12 @@ public class UserController {
         permissionService.savePermission(permission);
     }
 
+
+    @PostMapping("/{userId}/admin/{set}")
+    public void flipUserAdminPermissions(@PathVariable long userId, @PathVariable boolean set) throws UserNotFoundException, ProjectNotFoundException, PermissionAlreadyExistsException {
+        userService.flipAdmin(userId, set);
+    }
+
     @GetMapping("/permission/{userId}")
     public List<UserPermissionDto> findAllPermissionsByUser(@PathVariable Long userId) {
         return permissionService.findAllPermissionsForUser(userId).stream().map(permissionMapper::fromPermissionToUserPermissionDto).toList();
@@ -92,6 +101,7 @@ public class UserController {
                         .username(userName)
                         .isValid(true)
                         .id(userDetails.getId())
+                        .isAdmin(userDetails.isAdmin())
                         .authorities(userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList()).
                         build();
             }

@@ -1,10 +1,14 @@
 package ru.spbstu.rakitin.commonstarter.dto.fulltext;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.format.DateTimeFormatter;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SchemaFieldDto {
 
     private String fieldName;

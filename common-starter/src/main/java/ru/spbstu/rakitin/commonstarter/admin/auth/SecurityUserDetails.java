@@ -23,6 +23,7 @@ public class SecurityUserDetails implements UserDetails {
     private String password;
     private String token;
     private List<String> permissions;
+    private boolean isAdmin;
 
     @Override
     public String getPassword() {

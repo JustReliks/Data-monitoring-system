@@ -13,5 +13,6 @@ public interface UserService extends UserDetailsService {
 
     User loadUserByUsername(String username);
     User findUserById(long id) throws UserNotFoundException;
+    void flipAdmin(long userId, boolean set) throws UserNotFoundException;
 
 }

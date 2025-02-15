@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FulltextJobDto {
 
+
+    private long instanceId;
     private long topicId;
     private long projectId;
     private String fulltextTaskName;
