@@ -1,22 +1,23 @@
 package ru.spbstu.rakitin.commonstarter.dto.fulltext;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import ru.spbstu.rakitin.commonstarter.dto.JobDto;
 
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class FulltextJobDto {
+public class FulltextJobDto extends JobDto {
 
-
-    private long instanceId;
-    private long topicId;
-    private long projectId;
-    private String fulltextTaskName;
     private String collectionName;
     private FulltextTaskSchemaDto schema;
 
+    @Builder
+    public FulltextJobDto(long projectId, long instanceId, long topicId, String fulltextTaskName, String collectionName, FulltextTaskSchemaDto schema) {
+        super(projectId, instanceId, topicId, fulltextTaskName);
+        this.collectionName = collectionName;
+        this.schema = schema;
+    }
 }

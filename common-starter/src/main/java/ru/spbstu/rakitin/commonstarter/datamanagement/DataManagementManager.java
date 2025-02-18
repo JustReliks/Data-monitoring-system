@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonentites.model.Topic;
 import ru.spbstu.rakitin.commonstarter.discovery.InnerServiceRequestFactory;
 import ru.spbstu.rakitin.commonstarter.discovery.ServiceName;
+import ru.spbstu.rakitin.commonstarter.dto.JobNameDto;
 import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextJobDto;
-import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskConfigDto;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +15,7 @@ public class DataManagementManager {
 
     private static final String FIND_TOPIC_BY_ID = "/api/internal/v1/topic/%s";
     private static final String START_FULLTEXT_JOB = "/api/v1/job/fulltext/start";
+    private static final String STOP_FULLTEXT_JOB = "/api/v1/job/fulltext/stop";
 
     private final InnerServiceRequestFactory innerServiceRequestFactory;
 
@@ -25,5 +26,10 @@ public class DataManagementManager {
     public void startFulltextJob(FulltextJobDto fulltextJobDto, Authentication authentication) {
         innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, START_FULLTEXT_JOB, fulltextJobDto, Void.TYPE);
     }
+
+    public void stopFulltextJob(JobNameDto jobName, Authentication authentication) {
+        innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, STOP_FULLTEXT_JOB, jobName, Void.TYPE);
+    }
+
 
 }
