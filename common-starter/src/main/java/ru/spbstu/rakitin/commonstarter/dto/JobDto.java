@@ -15,5 +15,6 @@ public class JobDto {
     private long instanceId;
     private long topicId;
     private String taskName;
+    private TaskSchemaDto schema;
 
 }

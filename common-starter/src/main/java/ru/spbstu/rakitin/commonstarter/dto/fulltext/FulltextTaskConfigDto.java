@@ -1,6 +1,7 @@
 package ru.spbstu.rakitin.commonstarter.dto.fulltext;
 
 import lombok.Data;
+import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
 
 @Data
 public class FulltextTaskConfigDto {
@@ -8,7 +9,7 @@ public class FulltextTaskConfigDto {
     private String name;
     private long projectId;
     private long topicId;
-    private FulltextTaskSchemaDto schema;
+    private TaskSchemaDto schema;
 
     private int replicationFactor;
     private int shardsCount;

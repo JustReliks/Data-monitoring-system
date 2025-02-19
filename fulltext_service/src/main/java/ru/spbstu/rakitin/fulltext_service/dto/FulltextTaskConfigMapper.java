@@ -5,6 +5,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.datamanagement.DataManagementManager;
+import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
+import ru.spbstu.rakitin.commonstarter.dto.SchemaFieldDto;
+import ru.spbstu.rakitin.commonstarter.dto.TimestampFieldDto;
 import ru.spbstu.rakitin.commonstarter.dto.fulltext.*;
 import ru.spbstu.rakitin.fulltext_service.engine.utils.SolrUtils;
 import ru.spbstu.rakitin.fulltext_service.model.*;
@@ -28,7 +31,7 @@ public class FulltextTaskConfigMapper {
                 .schema(Optional.of(dto.getSchema()).map(this::mapDtoToFulltextTaskSchema).orElseThrow(() -> new IllegalArgumentException("Schema must be defined"))).build();
     }
 
-    public FulltextTaskSchema mapDtoToFulltextTaskSchema(FulltextTaskSchemaDto schemaDto) {
+    public FulltextTaskSchema mapDtoToFulltextTaskSchema(TaskSchemaDto schemaDto) {
         FulltextTaskSchema schema = new FulltextTaskSchema();
         schema.setSchema(schemaDto.getFields().stream().map(schemaFieldDto -> SchemaField.builder().fieldName(schemaFieldDto.getFieldName()).fieldType(mapFieldTypeDtoToFieldType(schemaFieldDto.getFieldType())).subType(mapFieldTypeDtoToFieldType(schemaFieldDto.getSubType())).build()).toList());
         schema.setTimestampField(
@@ -53,8 +56,8 @@ public class FulltextTaskConfigMapper {
                 .schema(mapFulltextSchemaToSchemaDto(config.getSchema())).build();
     }
 
-    public FulltextTaskSchemaDto mapFulltextSchemaToSchemaDto(FulltextTaskSchema schema) {
-        return FulltextTaskSchemaDto.builder()
+    public TaskSchemaDto mapFulltextSchemaToSchemaDto(FulltextTaskSchema schema) {
+        return TaskSchemaDto.builder()
                 .timestampField(mapTimestampFieldToDto(schema))
                 .fields(schema.getSchema().stream().map(this::mapSchemaFieldToDto).toList()).build();
     }

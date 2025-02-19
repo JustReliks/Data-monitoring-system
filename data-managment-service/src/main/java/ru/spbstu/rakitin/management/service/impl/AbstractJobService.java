@@ -1,5 +1,7 @@
 package ru.spbstu.rakitin.management.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,10 @@ import ru.spbstu.rakitin.commonentites.model.Topic;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.dto.JobDto;
 import ru.spbstu.rakitin.commonstarter.dto.JobNameDto;
+import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.management.engine.processors.AddTimestampFieldAction;
+import ru.spbstu.rakitin.management.engine.processors.RemoveExtraFieldAction;
+import ru.spbstu.rakitin.management.engine.processors.SchemaCompatibleFilter;
 import ru.spbstu.rakitin.management.exception.TaskAlreadyInContextException;
 import ru.spbstu.rakitin.management.service.JobService;
 import ru.spbstu.rakitin.management.service.KafkaService;
@@ -34,6 +40,9 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
     private final AdminManager adminManager;
     private final BeanFactory beanFactory;
     private final KafkaService kafkaService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private static final MapJson INVALID_JSON_FILTER = new MapJson();
 
 
     @Override
@@ -46,12 +55,10 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
         Properties kafkaProperties = beanFactory.getBean("kafkaProperties", Properties.class);
         kafkaProperties.put("group.id", taskName);
         kafkaProperties.put(StreamsConfig.APPLICATION_ID_CONFIG, taskName);
-        StreamsBuilder streamsBuilder = new StreamsBuilder();
         Topic topic = kafkaService.findTopicById(job.getTopicId());
 
 
-        KStream<String, String> sourceStream = streamsBuilder.stream(topic.getNameInKafka(), Consumed.with(Serdes.String(), Serdes.String()));
-        sourceStream.process(() -> this.getTaskProcessor(job, taskName));
+        StreamsBuilder streamsBuilder = buildStream(job, taskName, topic);
 
         KafkaStreams streams = new KafkaStreams(streamsBuilder.build(), kafkaProperties);
         streams.setUncaughtExceptionHandler(exception -> {
@@ -68,6 +75,27 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
         streams.start();
         runningKafkaStreams.put(taskName, streams);
 
+    }
+
+    private StreamsBuilder buildStream(T job, String taskName, Topic topic) {
+        StreamsBuilder streamsBuilder = new StreamsBuilder();
+        KStream<String, MapJson> sourceStream = streamsBuilder.stream(topic.getNameInKafka(), Consumed.with(Serdes.String(), Serdes.String()))
+                .mapValues((readOnlyKey, value) -> {
+                    try {
+                        return objectMapper.readValue(value, MapJson.class);
+                    } catch (JsonProcessingException e) {
+                        log.warn("[{}] Skip value [{}]. Unable to parse it to json object.", taskName, value, e);
+                        return INVALID_JSON_FILTER;
+                    }
+                }).filter((key, value) -> value != INVALID_JSON_FILTER)
+                .peek(new RemoveExtraFieldAction(job.getSchema()))
+                .filter(new SchemaCompatibleFilter(job.getSchema(), taskName))
+                .peek(new AddTimestampFieldAction(job.getSchema()));
+
+        decorateStream(job, taskName, sourceStream);
+
+        sourceStream.process(() -> this.getTaskProcessor(job, taskName));
+        return streamsBuilder;
     }
 
     @Override
@@ -99,7 +127,10 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
 
     protected abstract void changeTaskStatus(long taskId, String status);
 
-    protected abstract Processor<String, String, String, String> getTaskProcessor(T job, String taskName);
+    protected abstract Processor<String, MapJson, String, String> getTaskProcessor(T job, String taskName);
+
+    protected void decorateStream(T job, String taskName, KStream<String, MapJson> stream) {
+    }
 
     @RequiredArgsConstructor
     private final class FetchFromService implements Runnable {

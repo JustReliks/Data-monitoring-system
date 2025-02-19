@@ -1,4 +1,4 @@
-package ru.spbstu.rakitin.commonstarter.dto.fulltext;
+package ru.spbstu.rakitin.commonstarter.dto;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,4 +1,4 @@
-package ru.spbstu.rakitin.commonstarter.dto.fulltext;
+package ru.spbstu.rakitin.commonstarter.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FulltextTaskSchemaDto {
+public class TaskSchemaDto {
     private List<SchemaFieldDto> fields;
     private TimestampFieldDto timestampField;
 
