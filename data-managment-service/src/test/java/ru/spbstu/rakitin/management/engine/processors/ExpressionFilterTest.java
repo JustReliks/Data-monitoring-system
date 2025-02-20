@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ExpressionFilterTest {
@@ -65,6 +66,30 @@ class ExpressionFilterTest {
         boolean test = expressionFilter.test(map);
         assertTrue(test);
     }
+
+    @SneakyThrows
+    @Test
+    public void test2() {
+        List<SchemaFieldDto> schemaFieldDtos2 = Stream.of(
+                createField("age", SchemaFieldDto.FieldType.LONG),
+                createField("name", SchemaFieldDto.FieldType.STRING),
+                createField("email", SchemaFieldDto.FieldType.STRING)).toList();
+        TaskSchemaDto taskSchemaDto2 = TaskSchemaDto.builder()
+                .fields(schemaFieldDtos2).timestampField(TimestampFieldDto.builder()
+                        .fieldName("timestamp")
+                        .useInsertionDate(true).build()).build();
+
+        FilterExpressionDto filterExpressionDto = objectMapper
+                .readValue(IOUtils.toString(Objects.requireNonNull(this.getClass().getResourceAsStream("/expression_filter_test2.json")), Charset.defaultCharset()), FilterExpressionDto.class);
+        ExpressionFilter expressionFilter = new ExpressionFilter(filterExpressionDto, taskSchemaDto2);
+        MapJson map = new MapJson();
+        map.put("age", "12");
+        map.put("name", "John1");
+        map.put("email", "john@exampl2e.com");
+        boolean test = expressionFilter.test(map);
+        System.out.println(test);
+    }
+
 
     private static SchemaFieldDto createField(String fieldName, SchemaFieldDto.FieldType fieldType, SchemaFieldDto.FieldType subType) {
         return SchemaFieldDto.builder()

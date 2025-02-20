@@ -1,0 +1,23 @@
+{
+  "expression": "${age}>18",
+  "negate": true,
+  "connections": [
+    {
+      "connectionType": "OR",
+      "expression": {
+        "expression": "${name}=John",
+        "negate": false,
+        "connections": [
+          {
+            "connectionType": "OR",
+            "expression": {
+              "expression": "${email} reg .+@example\\.com",
+              "negate": false,
+              "connections": []
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

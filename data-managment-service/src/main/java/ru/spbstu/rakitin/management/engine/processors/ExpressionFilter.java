@@ -1,5 +1,6 @@
 package ru.spbstu.rakitin.management.engine.processors;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import ru.spbstu.rakitin.commonstarter.dto.FilterExpressionDto;
 import ru.spbstu.rakitin.commonstarter.dto.SchemaFieldDto;
@@ -12,6 +13,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Slf4j
 public class ExpressionFilter implements Predicate<MapJson> {
 
     private static final Pattern EXPRESSION_PATTERN = Pattern.compile("(.*)(>|<|=|reg)(.*)");
@@ -24,34 +26,40 @@ public class ExpressionFilter implements Predicate<MapJson> {
     }
 
     private Predicate<MapJson> buildExpression(FilterExpressionDto expression, TaskSchemaDto taskSchemaDto) {
-        Predicate<MapJson> result = buildExpression(expression.getExpression().replace(" ", ""), taskSchemaDto, expression.isNegate());
+        Predicate<MapJson> result = buildExpression(expression.getExpression(), taskSchemaDto, expression.isNegate());
         for (FilterExpressionDto.ExpressionConnection connection : expression.getConnections()) {
             if (connection.getConnectionType() == FilterExpressionDto.ConnectionType.OR) {
-                result = result.or(buildExpression(connection, taskSchemaDto));
+                result = result.or(buildExpression(connection.getExpression(), taskSchemaDto));
             } else {
-                result = result.and(buildExpression(connection, taskSchemaDto));
+                result = result.and(buildExpression(connection.getExpression(), taskSchemaDto));
             }
         }
 
         return result;
     }
 
-    private Predicate<MapJson> buildExpression(FilterExpressionDto.ExpressionConnection connection, TaskSchemaDto taskSchemaDto) {
-        return buildExpression(connection.getExpression(), taskSchemaDto);
+    private Predicate<MapJson> buildExpression(String expression, TaskSchemaDto taskSchemaDto, boolean negate) {
+        log.debug("buildExpression - {}", expression);
+        Predicate<MapJson> res = getExpressionPredicate(expression, taskSchemaDto);
+        if (negate) {
+            res = res.negate();
+        }
+        return res;
     }
 
-    private Predicate<MapJson> buildExpression(String expression, TaskSchemaDto taskSchemaDto, boolean negate) {
-        Predicate<MapJson> res = mapJson -> {
+    private Predicate<MapJson> getExpressionPredicate(String expression, TaskSchemaDto taskSchemaDto) {
+        return mapJson -> {
+            log.debug("buildExpressionLambda - {}", expression);
             Matcher matcher = EXPRESSION_PATTERN.matcher(expression);
             if (matcher.matches()) {
-                Pair<Object, SchemaFieldDto.FieldType> leftValue = getValue(matcher.group(1), taskSchemaDto, mapJson);
-                Pair<Object, SchemaFieldDto.FieldType> rightValue = getValue(matcher.group(3), taskSchemaDto, mapJson);
-                if(rightValue.getRight() == null) {
-                    if(leftValue.getRight().isValueCompatible(rightValue.getKey().toString(), null)) {
+                Pair<Object, SchemaFieldDto.FieldType> leftValue = getValue(matcher.group(1).trim(), taskSchemaDto, mapJson);
+                Pair<Object, SchemaFieldDto.FieldType> rightValue = getValue(matcher.group(3).trim(), taskSchemaDto, mapJson);
+                if (rightValue.getRight() == null) {
+                    if (leftValue.getRight().isValueCompatible(rightValue.getKey().toString(), null)) {
                         rightValue = Pair.of(rightValue.getKey(), leftValue.getRight());
                     }
                 }
-                String operator = matcher.group(2);
+                String operator = matcher.group(2).trim();
                 SchemaFieldDto.FieldType fieldType = leftValue.getValue();
                 if (!leftValue.getRight().isCompatibleWith(rightValue.getValue())) {
                     throw new IllegalArgumentException(String.format("%s field type is not compatible with type %s", rightValue.getValue(), leftValue.getValue()));
@@ -63,33 +71,36 @@ public class ExpressionFilter implements Predicate<MapJson> {
                     rightValue = Pair.of(rightDate, SchemaFieldDto.FieldType.LONG);
 
                 }
-
                 if (!isOperatorCompatibleWithType(operator, leftValue.getValue())) {
                     throw new IllegalArgumentException(String.format("%s field type is not compatible with operator %s", leftValue.getValue(), operator));
                 }
-                if (operator.equalsIgnoreCase("reg")) {
-                    Pattern pattern = Pattern.compile(rightValue.getKey().toString());
-                    return pattern.matcher(leftValue.getKey().toString()).matches();
-                }
-                if (operator.equals(">")) {
-                    return Double.parseDouble(leftValue.getKey().toString()) > Double.parseDouble(rightValue.getKey().toString());
-                }
-                if (operator.equals("<")) {
-                    return Double.parseDouble(leftValue.getKey().toString()) > Double.parseDouble(rightValue.getKey().toString());
-                }
-                if (operator.equals("=")) {
-                    return leftValue.getKey().equals(rightValue.getKey());
-                }
+                log.info("Building predicate {} {} {}", leftValue.getKey(), operator, rightValue.getKey());
+                return evaluateExpression(leftValue.getKey(), rightValue.getKey(), operator);
 
 
             }
             throw new IllegalArgumentException(String.format("Expression [%s] is not valid!", expression));
 
         };
-        if (negate) {
-            res = res.negate();
+    }
+
+    private boolean evaluateExpression(Object left, Object right, String operator) {
+        if (operator.equalsIgnoreCase("reg")) {
+            Pattern pattern = Pattern.compile(right.toString());
+            return pattern.matcher(left.toString()).matches();
         }
-        return res;
+        if (operator.equals(">")) {
+            return Double.parseDouble(left.toString()) > Double.parseDouble(right.toString());
+        }
+        if (operator.equals("<")) {
+            return Double.parseDouble(left.toString()) < Double.parseDouble(right.toString());
+        }
+        if (operator.equals("=")) {
+            return left.equals(right);
+        }
+
+        throw new IllegalArgumentException(String.format("Unexpected operator: %s", operator));
+
     }
 
     private boolean isOperatorCompatibleWithType(String operator, SchemaFieldDto.FieldType fieldType) {
