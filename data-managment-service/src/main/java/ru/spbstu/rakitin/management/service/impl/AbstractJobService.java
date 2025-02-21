@@ -22,6 +22,7 @@ import ru.spbstu.rakitin.commonstarter.dto.JobDto;
 import ru.spbstu.rakitin.commonstarter.dto.JobNameDto;
 import ru.spbstu.rakitin.commonstarter.utils.MapJson;
 import ru.spbstu.rakitin.management.engine.processors.AddTimestampFieldAction;
+import ru.spbstu.rakitin.management.engine.processors.ExpressionFilter;
 import ru.spbstu.rakitin.management.engine.processors.RemoveExtraFieldAction;
 import ru.spbstu.rakitin.management.engine.processors.SchemaCompatibleFilter;
 import ru.spbstu.rakitin.management.exception.TaskAlreadyInContextException;
@@ -91,6 +92,9 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
                 .peek(new RemoveExtraFieldAction(job.getSchema()))
                 .filter(new SchemaCompatibleFilter(job.getSchema(), taskName))
                 .peek(new AddTimestampFieldAction(job.getSchema()));
+        if (Objects.nonNull(job.getSchema().getFilterExpression())) {
+            sourceStream.filter(new ExpressionFilter(job.getSchema()));
+        }
 
         decorateStream(job, taskName, sourceStream);
 

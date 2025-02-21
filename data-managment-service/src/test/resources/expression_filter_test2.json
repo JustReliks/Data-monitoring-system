@@ -3,13 +3,13 @@
   "negate": true,
   "connections": [
     {
-      "connectionType": "OR",
+      "connectionType": "AND",
       "expression": {
         "expression": "${name}=John",
         "negate": false,
         "connections": [
           {
-            "connectionType": "OR",
+            "connectionType": "AND",
             "expression": {
               "expression": "${email} reg .+@example\\.com",
               "negate": false,

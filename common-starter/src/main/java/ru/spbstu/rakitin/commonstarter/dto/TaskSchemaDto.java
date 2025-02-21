@@ -15,6 +15,7 @@ import java.util.Optional;
 public class TaskSchemaDto {
     private List<SchemaFieldDto> fields;
     private TimestampFieldDto timestampField;
+    private FilterExpressionDto filterExpression;
 
     public Optional<SchemaFieldDto> getField(String fieldName) {
         Optional<SchemaFieldDto> findInFields = fields.stream().filter(schemaFieldDto -> schemaFieldDto.getFieldName().equals(fieldName)).findAny();

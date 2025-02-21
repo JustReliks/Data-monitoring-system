@@ -1,0 +1,20 @@
+{
+  "expression": "${testLong}>18",
+  "negate": true,
+  "connections": [
+    {
+      "connectionType": "AND",
+      "expression": {
+        "expression": "${testStr}=John",
+        "negate": false
+      }
+    },
+    {
+      "connectionType": "OR",
+      "expression": {
+        "expression": "${testStr}=${testStr2}",
+        "negate": false
+      }
+    }
+  ]
+}

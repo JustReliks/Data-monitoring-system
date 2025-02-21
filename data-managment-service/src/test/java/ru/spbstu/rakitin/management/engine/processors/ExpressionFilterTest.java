@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ExpressionFilterTest {
@@ -51,19 +51,21 @@ class ExpressionFilterTest {
                 createField("age", SchemaFieldDto.FieldType.LONG),
                 createField("name", SchemaFieldDto.FieldType.STRING),
                 createField("email", SchemaFieldDto.FieldType.STRING)).toList();
-        TaskSchemaDto taskSchemaDto2 = TaskSchemaDto.builder()
-                .fields(schemaFieldDtos2).timestampField(TimestampFieldDto.builder()
-                        .fieldName("timestamp")
-                        .useInsertionDate(true).build()).build();
 
         FilterExpressionDto filterExpressionDto = objectMapper
                 .readValue(IOUtils.toString(Objects.requireNonNull(this.getClass().getResourceAsStream("/expression_filter_test1.json")), Charset.defaultCharset()), FilterExpressionDto.class);
-        ExpressionFilter expressionFilter = new ExpressionFilter(filterExpressionDto, taskSchemaDto2);
+        TaskSchemaDto taskSchemaDto2 = TaskSchemaDto.builder()
+                .fields(schemaFieldDtos2).timestampField(TimestampFieldDto.builder()
+                        .fieldName("timestamp")
+                        .useInsertionDate(true).build())
+                .filterExpression(filterExpressionDto).build();
+
+        ExpressionFilter expressionFilter = new ExpressionFilter(taskSchemaDto2);
         MapJson map = new MapJson();
         map.put("age", "25");
         map.put("name", "John");
         map.put("email", "john@example.com");
-        boolean test = expressionFilter.test(map);
+        boolean test = expressionFilter.test(null, map);
         assertTrue(test);
     }
 
@@ -74,20 +76,38 @@ class ExpressionFilterTest {
                 createField("age", SchemaFieldDto.FieldType.LONG),
                 createField("name", SchemaFieldDto.FieldType.STRING),
                 createField("email", SchemaFieldDto.FieldType.STRING)).toList();
-        TaskSchemaDto taskSchemaDto2 = TaskSchemaDto.builder()
-                .fields(schemaFieldDtos2).timestampField(TimestampFieldDto.builder()
-                        .fieldName("timestamp")
-                        .useInsertionDate(true).build()).build();
 
         FilterExpressionDto filterExpressionDto = objectMapper
                 .readValue(IOUtils.toString(Objects.requireNonNull(this.getClass().getResourceAsStream("/expression_filter_test2.json")), Charset.defaultCharset()), FilterExpressionDto.class);
-        ExpressionFilter expressionFilter = new ExpressionFilter(filterExpressionDto, taskSchemaDto2);
+        TaskSchemaDto taskSchemaDto2 = TaskSchemaDto.builder()
+                .fields(schemaFieldDtos2).timestampField(TimestampFieldDto.builder()
+                        .fieldName("timestamp")
+                        .useInsertionDate(true).build())
+                .filterExpression(filterExpressionDto).build();
+        ExpressionFilter expressionFilter = new ExpressionFilter(taskSchemaDto2);
         MapJson map = new MapJson();
-        map.put("age", "12");
-        map.put("name", "John1");
-        map.put("email", "john@exampl2e.com");
+        map.put("age", "1");
+        map.put("name", "John");
+        map.put("email", "john@example.com");
         boolean test = expressionFilter.test(map);
-        System.out.println(test);
+        assertTrue(test);
+    }
+
+    @SneakyThrows
+    @Test
+    public void test3() {
+        ////testLong>18 AND testStr=John OR testStr=testStr2
+        FilterExpressionDto filterExpressionDto = objectMapper
+                .readValue(IOUtils.toString(Objects.requireNonNull(this.getClass().getResourceAsStream("/expression_filter_test3.json")), Charset.defaultCharset()), FilterExpressionDto.class);
+        taskSchemaDto.setFilterExpression(filterExpressionDto);
+        ExpressionFilter expressionFilter = new ExpressionFilter(taskSchemaDto);
+        MapJson map = new MapJson();
+        map.put("testLong", 15);
+        map.put("testStr", "NotJohn");
+        map.put("testStr2", "NotJohn2");
+        boolean test = expressionFilter.test(map);
+        assertFalse(test);
+        taskSchemaDto.setFilterExpression(null);
     }
 
 
@@ -110,9 +130,13 @@ class ExpressionFilterTest {
     //boolean result = predicate.test(map); // вернет true
 
     private static SchemaFieldDto createField(String fieldName, SchemaFieldDto.FieldType fieldType) {
-        return SchemaFieldDto.builder()
-                .fieldName(fieldName)
-                .fieldType(fieldType).build();
+        return createField(fieldName, fieldType, null);
+    }
+
+    @Test
+    public void testLeet() {
+//        List<Long> longs = minOperations(new int[]{3, 1, 6, 8}, new int[]{1, 5});
+//        System.out.println(longs);
     }
 
 

@@ -2,6 +2,7 @@ package ru.spbstu.rakitin.management.engine.processors;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.kafka.streams.kstream.Predicate;
 import ru.spbstu.rakitin.commonstarter.dto.FilterExpressionDto;
 import ru.spbstu.rakitin.commonstarter.dto.SchemaFieldDto;
 import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
@@ -9,45 +10,45 @@ import ru.spbstu.rakitin.commonstarter.utils.MapJson;
 
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
-import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Slf4j
-public class ExpressionFilter implements Predicate<MapJson> {
+public class ExpressionFilter implements Predicate<String, MapJson>, java.util.function.Predicate<MapJson> {
 
     private static final Pattern EXPRESSION_PATTERN = Pattern.compile("(.*)(>|<|=|reg)(.*)");
     private static final Pattern VALUE_PATTERN = Pattern.compile("\\$\\{(\\S*)}");
 
-    private final Predicate<MapJson> predicate;
+    private final java.util.function.Predicate<MapJson> predicate;
 
-    public ExpressionFilter(FilterExpressionDto expression, TaskSchemaDto taskSchemaDto) {
-        predicate = buildExpression(expression, taskSchemaDto);
+    public ExpressionFilter(TaskSchemaDto taskSchemaDto) {
+        predicate = buildExpression(taskSchemaDto.getFilterExpression(), taskSchemaDto);
     }
 
-    private Predicate<MapJson> buildExpression(FilterExpressionDto expression, TaskSchemaDto taskSchemaDto) {
-        Predicate<MapJson> result = buildExpression(expression.getExpression(), taskSchemaDto, expression.isNegate());
-        for (FilterExpressionDto.ExpressionConnection connection : expression.getConnections()) {
-            if (connection.getConnectionType() == FilterExpressionDto.ConnectionType.OR) {
-                result = result.or(buildExpression(connection.getExpression(), taskSchemaDto));
-            } else {
-                result = result.and(buildExpression(connection.getExpression(), taskSchemaDto));
+    private java.util.function.Predicate<MapJson> buildExpression(FilterExpressionDto expression, TaskSchemaDto taskSchemaDto) {
+        java.util.function.Predicate<MapJson> result = buildExpression(expression.getExpression(), taskSchemaDto, expression.isNegate());
+        if (expression.getConnections() != null && !expression.getConnections().isEmpty()) {
+            for (FilterExpressionDto.ExpressionConnection connection : expression.getConnections()) {
+                if (connection.getConnectionType() == FilterExpressionDto.ConnectionType.OR) {
+                    result = result.or(buildExpression(connection.getExpression(), taskSchemaDto));
+                } else {
+                    result = result.and(buildExpression(connection.getExpression(), taskSchemaDto));
+                }
             }
         }
-
         return result;
     }
 
-    private Predicate<MapJson> buildExpression(String expression, TaskSchemaDto taskSchemaDto, boolean negate) {
-        log.debug("buildExpression - {}", expression);
-        Predicate<MapJson> res = getExpressionPredicate(expression, taskSchemaDto);
+    private java.util.function.Predicate<MapJson> buildExpression(String expression, TaskSchemaDto taskSchemaDto, boolean negate) {
+        log.info("buildExpression - {}({})", negate ? "!" : "", expression);
+        java.util.function.Predicate<MapJson> res = getExpressionPredicate(expression, taskSchemaDto);
         if (negate) {
             res = res.negate();
         }
         return res;
     }
 
-    private Predicate<MapJson> getExpressionPredicate(String expression, TaskSchemaDto taskSchemaDto) {
+    private java.util.function.Predicate<MapJson> getExpressionPredicate(String expression, TaskSchemaDto taskSchemaDto) {
         return mapJson -> {
             log.debug("buildExpressionLambda - {}", expression);
             Matcher matcher = EXPRESSION_PATTERN.matcher(expression);
@@ -127,9 +128,13 @@ public class ExpressionFilter implements Predicate<MapJson> {
         return Pair.of(valueExpression, null);
     }
 
+    @Override
+    public boolean test(String key, MapJson value) {
+        return test(value);
+    }
 
     @Override
-    public boolean test(MapJson map) {
-        return predicate.test(map);
+    public boolean test(MapJson mapJson) {
+        return predicate.test(mapJson);
     }
 }
