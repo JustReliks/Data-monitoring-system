@@ -24,7 +24,7 @@ import ru.spbstu.rakitin.commonstarter.dto.JobNameDto;
 import ru.spbstu.rakitin.commonstarter.utils.MapJson;
 import ru.spbstu.rakitin.management.engine.processors.AddTimestampFieldAction;
 import ru.spbstu.rakitin.management.engine.processors.ExpressionFilter;
-import ru.spbstu.rakitin.management.engine.processors.RemoveExtraFieldAction;
+import ru.spbstu.rakitin.management.engine.processors.RemoveExtraFieldsAction;
 import ru.spbstu.rakitin.management.engine.processors.SchemaCompatibleFilter;
 import ru.spbstu.rakitin.management.exception.TaskAlreadyInContextException;
 import ru.spbstu.rakitin.management.service.JobService;
@@ -90,7 +90,7 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
                         return INVALID_JSON_FILTER;
                     }
                 }).filter((key, value) -> value != INVALID_JSON_FILTER)
-                .peek(new RemoveExtraFieldAction(job.getSchema()))
+                .peek(new RemoveExtraFieldsAction(job.getSchema()))
                 .filter(new SchemaCompatibleFilter(job.getSchema(), taskName))
                 .peek(new AddTimestampFieldAction(job.getSchema()))
                 .split().branch(expressionFilter, Branched.withConsumer(stream -> {

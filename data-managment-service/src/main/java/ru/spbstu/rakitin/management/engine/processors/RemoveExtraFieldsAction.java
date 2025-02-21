@@ -6,7 +6,7 @@ import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
 import ru.spbstu.rakitin.commonstarter.utils.MapJson;
 
 @RequiredArgsConstructor
-public class RemoveExtraFieldAction implements ForeachAction<String, MapJson> {
+public class RemoveExtraFieldsAction implements ForeachAction<String, MapJson> {
 
     private final TaskSchemaDto schema;
 
