@@ -5,10 +5,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.datamanagement.DataManagementManager;
-import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
+import ru.spbstu.rakitin.commonstarter.dto.FieldType;
 import ru.spbstu.rakitin.commonstarter.dto.SchemaFieldDto;
+import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
 import ru.spbstu.rakitin.commonstarter.dto.TimestampFieldDto;
-import ru.spbstu.rakitin.commonstarter.dto.fulltext.*;
+import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextJobDto;
+import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskConfigDto;
 import ru.spbstu.rakitin.fulltext_service.engine.utils.SolrUtils;
 import ru.spbstu.rakitin.fulltext_service.model.*;
 
@@ -42,6 +44,7 @@ public class FulltextTaskConfigMapper {
                                         .useInsertionDate(timestampFieldDto.isUseInsertionDate())
                                         .build())
                         .orElse(new TimestampField()));
+        schema.setFilter(schemaDto.getFilterExpression());
         return schema;
     }
 
@@ -59,7 +62,8 @@ public class FulltextTaskConfigMapper {
     public TaskSchemaDto mapFulltextSchemaToSchemaDto(FulltextTaskSchema schema) {
         return TaskSchemaDto.builder()
                 .timestampField(mapTimestampFieldToDto(schema))
-                .fields(schema.getSchema().stream().map(this::mapSchemaFieldToDto).toList()).build();
+                .fields(schema.getSchema().stream().map(this::mapSchemaFieldToDto).toList())
+                .filterExpression(schema.getFilter()).build();
     }
 
     private TimestampFieldDto mapTimestampFieldToDto(FulltextTaskSchema schema) {
@@ -71,15 +75,15 @@ public class FulltextTaskConfigMapper {
     private SchemaFieldDto mapSchemaFieldToDto(SchemaField schemaField) {
         SchemaFieldDto schemaFieldDto = new SchemaFieldDto();
         schemaFieldDto.setFieldName(schemaField.getFieldName());
-        schemaFieldDto.setFieldType(SchemaFieldDto.FieldType.valueOf(schemaField.getFieldType().name()));
+        schemaFieldDto.setFieldType(FieldType.valueOf(schemaField.getFieldType().name()));
         if (schemaField.getSubType() != null) {
-            schemaFieldDto.setSubType(SchemaFieldDto.FieldType.valueOf(schemaField.getSubType().name()));
+            schemaFieldDto.setSubType(FieldType.valueOf(schemaField.getSubType().name()));
         }
         return schemaFieldDto;
     }
 
-    private static SchemaField.FieldType mapFieldTypeDtoToFieldType(SchemaFieldDto.FieldType schemaFieldDto) {
-        return schemaFieldDto != null ? SchemaField.FieldType.valueOf(schemaFieldDto.name()) : null;
+    private static FieldType mapFieldTypeDtoToFieldType(FieldType schemaFieldDto) {
+        return schemaFieldDto != null ? FieldType.valueOf(schemaFieldDto.name()) : null;
     }
 
 }

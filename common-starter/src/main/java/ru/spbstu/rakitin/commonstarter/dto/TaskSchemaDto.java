@@ -15,7 +15,7 @@ import java.util.Optional;
 public class TaskSchemaDto {
     private List<SchemaFieldDto> fields;
     private TimestampFieldDto timestampField;
-    private FilterExpressionDto filterExpression;
+    private FilterExpression filterExpression;
 
     public Optional<SchemaFieldDto> getField(String fieldName) {
         Optional<SchemaFieldDto> findInFields = fields.stream().filter(schemaFieldDto -> schemaFieldDto.getFieldName().equals(fieldName)).findAny();
@@ -23,7 +23,7 @@ public class TaskSchemaDto {
             findInFields = Optional.ofNullable(timestampField).stream().filter(timestampFieldDto -> timestampFieldDto.getFieldName().equals(fieldName)).findAny()
                     .map(timestampFieldDto -> SchemaFieldDto.builder()
                             .fieldName(fieldName)
-                            .fieldType(SchemaFieldDto.FieldType.DATE).build());
+                            .fieldType(FieldType.DATE).build());
         }
         return findInFields;
     }

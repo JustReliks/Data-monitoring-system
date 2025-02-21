@@ -2,9 +2,9 @@ package ru.spbstu.rakitin.fulltext_service.service.impl;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.stereotype.Service;
+import ru.spbstu.rakitin.commonstarter.dto.FieldType;
 import ru.spbstu.rakitin.fulltext_service.engine.schema.SolrSchema;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskSchema;
-import ru.spbstu.rakitin.fulltext_service.model.SchemaField;
 import ru.spbstu.rakitin.fulltext_service.service.SchemaService;
 
 import java.io.*;
@@ -37,7 +37,7 @@ public class SchemaServiceImpl implements SchemaService {
             field.put("name", schemaField.getFieldName());
             field.put("stored", true);
             field.put("indexed", true);
-            if (schemaField.getFieldType() == SchemaField.FieldType.ARRAY) {
+            if (schemaField.getFieldType() == FieldType.ARRAY) {
                 field.put("type", schemaField.getSubType().getSolrTypeArray());
                 field.put("multiValued", true);
             } else {
@@ -52,7 +52,7 @@ public class SchemaServiceImpl implements SchemaService {
             field.put("name", schema.getTimestampField().getFieldName());
             field.put("stored", true);
             field.put("indexed", true);
-            field.put("type", SchemaField.FieldType.DATE.getSolrType());
+            field.put("type", FieldType.DATE.getSolrType());
             fieldsDescriptions.add(field);
 
         }

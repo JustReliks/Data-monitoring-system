@@ -11,10 +11,10 @@ import ru.spbstu.rakitin.commonstarter.admin.aspect.CheckPermission;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.ProjectIdContainer;
 import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskConfigDto;
+import ru.spbstu.rakitin.commonstarter.exception.InvalidSchemaException;
 import ru.spbstu.rakitin.fulltext_service.dto.FulltextTaskConfigMapper;
 import ru.spbstu.rakitin.fulltext_service.exception.ConfigAlreadyExists;
 import ru.spbstu.rakitin.fulltext_service.exception.FulltextQuotaExceededException;
-import ru.spbstu.rakitin.fulltext_service.exception.InvalidSchemaException;
 import ru.spbstu.rakitin.fulltext_service.exception.UnavailableTopicException;
 import ru.spbstu.rakitin.fulltext_service.service.FulltextTaskConfigService;
 

@@ -1,6 +1,7 @@
 package ru.spbstu.rakitin.fulltext_service.service;
 
 import org.springframework.security.core.Authentication;
+import ru.spbstu.rakitin.commonstarter.exception.InvalidSchemaException;
 import ru.spbstu.rakitin.fulltext_service.exception.*;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskConfig;
 

@@ -11,6 +11,7 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
+import org.apache.kafka.streams.kstream.Branched;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.processor.api.Processor;
@@ -68,7 +69,6 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
                 changeTaskStatus(job.getInstanceId(), "FAILED");
             } catch (Exception e) {
                 log.error("Unable to change status for task {}. Please, do it manually in task service!", job.getInstanceId(), e);
-                return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.REPLACE_THREAD;
             }
             this.runningKafkaStreams.remove(taskName);
             return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
@@ -80,7 +80,8 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
 
     private StreamsBuilder buildStream(T job, String taskName, Topic topic) {
         StreamsBuilder streamsBuilder = new StreamsBuilder();
-        KStream<String, MapJson> sourceStream = streamsBuilder.stream(topic.getNameInKafka(), Consumed.with(Serdes.String(), Serdes.String()))
+        ExpressionFilter expressionFilter = new ExpressionFilter(job.getSchema());
+        streamsBuilder.stream(topic.getNameInKafka(), Consumed.with(Serdes.String(), Serdes.String()))
                 .mapValues((readOnlyKey, value) -> {
                     try {
                         return objectMapper.readValue(value, MapJson.class);
@@ -91,14 +92,13 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
                 }).filter((key, value) -> value != INVALID_JSON_FILTER)
                 .peek(new RemoveExtraFieldAction(job.getSchema()))
                 .filter(new SchemaCompatibleFilter(job.getSchema(), taskName))
-                .peek(new AddTimestampFieldAction(job.getSchema()));
-        if (Objects.nonNull(job.getSchema().getFilterExpression())) {
-            sourceStream.filter(new ExpressionFilter(job.getSchema()));
-        }
+                .peek(new AddTimestampFieldAction(job.getSchema()))
+                .split().branch(expressionFilter, Branched.withConsumer(stream -> {
+                    decorateStream(job, taskName, stream).process(() -> getTaskProcessor(job, taskName));
+                })).defaultBranch(Branched.withConsumer(stream -> {
+                    stream.foreach((key, value) -> log.info("[{}] Message [{}] was skipped because not apply task filter!", taskName, value));
+                }));
 
-        decorateStream(job, taskName, sourceStream);
-
-        sourceStream.process(() -> this.getTaskProcessor(job, taskName));
         return streamsBuilder;
     }
 
@@ -133,7 +133,8 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
 
     protected abstract Processor<String, MapJson, String, String> getTaskProcessor(T job, String taskName);
 
-    protected void decorateStream(T job, String taskName, KStream<String, MapJson> stream) {
+    protected KStream<String, MapJson> decorateStream(T job, String taskName, KStream<String, MapJson> stream) {
+        return stream;
     }
 
     @RequiredArgsConstructor

@@ -51,8 +51,8 @@ public class FulltextJobService extends AbstractJobService<FulltextJobDto> {
     }
 
     @Override
-    protected void decorateStream(FulltextJobDto job, String taskName, KStream<String, MapJson> stream) {
-        super.decorateStream(job, taskName, stream);
-        stream.peek((key, value) -> value.put(ID_FIELD, UUID.randomUUID().toString()));
+    protected KStream<String, MapJson> decorateStream(FulltextJobDto job, String taskName, KStream<String, MapJson> stream) {
+        stream = super.decorateStream(job, taskName, stream);
+        return stream.peek((key, value) -> value.put(ID_FIELD, UUID.randomUUID().toString()));
     }
 }

@@ -3,7 +3,8 @@ package ru.spbstu.rakitin.management.engine.processors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.streams.kstream.Predicate;
-import ru.spbstu.rakitin.commonstarter.dto.FilterExpressionDto;
+import ru.spbstu.rakitin.commonstarter.dto.FieldType;
+import ru.spbstu.rakitin.commonstarter.dto.FilterExpression;
 import ru.spbstu.rakitin.commonstarter.dto.SchemaFieldDto;
 import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
 import ru.spbstu.rakitin.commonstarter.utils.MapJson;
@@ -22,14 +23,18 @@ public class ExpressionFilter implements Predicate<String, MapJson>, java.util.f
     private final java.util.function.Predicate<MapJson> predicate;
 
     public ExpressionFilter(TaskSchemaDto taskSchemaDto) {
-        predicate = buildExpression(taskSchemaDto.getFilterExpression(), taskSchemaDto);
+        if(taskSchemaDto.getFilterExpression() == null) {
+            predicate = mapJson -> true;
+        } else {
+            predicate = buildExpression(taskSchemaDto.getFilterExpression(), taskSchemaDto);
+        }
     }
 
-    private java.util.function.Predicate<MapJson> buildExpression(FilterExpressionDto expression, TaskSchemaDto taskSchemaDto) {
+    private java.util.function.Predicate<MapJson> buildExpression(FilterExpression expression, TaskSchemaDto taskSchemaDto) {
         java.util.function.Predicate<MapJson> result = buildExpression(expression.getExpression(), taskSchemaDto, expression.isNegate());
         if (expression.getConnections() != null && !expression.getConnections().isEmpty()) {
-            for (FilterExpressionDto.ExpressionConnection connection : expression.getConnections()) {
-                if (connection.getConnectionType() == FilterExpressionDto.ConnectionType.OR) {
+            for (FilterExpression.ExpressionConnection connection : expression.getConnections()) {
+                if (connection.getConnectionType() == FilterExpression.ConnectionType.OR) {
                     result = result.or(buildExpression(connection.getExpression(), taskSchemaDto));
                 } else {
                     result = result.and(buildExpression(connection.getExpression(), taskSchemaDto));
@@ -52,36 +57,25 @@ public class ExpressionFilter implements Predicate<String, MapJson>, java.util.f
         return mapJson -> {
             log.debug("buildExpressionLambda - {}", expression);
             Matcher matcher = EXPRESSION_PATTERN.matcher(expression);
-            if (matcher.matches()) {
-                Pair<Object, SchemaFieldDto.FieldType> leftValue = getValue(matcher.group(1).trim(), taskSchemaDto, mapJson);
-                Pair<Object, SchemaFieldDto.FieldType> rightValue = getValue(matcher.group(3).trim(), taskSchemaDto, mapJson);
-                if (rightValue.getRight() == null) {
-                    if (leftValue.getRight().isValueCompatible(rightValue.getKey().toString(), null)) {
-                        rightValue = Pair.of(rightValue.getKey(), leftValue.getRight());
-                    }
+            matcher.matches();
+            Pair<Object, FieldType> leftValue = getValue(matcher.group(1).trim(), taskSchemaDto, mapJson);
+            Pair<Object, FieldType> rightValue = getValue(matcher.group(3).trim(), taskSchemaDto, mapJson);
+            if (rightValue.getRight() == null) {
+                if (leftValue.getRight().isValueCompatible(rightValue.getKey().toString(), null)) {
+                    rightValue = Pair.of(rightValue.getKey(), leftValue.getRight());
                 }
-                String operator = matcher.group(2).trim();
-                SchemaFieldDto.FieldType fieldType = leftValue.getValue();
-                if (!leftValue.getRight().isCompatibleWith(rightValue.getValue())) {
-                    throw new IllegalArgumentException(String.format("%s field type is not compatible with type %s", rightValue.getValue(), leftValue.getValue()));
-                }
-                if (fieldType == SchemaFieldDto.FieldType.DATE) {
-                    Long leftDate = DateTimeFormatter.ISO_INSTANT.parse(leftValue.getKey().toString()).getLong(ChronoField.INSTANT_SECONDS);
-                    Long rightDate = DateTimeFormatter.ISO_INSTANT.parse(leftValue.getKey().toString()).getLong(ChronoField.INSTANT_SECONDS);
-                    leftValue = Pair.of(leftDate, SchemaFieldDto.FieldType.LONG);
-                    rightValue = Pair.of(rightDate, SchemaFieldDto.FieldType.LONG);
-
-                }
-                if (!isOperatorCompatibleWithType(operator, leftValue.getValue())) {
-                    throw new IllegalArgumentException(String.format("%s field type is not compatible with operator %s", leftValue.getValue(), operator));
-                }
-                log.info("Building predicate {} {} {}", leftValue.getKey(), operator, rightValue.getKey());
-                return evaluateExpression(leftValue.getKey(), rightValue.getKey(), operator);
-
+            }
+            String operator = matcher.group(2).trim();
+            FieldType fieldType = leftValue.getValue();
+            if (fieldType == FieldType.DATE) {
+                Long leftDate = DateTimeFormatter.ISO_INSTANT.parse(leftValue.getKey().toString()).getLong(ChronoField.INSTANT_SECONDS);
+                Long rightDate = DateTimeFormatter.ISO_INSTANT.parse(leftValue.getKey().toString()).getLong(ChronoField.INSTANT_SECONDS);
+                leftValue = Pair.of(leftDate, FieldType.LONG);
+                rightValue = Pair.of(rightDate, FieldType.LONG);
 
             }
-            throw new IllegalArgumentException(String.format("Expression [%s] is not valid!", expression));
-
+            log.info("Building predicate {} {} {}", leftValue.getKey(), operator, rightValue.getKey());
+            return evaluateExpression(leftValue.getKey(), rightValue.getKey(), operator);
         };
     }
 
@@ -104,20 +98,7 @@ public class ExpressionFilter implements Predicate<String, MapJson>, java.util.f
 
     }
 
-    private boolean isOperatorCompatibleWithType(String operator, SchemaFieldDto.FieldType fieldType) {
-        if (fieldType == SchemaFieldDto.FieldType.ARRAY) {
-            return false;
-        }
-        return switch (operator) {
-            case "=" -> true;
-            case "reg" -> fieldType == SchemaFieldDto.FieldType.TEXT || fieldType == SchemaFieldDto.FieldType.STRING;
-            case ">", "<" ->
-                    fieldType == SchemaFieldDto.FieldType.DOUBLE || fieldType == SchemaFieldDto.FieldType.LONG || fieldType == SchemaFieldDto.FieldType.DATE;
-            default -> throw new IllegalArgumentException(String.format("Operator %s is not supported!", operator));
-        };
-    }
-
-    private Pair<Object, SchemaFieldDto.FieldType> getValue(String valueExpression, TaskSchemaDto taskSchemaDto, MapJson mapJson) {
+    private Pair<Object, FieldType> getValue(String valueExpression, TaskSchemaDto taskSchemaDto, MapJson mapJson) {
         Matcher matcher = VALUE_PATTERN.matcher(valueExpression);
         if (matcher.matches()) {
             String value = matcher.group(1);
