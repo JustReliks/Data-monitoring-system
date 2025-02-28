@@ -20,4 +20,9 @@ public class SolrUtils {
         return String.format(ALIAS_NAME_PATTERN, projectName, taskName, "WRITE");
     }
 
+    public String buildReadCollectionName(String projectName, String taskName) {
+        return String.format(ALIAS_NAME_PATTERN, projectName, taskName, "READ");
+    }
+
+
 }

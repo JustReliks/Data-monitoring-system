@@ -1,0 +1,31 @@
+package ru.spbstu.rakitin.fulltext_service.api;
+
+import lombok.RequiredArgsConstructor;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.fulltext_service.dto.SolrQueryDto;
+import ru.spbstu.rakitin.fulltext_service.exception.FulltextConfigNotFoundException;
+import ru.spbstu.rakitin.fulltext_service.exception.FulltextTaskInstanceNotFoundException;
+import ru.spbstu.rakitin.fulltext_service.exception.FulltextTaskInstanceNotRunningException;
+import ru.spbstu.rakitin.fulltext_service.service.FulltextTaskService;
+
+import java.io.IOException;
+import java.util.List;
+
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/api/v1/fulltext/query")
+public class FulltextTaskQueryController {
+
+    private final FulltextTaskService fulltextTaskService;
+
+    @PostMapping("/{taskId}")
+    public List<MapJson> query(@RequestBody SolrQueryDto solrQuery, @PathVariable long taskId, Authentication authentication) throws FulltextConfigNotFoundException, FulltextTaskInstanceNotFoundException, SolrServerException, IOException, FulltextTaskInstanceNotRunningException {
+        return fulltextTaskService.query(solrQuery, taskId, authentication);
+
+
+    }
+
+}

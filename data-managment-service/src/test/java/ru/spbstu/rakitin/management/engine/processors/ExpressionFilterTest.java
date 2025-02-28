@@ -115,17 +115,6 @@ class ExpressionFilterTest {
                 .subType(subType).build();
     }
 
-    //Map<String, String> map = new HashMap<>();
-    //map.put("age", "25");
-    //map.put("name", "John");
-    //map.put("email", "john@example.com");
-    //
-    //Predicate<Map<String, String>> predicate = new MapPredicate(
-    //    "age > 18 AND (name = 'John' OR email regexp .+@example\\.com)"
-    //);
-    //
-    //boolean result = predicate.test(map); // вернет true
-
     private static SchemaFieldDto createField(String fieldName, FieldType fieldType) {
         return createField(fieldName, fieldType, null);
     }

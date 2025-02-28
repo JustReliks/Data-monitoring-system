@@ -115,4 +115,9 @@ public class FulltextTaskInstanceServiceImpl implements FulltextTaskInstanceServ
     public List<FulltextTaskInstance> findAllTaskInstancesWithStatus(TaskStatus taskStatus) {
         return fulltextTaskInstanceRepository.findAllByTaskStatus(taskStatus);
     }
+
+    @Override
+    public FulltextTaskInstance findByConfigId(long configId) throws FulltextTaskInstanceNotFoundException {
+        return fulltextTaskInstanceRepository.findByConfigId(configId).orElseThrow(() -> new FulltextTaskInstanceNotFoundException(String.format("Instance for config id %s not found!", configId)));
+    }
 }

@@ -16,4 +16,6 @@ public interface FulltextTaskInstanceService {
     void forceChangeFulltextInstanceStatus(long instanceId, TaskStatus taskStatus) throws FulltextTaskInstanceNotFoundException, FulltextStatusWontChangedException;
 
     List<FulltextTaskInstance> findAllTaskInstancesWithStatus(TaskStatus taskStatus);
+
+    FulltextTaskInstance findByConfigId(long configId) throws FulltextTaskInstanceNotFoundException;
 }

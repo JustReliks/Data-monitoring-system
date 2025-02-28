@@ -2,10 +2,13 @@ package ru.spbstu.rakitin.management.engine.solr.configuration;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.solr.client.solrj.impl.CloudLegacySolrClient;
+import org.apache.solr.client.solrj.impl.CloudSolrClient;
+import org.apache.solr.client.solrj.impl.Http2SolrClient;
 import org.apache.solr.client.solrj.impl.LBHttpSolrClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import ru.spbstu.rakitin.management.engine.solr.client.DockerHttp2SolrClient;
 import ru.spbstu.rakitin.management.engine.solr.client.DockerLBHttpClient;
 
 import java.util.concurrent.TimeUnit;
@@ -17,24 +20,32 @@ public class SolrConfiguration {
     private final SolrConfigurationProperties solrConfigurationProperties;
 
     @Bean
-    @Profile("docker")
-    public LBHttpSolrClient.Builder lbHttpSolrClientBuilderDocker() {
-        return new DockerLBHttpClient.Builder();
-    }
-
-    @Bean
     @Profile("!docker")
-    public LBHttpSolrClient.Builder lbHttpSolrClientBuilderDefault() {
-        return new LBHttpSolrClient.Builder();
+    public Http2SolrClient http2SolrClient() {
+        return new Http2SolrClient.Builder()
+                .withBasicAuthCredentials("solr", "SolrRocks")
+                .withRequestTimeout(10, TimeUnit.SECONDS)
+                .build();
+    }
+
+    @Bean
+    @Profile("docker")
+    public Http2SolrClient dockerHttp2SolrClient() {
+        return new DockerHttp2SolrClient.Builder()
+                .withBasicAuthCredentials("solr", "SolrRocks")
+                .withRequestTimeout(10, TimeUnit.SECONDS)
+                .withIdleTimeout(10, TimeUnit.MINUTES)
+                .withConnectionTimeout(10, TimeUnit.SECONDS)
+                .build();
     }
 
 
     @Bean
-    public CloudLegacySolrClient cloudSolrClient(LBHttpSolrClient.Builder lbBuilder) {
-        return new CloudLegacySolrClient.Builder(solrConfigurationProperties.getZookeeperProperties().getZkHosts(), solrConfigurationProperties.getZookeeperProperties().getZkChroot())
-                .withLBHttpSolrClient(lbBuilder.build())
+    public CloudSolrClient cloudSolrClient(Http2SolrClient http2SolrClient) {
+        return new CloudSolrClient.Builder(solrConfigurationProperties.getZookeeperProperties().getZkHosts(), solrConfigurationProperties.getZookeeperProperties().getZkChroot())
                 .withZkClientTimeout(solrConfigurationProperties.getZookeeperProperties().getZkClientTimeoutSec(), TimeUnit.SECONDS)
-                .withZkConnectTimeout(solrConfigurationProperties.getZookeeperProperties().getZkConnectTimeoutSec(), TimeUnit.SECONDS).build();
+                .withZkConnectTimeout(solrConfigurationProperties.getZookeeperProperties().getZkConnectTimeoutSec(), TimeUnit.SECONDS)
+                .withHttpClient(http2SolrClient).build();
     }
 
 }

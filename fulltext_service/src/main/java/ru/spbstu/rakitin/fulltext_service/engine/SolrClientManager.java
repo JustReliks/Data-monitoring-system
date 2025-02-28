@@ -1,25 +1,28 @@
 package ru.spbstu.rakitin.fulltext_service.engine;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrRequest;
 import org.apache.solr.client.solrj.SolrResponse;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CloudLegacySolrClient;
+import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.request.CollectionAdminRequest;
 import org.apache.solr.client.solrj.request.ConfigSetAdminRequest;
+import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.request.schema.SchemaRequest;
+import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.util.ContentStreamBase;
 import org.springframework.stereotype.Component;
+import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.fulltext_service.dto.SolrQueryDto;
 import ru.spbstu.rakitin.fulltext_service.engine.schema.SolrSchema;
 import ru.spbstu.rakitin.fulltext_service.engine.utils.SolrUtils;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskConfig;
 import ru.spbstu.rakitin.fulltext_service.service.SchemaService;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Queue;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -28,7 +31,7 @@ public class SolrClientManager {
     public static final String DEFAULT_SCHEMA = "_default";
 
     private final SchemaService schemaService;
-    private final CloudLegacySolrClient solrClient;
+    private final CloudSolrClient solrClient;
 
     private final SequentialEngine sequentialEngine;
 
@@ -38,8 +41,18 @@ public class SolrClientManager {
         String basePath = fulltextTaskConfig.getProject().getProjectName() + "." + fulltextTaskConfig.getName();
         Queue<SequentialTask> tasks = getSequentialTasksForInitiateFulltextInstance(fulltextTaskConfig, collectionName, basePath, schema);
         sequentialEngine.performSequential(tasks);
-
     }
+
+    public List<MapJson> query(FulltextTaskConfig fulltextTaskConfig, SolrQueryDto solrQueryDto) throws SolrServerException, IOException {
+        QueryRequest request = new QueryRequest(new SolrQuery(solrQueryDto.getQuery()));
+        QueryResponse response = this.sendRequest(request, SolrUtils.buildReadCollectionName(fulltextTaskConfig.getProject().getProjectName(), fulltextTaskConfig.getName()));
+        return response.getResults().stream().map(entries -> {
+            MapJson mapJson = new MapJson();
+            mapJson.putAll(entries);
+            return mapJson;
+        }).toList();
+    }
+
 
     private Queue<SequentialTask> getSequentialTasksForInitiateFulltextInstance(FulltextTaskConfig fulltextTaskConfig, String collectionName, String basePath, SolrSchema schema) {
         Queue<SequentialTask> tasks = new LinkedList<>();
@@ -147,12 +160,12 @@ public class SolrClientManager {
         return tasks;
     }
 
+
     private <T extends SolrResponse> T sendRequest(SolrRequest<T> request) throws SolrServerException, IOException {
         return sendRequest(request, null);
     }
 
     private <T extends SolrResponse> T sendRequest(SolrRequest<T> request, String collection) throws SolrServerException, IOException {
-        request.setBasicAuthCredentials("solr", "SolrRocks");
         if (collection != null) {
             return request.process(solrClient, collection);
         }

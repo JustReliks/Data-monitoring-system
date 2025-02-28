@@ -18,8 +18,8 @@ public class SolrConfigurationProperties {
     public static class ZookeeperProperties {
         private List<String> zkHosts;
         private Optional<String> zkChroot = Optional.empty();
-        private int zkClientTimeoutSec = 10;
-        private int zkConnectTimeoutSec = 10;
+        private int zkClientTimeoutSec = 60;
+        private int zkConnectTimeoutSec = 60;
     }
 
 }
