@@ -5,7 +5,6 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrRequest;
 import org.apache.solr.client.solrj.SolrResponse;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.CloudLegacySolrClient;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.request.CollectionAdminRequest;
 import org.apache.solr.client.solrj.request.ConfigSetAdminRequest;
@@ -44,13 +43,27 @@ public class SolrClientManager {
     }
 
     public List<MapJson> query(FulltextTaskConfig fulltextTaskConfig, SolrQueryDto solrQueryDto) throws SolrServerException, IOException {
-        QueryRequest request = new QueryRequest(new SolrQuery(solrQueryDto.getQuery()));
+        QueryRequest request = new QueryRequest(getSorlQueryFromDto(solrQueryDto));
         QueryResponse response = this.sendRequest(request, SolrUtils.buildReadCollectionName(fulltextTaskConfig.getProject().getProjectName(), fulltextTaskConfig.getName()));
         return response.getResults().stream().map(entries -> {
             MapJson mapJson = new MapJson();
             mapJson.putAll(entries);
             return mapJson;
         }).toList();
+    }
+
+    private static SolrQuery getSorlQueryFromDto(SolrQueryDto solrQueryDto) {
+        SolrQuery query = new SolrQuery(solrQueryDto.getQuery());
+        if (solrQueryDto.getSort() != null) {
+            solrQueryDto.getSort().forEach(solrSort -> query.setSort(solrSort.getField(), solrSort.getOrder()));
+        }
+        if (solrQueryDto.getFilters() != null) {
+            query.setFilterQueries(solrQueryDto.getFilters().toArray(new String[0]));
+        }
+        if(solrQueryDto.getReqFields() != null) {
+            query.setFields(solrQueryDto.getReqFields().toArray(new String[0]));
+        }
+        return query;
     }
 
 

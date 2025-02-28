@@ -70,7 +70,6 @@ public class FulltextJobProcessor implements Processor<String, MapJson, String, 
             log.info("[{}] Sending {} documents to {}", taskName, solrInputDocuments.size(), fulltextJobDto.getCollectionName());
             UpdateRequest request = new UpdateRequest();
             request.add(solrInputDocuments);
-            request.setBasicAuthCredentials("solr", "SolrRocks");
             request.commit(cloudSolrClient, fulltextJobDto.getCollectionName());
         }
     }
