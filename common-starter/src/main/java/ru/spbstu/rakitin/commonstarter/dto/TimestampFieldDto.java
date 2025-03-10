@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TimestampFieldDto {
 
-    private String fieldName;
-    private boolean useInsertionDate;
+    private String fieldName = "timestamp";
+    private boolean useInsertionDate = true;
 
 }

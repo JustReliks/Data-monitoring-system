@@ -1,5 +1,6 @@
 package ru.spbstu.rakitin.commonstarter.service.impl;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.dto.FieldType;
 import ru.spbstu.rakitin.commonstarter.dto.SchemaFieldDto;
@@ -15,14 +16,15 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
-public class SchemaValidationServiceImpl implements SchemaValidationService {
+@ConditionalOnMissingBean(SchemaValidationService.class)
+public class SchemaValidationServiceImpl<T extends TaskSchemaDto> implements SchemaValidationService<T> {
 
     private static final Pattern VALUE_PATTERN = Pattern.compile("\\$\\{(\\S*)}");
     private static final Pattern EXPRESSION_PATTERN = Pattern.compile("(.*)(>|<|=|reg)(.*)");
 
 
     @Override
-    public void validateSchema(TaskSchemaDto schema) throws InvalidSchemaException {
+    public void validateSchema(T schema) throws InvalidSchemaException {
         if (!schema.getTimestampField().isUseInsertionDate()) {
             String fieldName = schema.getTimestampField().getFieldName();
             if (schema.getFields().stream().noneMatch(schemaField -> schemaField.getFieldName().equals(fieldName))) {

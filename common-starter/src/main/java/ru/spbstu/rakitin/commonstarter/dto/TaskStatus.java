@@ -1,4 +1,4 @@
-package ru.spbstu.rakitin.fulltext_service.model;
+package ru.spbstu.rakitin.commonstarter.dto;
 
 public enum TaskStatus {
 

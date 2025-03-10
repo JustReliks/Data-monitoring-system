@@ -1,4 +1,4 @@
-package ru.spbstu.rakitin.fulltext_service.exception;
+package ru.spbstu.rakitin.commonstarter.exception;
 
 import lombok.experimental.StandardException;
 import org.springframework.http.HttpStatus;

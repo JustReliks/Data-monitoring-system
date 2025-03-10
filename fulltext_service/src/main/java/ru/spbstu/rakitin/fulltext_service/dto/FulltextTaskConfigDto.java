@@ -1,4 +1,4 @@
-package ru.spbstu.rakitin.commonstarter.dto.fulltext;
+package ru.spbstu.rakitin.fulltext_service.dto;
 
 import lombok.Data;
 import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;

@@ -10,12 +10,12 @@ import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.CheckPermission;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.ProjectIdContainer;
-import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskConfigDto;
+import ru.spbstu.rakitin.fulltext_service.dto.FulltextTaskConfigDto;
 import ru.spbstu.rakitin.commonstarter.exception.InvalidSchemaException;
 import ru.spbstu.rakitin.fulltext_service.dto.FulltextTaskConfigMapper;
-import ru.spbstu.rakitin.fulltext_service.exception.ConfigAlreadyExists;
-import ru.spbstu.rakitin.fulltext_service.exception.FulltextQuotaExceededException;
-import ru.spbstu.rakitin.fulltext_service.exception.UnavailableTopicException;
+import ru.spbstu.rakitin.commonstarter.exception.ConfigAlreadyExists;
+import ru.spbstu.rakitin.commonstarter.exception.QuotaExceededException;
+import ru.spbstu.rakitin.commonstarter.exception.UnavailableTopicException;
 import ru.spbstu.rakitin.fulltext_service.service.FulltextTaskConfigService;
 
 @RestController
@@ -29,7 +29,7 @@ public class FulltextTaskController {
     @PostMapping("/create")
     @LogController
     @CheckPermission(permission = PermissionTypeEnum.FULL_TEXT_CREATE_TASK, userIdField = "authentication", projectIdField = "configDto")
-    public void create(Authentication authentication, @RequestBody @ProjectIdContainer(innerFieldName = "projectId") FulltextTaskConfigDto configDto) throws ConfigAlreadyExists, FulltextQuotaExceededException, UnavailableTopicException, InvalidSchemaException {
+    public void create(Authentication authentication, @RequestBody @ProjectIdContainer(innerFieldName = "projectId") FulltextTaskConfigDto configDto) throws ConfigAlreadyExists, QuotaExceededException, UnavailableTopicException, InvalidSchemaException {
         fulltextTaskConfigService.createConfig(fulltextTaskConfigMapper.mapDtoToFulltextTaskConfig(configDto, authentication), authentication);
     }
 

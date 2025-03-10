@@ -2,8 +2,12 @@ package ru.spbstu.rakitin.archive_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
+import ru.spbstu.rakitin.commonentites.CommonEntitiesAutoConfiguration;
+import ru.spbstu.rakitin.commonstarter.DataManagementCommonAutoConfiguration;
 
-@SpringBootApplication
+@Import({DataManagementCommonAutoConfiguration.class, CommonEntitiesAutoConfiguration.class})
+@SpringBootApplication(scanBasePackages = "ru.spbstu.rakitin")
 public class ArchiveServiceApplication {
 
     public static void main(String[] args) {

@@ -10,6 +10,7 @@ import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextJobDto;
 import ru.spbstu.rakitin.commonstarter.fulltext.FulltextServiceManager;
 import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.management.configuration.FulltextJobProperties;
 import ru.spbstu.rakitin.management.engine.processors.fulltext.FulltextJobProcessor;
 import ru.spbstu.rakitin.management.service.KafkaService;
 
@@ -26,13 +27,16 @@ public class FulltextJobService extends AbstractJobService<FulltextJobDto> {
 
     private final CloudSolrClient cloudSolrClient;
 
+    private final FulltextJobProperties fulltextJobProperties;
+
     public FulltextJobService(AdminManager adminManager, BeanFactory beanFactory,
                               KafkaService kafkaService,
                               FulltextServiceManager fulltextServiceManager,
-                              CloudSolrClient cloudSolrClient) {
+                              CloudSolrClient cloudSolrClient, FulltextJobProperties fulltextJobProperties) {
         super(adminManager, beanFactory, kafkaService);
         this.fulltextServiceManager = fulltextServiceManager;
         this.cloudSolrClient = cloudSolrClient;
+        this.fulltextJobProperties = fulltextJobProperties;
     }
 
     @Override
@@ -54,5 +58,10 @@ public class FulltextJobService extends AbstractJobService<FulltextJobDto> {
     protected KStream<String, MapJson> decorateStream(FulltextJobDto job, String taskName, KStream<String, MapJson> stream) {
         stream = super.decorateStream(job, taskName, stream);
         return stream.peek((key, value) -> value.put(ID_FIELD, UUID.randomUUID().toString()));
+    }
+
+    @Override
+    public long getFetchTasksRetryTimeoutMillis() {
+        return fulltextJobProperties.getFetchTasksTimeoutMs();
     }
 }

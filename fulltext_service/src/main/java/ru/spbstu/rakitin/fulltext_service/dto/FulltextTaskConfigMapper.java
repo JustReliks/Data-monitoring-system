@@ -10,7 +10,6 @@ import ru.spbstu.rakitin.commonstarter.dto.SchemaFieldDto;
 import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
 import ru.spbstu.rakitin.commonstarter.dto.TimestampFieldDto;
 import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextJobDto;
-import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskConfigDto;
 import ru.spbstu.rakitin.fulltext_service.engine.utils.SolrUtils;
 import ru.spbstu.rakitin.fulltext_service.model.*;
 

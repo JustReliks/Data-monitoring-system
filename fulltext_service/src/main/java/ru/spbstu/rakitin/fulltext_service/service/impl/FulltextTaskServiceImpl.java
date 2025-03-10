@@ -14,7 +14,7 @@ import ru.spbstu.rakitin.fulltext_service.exception.FulltextTaskInstanceNotFound
 import ru.spbstu.rakitin.fulltext_service.exception.FulltextTaskInstanceNotRunningException;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskConfig;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskInstance;
-import ru.spbstu.rakitin.fulltext_service.model.TaskStatus;
+import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
 import ru.spbstu.rakitin.fulltext_service.service.FulltextTaskConfigService;
 import ru.spbstu.rakitin.fulltext_service.service.FulltextTaskInstanceService;
 import ru.spbstu.rakitin.fulltext_service.service.FulltextTaskService;

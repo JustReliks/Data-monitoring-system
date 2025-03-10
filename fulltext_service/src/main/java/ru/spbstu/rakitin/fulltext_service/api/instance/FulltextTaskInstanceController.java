@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
+import ru.spbstu.rakitin.commonstarter.exception.InstanceInitiationFailedException;
 import ru.spbstu.rakitin.fulltext_service.exception.*;
 import ru.spbstu.rakitin.fulltext_service.service.FulltextTaskInstanceService;
 

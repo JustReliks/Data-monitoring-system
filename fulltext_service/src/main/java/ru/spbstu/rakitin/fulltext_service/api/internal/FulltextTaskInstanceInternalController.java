@@ -6,7 +6,7 @@ import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextJobDto;
 import ru.spbstu.rakitin.fulltext_service.dto.FulltextTaskConfigMapper;
 import ru.spbstu.rakitin.fulltext_service.exception.FulltextStatusWontChangedException;
 import ru.spbstu.rakitin.fulltext_service.exception.FulltextTaskInstanceNotFoundException;
-import ru.spbstu.rakitin.fulltext_service.model.TaskStatus;
+import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
 import ru.spbstu.rakitin.fulltext_service.service.FulltextTaskInstanceService;
 
 import java.util.List;

@@ -1,9 +1,10 @@
 package ru.spbstu.rakitin.fulltext_service.service;
 
 import org.springframework.security.core.Authentication;
+import ru.spbstu.rakitin.commonstarter.exception.InstanceInitiationFailedException;
 import ru.spbstu.rakitin.fulltext_service.exception.*;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskInstance;
-import ru.spbstu.rakitin.fulltext_service.model.TaskStatus;
+import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
 
 import java.util.List;
 

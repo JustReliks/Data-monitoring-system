@@ -36,7 +36,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public abstract class AbstractJobService<T extends JobDto> implements JobService<T> {
 
-    public static final int RETRY_TIMEOUT = 4000;
 
     private Map<String, KafkaStreams> runningKafkaStreams;
     private final AdminManager adminManager;
@@ -121,6 +120,10 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
 
     }
 
+    public long getFetchTasksRetryTimeoutMillis() {
+        return 30 * 1000;
+    }
+
     @PreDestroy
     @Override
     public void onShutdown() {
@@ -153,9 +156,9 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
                     log.info("Tasks with id {} was fetched!", runningJobs.stream().map(JobDto::getInstanceId).toList());
                     fetched = true;
                 } catch (Throwable e) {
-                    log.error("Unable to fetch all running tasks from fulltext service. Waiting for {} millis", RETRY_TIMEOUT, e);
+                    log.error("Unable to fetch all running tasks from fulltext service. Waiting for {} millis", jobService.getFetchTasksRetryTimeoutMillis(), e);
                     try {
-                        Thread.sleep(RETRY_TIMEOUT);
+                        Thread.sleep(jobService.getFetchTasksRetryTimeoutMillis());
                     } catch (InterruptedException ex) {
                         Thread.currentThread().interrupt();
                     }
