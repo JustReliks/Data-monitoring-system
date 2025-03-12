@@ -9,12 +9,12 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class JobDto {
+public class JobDto<T extends TaskSchemaDto> {
 
     private long projectId;
     private long instanceId;
     private long topicId;
     private String taskName;
-    private TaskSchemaDto schema;
+    private T schema;
 
 }

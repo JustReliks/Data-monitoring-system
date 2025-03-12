@@ -20,7 +20,7 @@ import ru.spbstu.rakitin.fulltext_service.dto.SolrQueryDto;
 import ru.spbstu.rakitin.fulltext_service.engine.schema.SolrSchema;
 import ru.spbstu.rakitin.fulltext_service.engine.utils.SolrUtils;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskConfig;
-import ru.spbstu.rakitin.fulltext_service.service.SchemaService;
+import ru.spbstu.rakitin.fulltext_service.service.SolrSchemaService;
 
 import java.io.IOException;
 import java.util.*;
@@ -31,13 +31,13 @@ public class SolrClientManager {
 
     public static final String DEFAULT_SCHEMA = "_default";
 
-    private final SchemaService schemaService;
+    private final SolrSchemaService solrSchemaService;
     private final CloudSolrClient solrClient;
 
     private final SequentialEngine sequentialEngine;
 
     public void initiateFulltextInstance(FulltextTaskConfig fulltextTaskConfig) throws Exception {
-        SolrSchema schema = schemaService.createSolrSchema(fulltextTaskConfig.getSchema());
+        SolrSchema schema = solrSchemaService.createSolrSchema(fulltextTaskConfig.getSchema());
         String collectionName = SolrUtils.buildCollectionName(fulltextTaskConfig);
         String basePath = fulltextTaskConfig.getProject().getProjectName() + "." + fulltextTaskConfig.getName();
         Queue<SequentialTask> tasks = getSequentialTasksForInitiateFulltextInstance(fulltextTaskConfig, collectionName, basePath, schema);

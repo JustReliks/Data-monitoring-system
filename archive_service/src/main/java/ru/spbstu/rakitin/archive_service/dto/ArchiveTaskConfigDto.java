@@ -19,4 +19,6 @@ public class ArchiveTaskConfigDto {
     private ArchiveTaskSchemaDto schema;
     @NotNull
     private String name;
+    private boolean overwritingEnabled;
+
 }

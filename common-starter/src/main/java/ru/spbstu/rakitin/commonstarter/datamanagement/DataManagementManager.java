@@ -7,6 +7,7 @@ import ru.spbstu.rakitin.commonentites.model.Topic;
 import ru.spbstu.rakitin.commonstarter.discovery.InnerServiceRequestFactory;
 import ru.spbstu.rakitin.commonstarter.discovery.ServiceName;
 import ru.spbstu.rakitin.commonstarter.dto.JobNameDto;
+import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveJobDto;
 import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextJobDto;
 
 @Service
@@ -16,6 +17,8 @@ public class DataManagementManager {
     private static final String FIND_TOPIC_BY_ID = "/api/internal/v1/topic/%s";
     private static final String START_FULLTEXT_JOB = "/api/v1/job/fulltext/start";
     private static final String STOP_FULLTEXT_JOB = "/api/v1/job/fulltext/stop";
+    private static final String STOP_ARCHIVE_JOB = "/api/v1/job/archive/stop";
+    private static final String START_ARCHIVE_JOB = "/api/v1/job/archive/start";
 
     private final InnerServiceRequestFactory innerServiceRequestFactory;
 
@@ -30,6 +33,15 @@ public class DataManagementManager {
     public void stopFulltextJob(JobNameDto jobName, Authentication authentication) {
         innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, STOP_FULLTEXT_JOB, jobName, Void.TYPE);
     }
+
+    public void startArchiveJob(ArchiveJobDto archiveJobDto, Authentication authentication) {
+        innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, START_ARCHIVE_JOB, archiveJobDto, Void.TYPE);
+    }
+
+    public void stopArchiveJob(JobNameDto jobName, Authentication authentication) {
+        innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, STOP_ARCHIVE_JOB, jobName, Void.TYPE);
+    }
+
 
 
 }

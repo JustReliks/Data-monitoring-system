@@ -10,7 +10,7 @@ public enum PermissionTypeEnum {
     MONITORING_VIEW_TASK,
     CREATOR,
     TOPIC_CREATE,
-    ANY
+    ARCHIVE_MANAGE_TASK, ANY
 
 
 }

@@ -5,6 +5,5 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 @EnableAutoConfiguration
 @AutoConfiguration
-
 public class CommonEntitiesAutoConfiguration {
 }

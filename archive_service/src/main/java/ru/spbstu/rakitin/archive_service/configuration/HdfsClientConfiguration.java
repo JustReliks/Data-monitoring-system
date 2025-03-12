@@ -15,7 +15,6 @@ public class HdfsClientConfiguration {
     @Bean
     public org.apache.hadoop.conf.Configuration hadoopConf() {
         org.apache.hadoop.conf.Configuration conf = new org.apache.hadoop.conf.Configuration();
-
         return conf;
     }
 

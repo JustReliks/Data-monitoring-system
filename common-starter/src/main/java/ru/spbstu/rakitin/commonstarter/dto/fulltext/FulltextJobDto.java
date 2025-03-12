@@ -10,7 +10,7 @@ import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FulltextJobDto extends JobDto {
+public class FulltextJobDto extends JobDto<TaskSchemaDto> {
 
     private String collectionName;
     @Builder

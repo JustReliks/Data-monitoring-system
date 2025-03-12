@@ -1,7 +1,5 @@
 package ru.spbstu.rakitin.commonstarter.service.impl;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.dto.FieldType;
 import ru.spbstu.rakitin.commonstarter.dto.SchemaFieldDto;
 import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
@@ -15,12 +13,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-@Service
-@ConditionalOnMissingBean(SchemaValidationService.class)
 public class SchemaValidationServiceImpl<T extends TaskSchemaDto> implements SchemaValidationService<T> {
 
     private static final Pattern VALUE_PATTERN = Pattern.compile("\\$\\{(\\S*)}");
     private static final Pattern EXPRESSION_PATTERN = Pattern.compile("(.*)(>|<|=|reg)(.*)");
+
+    public SchemaValidationServiceImpl() {
+        System.out.println("Schema Validation Service");
+    }
 
 
     @Override

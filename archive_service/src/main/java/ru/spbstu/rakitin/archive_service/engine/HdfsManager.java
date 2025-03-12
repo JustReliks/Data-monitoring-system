@@ -1,15 +1,18 @@
 package ru.spbstu.rakitin.archive_service.engine;
 
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.RemoteIterator;
 import org.springframework.stereotype.Service;
+import ru.spbstu.rakitin.archive_service.configuration.HdfsProperties;
+import ru.spbstu.rakitin.archive_service.dto.FileInformationDto;
 import ru.spbstu.rakitin.archive_service.model.ArchiveTaskConfig;
 import ru.spbstu.rakitin.commonstarter.sequence.engine.SequentialEngine;
 import ru.spbstu.rakitin.commonstarter.sequence.engine.SequentialTask;
 
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 public class HdfsManager {
@@ -17,16 +20,18 @@ public class HdfsManager {
     public static final String PROJECT_FOLDER_CREATED = "PROJECT_FOLDER_CREATED";
     private final FileSystem fileSystem;
     private final SequentialEngine sequentialEngine;
+    private final HdfsProperties hdfsProperties;
 
-    public HdfsManager(FileSystem fileSystem, SequentialEngine sequentialEngine) {
+    public HdfsManager(FileSystem fileSystem, SequentialEngine sequentialEngine, HdfsProperties hdfsProperties) {
         this.fileSystem = fileSystem;
         this.sequentialEngine = sequentialEngine;
+        this.hdfsProperties = hdfsProperties;
     }
 
     public void initiateTask(ArchiveTaskConfig config) throws Exception {
         Queue<SequentialTask> tasks = new LinkedList<>();
-        String taskFolder = String.format("/archive/%s/%s", config.getProject().getProjectName(), config.getName());
-        String projectFolder = String.format("/archive/%s", config.getProject().getProjectName());
+        String taskFolder = String.format("/%s/%s/%s", hdfsProperties.getBasePath(), config.getProject().getProjectName(), config.getName());
+        String projectFolder = String.format("/%s/%s", hdfsProperties.getBasePath(), config.getProject().getProjectName());
 
         //Step 1: create project folder if not exists
         tasks.add(new SequentialTask() {
@@ -65,6 +70,19 @@ public class HdfsManager {
         synchronized (sequentialEngine) {
             sequentialEngine.performSequential(tasks);
         }
+    }
+
+    public List<FileInformationDto> getAllFilesInDirectory(String path) throws IOException {
+        RemoteIterator<LocatedFileStatus> locatedFileStatusRemoteIterator = fileSystem.listFiles(new Path(hdfsProperties.getBasePath() + "/" + path), true);
+        List<FileInformationDto> result = new ArrayList<>();
+        while (locatedFileStatusRemoteIterator.hasNext()) {
+            LocatedFileStatus next = locatedFileStatusRemoteIterator.next();
+
+            result.add(FileInformationDto.builder()
+                    .filename(next.getPath().getName())
+                    .size(next.getLen()).build());
+        }
+        return result;
     }
 
 

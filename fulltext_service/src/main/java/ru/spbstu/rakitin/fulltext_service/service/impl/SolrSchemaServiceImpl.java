@@ -5,19 +5,19 @@ import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.dto.FieldType;
 import ru.spbstu.rakitin.fulltext_service.engine.schema.SolrSchema;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskSchema;
-import ru.spbstu.rakitin.fulltext_service.service.SchemaService;
+import ru.spbstu.rakitin.fulltext_service.service.SolrSchemaService;
 
 import java.io.*;
 import java.util.*;
 
 @Service
-public class SchemaServiceImpl implements SchemaService {
+public class SolrSchemaServiceImpl implements SolrSchemaService {
 
     private static final String PATH_TO_DEFAULT_SCHEMA = "solr/config/managed-schema.xml";
 
     private final File defaultSchema;
 
-    public SchemaServiceImpl() {
+    public SolrSchemaServiceImpl() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         File file = new File("managed-schema.xml");
         try (InputStream resourceAsStream = classLoader.getResourceAsStream(PATH_TO_DEFAULT_SCHEMA);

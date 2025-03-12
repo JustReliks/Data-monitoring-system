@@ -4,12 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import ru.spbstu.rakitin.archive_service.model.ArchiveTaskConfig;
+import ru.spbstu.rakitin.archive_service.model.ArchiveTaskInstance;
 import ru.spbstu.rakitin.archive_service.model.ArchiveTaskSchema;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.datamanagement.DataManagementManager;
 import ru.spbstu.rakitin.commonstarter.dto.FieldType;
-import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
 import ru.spbstu.rakitin.commonstarter.dto.TimestampFieldDto;
+import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveJobDto;
 import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveTaskSchemaDto;
 
 import java.util.Optional;
@@ -27,6 +28,7 @@ public class ArchiveTaskConfigMapper {
                 .project(adminManager.findProjectById(archiveTaskConfigDto.getProjectId()))
                 .topic(dataManagementManager.findTopicById(archiveTaskConfigDto.getTopicId(), authentication))
                 .name(archiveTaskConfigDto.getName())
+                .overwritingEnabled(archiveTaskConfigDto.isOverwritingEnabled())
                 .schema(mapDtoToArchiveTaskSchema(archiveTaskConfigDto.getSchema())).build();
     }
 
@@ -45,6 +47,21 @@ public class ArchiveTaskConfigMapper {
                 .filterExpression(archiveTaskSchema.getFilter())
                 .timestampField(archiveTaskSchema.getTimestampField())
                 .filenameFieldName(archiveTaskSchema.getFilenameFieldName()).build();
+    }
+
+    public ArchiveJobDto mapArchiveTaskToArchiveJobDto(final ArchiveTaskInstance archiveTaskInstance) {
+        return ArchiveJobDto.builder()
+                .instanceId(archiveTaskInstance.getId())
+                .archiveTaskName(archiveTaskInstance.getConfig().getName())
+                .topicId(archiveTaskInstance.getConfig().getTopic().getId())
+                .projectId(archiveTaskInstance.getConfig().getProject().getId())
+                .accessOverwriting(archiveTaskInstance.getConfig().isOverwritingEnabled())
+                .jobFolderName(getJobFolderName(archiveTaskInstance))
+                .schema(mapArchiveTaskSchemaToArchiveTaskSchemaDto(archiveTaskInstance.getConfig().getSchema())).build();
+    }
+
+    public static String getJobFolderName(ArchiveTaskInstance archiveTaskInstance) {
+        return archiveTaskInstance.getConfig().getProject().getProjectName() + "/" + archiveTaskInstance.getConfig().getName();
     }
 
 

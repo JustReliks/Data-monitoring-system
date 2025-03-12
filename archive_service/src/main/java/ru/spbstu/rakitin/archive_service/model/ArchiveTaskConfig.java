@@ -39,4 +39,8 @@ public class ArchiveTaskConfig {
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
 
+    @Column(name = "overwriting_enabled", nullable = false)
+    private boolean overwritingEnabled;
+
+
 }
