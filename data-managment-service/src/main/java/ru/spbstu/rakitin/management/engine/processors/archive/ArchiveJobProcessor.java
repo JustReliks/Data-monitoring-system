@@ -1,8 +1,9 @@
 package ru.spbstu.rakitin.management.engine.processors.archive;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveJobDto;
@@ -10,10 +11,9 @@ import ru.spbstu.rakitin.commonstarter.utils.MapJson;
 import ru.spbstu.rakitin.management.engine.hdfs.HdfsConfigurationProperties;
 import ru.spbstu.rakitin.management.engine.processors.AbstractQueueProcessor;
 
-import java.io.File;
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Files;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -26,6 +26,7 @@ public class ArchiveJobProcessor extends AbstractQueueProcessor<ArchiveJobDto> {
     private final String taskName;
     private final ArchiveJobDto archiveJobDto;
     private final HdfsConfigurationProperties hdfsConfigurationProperties;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final LinkedBlockingQueue<MapJson> queue = new LinkedBlockingQueue<>(100);
 
@@ -48,28 +49,24 @@ public class ArchiveJobProcessor extends AbstractQueueProcessor<ArchiveJobDto> {
         collection.forEach(mapJson -> {
             try {
                 String filename = getFilename(mapJson);
-                Path dirName = getDirName(mapJson);
+                Path dirName = getDirName();
                 if (fileSystem.exists(dirName)) {
                     if (archiveJobDto.isAccessOverwriting()) {
-                        log.info("Overwriting archive file at {}", dirName);
+                        log.info("Overwriting archive file {} at {}", filename, dirName);
                     } else {
-                        log.info("Archive file at {} already exists. Overwriting is disabled. Skip it.", dirName);
+                        log.info("Archive file {} at {} already exists. Overwriting is disabled. Skip it.", filename, dirName);
                         return;
                     }
                 }
 
-                File file = Files.createTempFile(archiveJobDto.getTaskName() + "_" + filename + "_" + RandomStringUtils.random(5), ".tmp").toFile();
-                try (PrintWriter writer = new PrintWriter(file)) {
-                    writer.write(mapJson.toString());
-                    fileSystem.copyFromLocalFile(true, archiveJobDto.isAccessOverwriting(),
-                            new Path(file.toURI()),
-                            dirName);
-
-                    log.info("Archive file {} successfully saved to path {}.", filename, dirName);
-                } finally {
-                    file.delete();
+                try (FSDataOutputStream outputStream = fileSystem.create(new Path(dirName, filename));
+                     BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+                ) {
+                    bufferedWriter.write(objectMapper.writeValueAsString(mapJson));
                 }
 
+
+                log.info("Archive file {} successfully saved to path {}.", filename, dirName);
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
                 throw new RuntimeException(e);
@@ -77,15 +74,14 @@ public class ArchiveJobProcessor extends AbstractQueueProcessor<ArchiveJobDto> {
         });
     }
 
-    private Path getDirName(MapJson mapJson) {
+    private Path getDirName() {
         String folderName = archiveJobDto.getJobFolderName();
-        String filename = getFilename(mapJson);
         String basePath = hdfsConfigurationProperties.getBasePath();
 
-        return new Path(basePath + "/" + folderName + "/" + filename);
+        return new Path(basePath + "/" + folderName + "/");
     }
 
     private String getFilename(MapJson mapJson) {
-        return mapJson.get(archiveJobDto.getSchema().getFilenameFieldName()).toString();
+        return mapJson.get(archiveJobDto.getSchema().getFilenameFieldName()).toString() + ".json";
     }
 }

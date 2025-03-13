@@ -15,7 +15,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Getter
 public abstract class AbstractQueueProcessor<T extends JobDto<?>> implements Processor<String, MapJson, String, String> {
 
-    public static final int EXECUTE_PERIOD_SEC = 15;
+    public static final int EXECUTE_PERIOD_SEC = 3;
 
     private final T jobDto;
     private final String taskName;

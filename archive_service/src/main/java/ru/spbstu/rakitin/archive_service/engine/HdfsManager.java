@@ -1,23 +1,29 @@
 package ru.spbstu.rakitin.archive_service.engine;
 
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.LocatedFileStatus;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.fs.RemoteIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.hadoop.fs.*;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.archive_service.configuration.HdfsProperties;
+import ru.spbstu.rakitin.archive_service.dto.FileDto;
 import ru.spbstu.rakitin.archive_service.dto.FileInformationDto;
+import ru.spbstu.rakitin.archive_service.exception.FileNotFoundInArchiveException;
 import ru.spbstu.rakitin.archive_service.model.ArchiveTaskConfig;
 import ru.spbstu.rakitin.commonstarter.sequence.engine.SequentialEngine;
 import ru.spbstu.rakitin.commonstarter.sequence.engine.SequentialTask;
+import ru.spbstu.rakitin.commonstarter.utils.MapJson;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 @Service
 public class HdfsManager {
 
     public static final String PROJECT_FOLDER_CREATED = "PROJECT_FOLDER_CREATED";
+
+    private final ObjectMapper mapper = new ObjectMapper();
+
     private final FileSystem fileSystem;
     private final SequentialEngine sequentialEngine;
     private final HdfsProperties hdfsProperties;
@@ -79,10 +85,29 @@ public class HdfsManager {
             LocatedFileStatus next = locatedFileStatusRemoteIterator.next();
 
             result.add(FileInformationDto.builder()
-                    .filename(next.getPath().getName())
+                    .filename(next.getPath().getName().replace(".json", ""))
                     .size(next.getLen()).build());
         }
         return result;
+    }
+
+    public FileDto getFile(String path) throws IOException, FileNotFoundInArchiveException {
+        Path hdfsPath = new Path(hdfsProperties.getBasePath() + "/" + path);
+        if (!fileSystem.exists(hdfsPath)) {
+            throw new FileNotFoundInArchiveException("File not found: " + path);
+        }
+        RemoteIterator<LocatedFileStatus> locatedFileStatusRemoteIterator = fileSystem.listFiles(hdfsPath, false);
+        LocatedFileStatus locatedFileStatus = locatedFileStatusRemoteIterator.next();
+        String name = locatedFileStatus.getPath().getName();
+        try (FSDataInputStream in = fileSystem.open(hdfsPath)) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            MapJson mapJson = mapper.readValue(reader, MapJson.class);
+            return FileDto.builder()
+                    .fileData(mapJson)
+                    .filename(name.replace(".json", ""))
+                    .size(locatedFileStatus.getLen()).build();
+        }
+
     }
 
 
