@@ -1,6 +1,7 @@
 package ru.spbstu.rakitin.management.service.impl;
 
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveJobDto;
 import ru.spbstu.rakitin.commonstarter.utils.MapJson;
 import ru.spbstu.rakitin.management.engine.hdfs.HdfsConfigurationProperties;
 import ru.spbstu.rakitin.management.engine.processors.archive.ArchiveJobProcessor;
+import ru.spbstu.rakitin.management.engine.processors.archive.ValidateFilenameFilter;
 import ru.spbstu.rakitin.management.service.KafkaService;
 
 import java.util.List;
@@ -44,4 +46,11 @@ public class ArchiveJobService extends AbstractJobService<ArchiveJobDto> {
         return new ArchiveJobProcessor(fileSystem, taskName, job, hdfsConfigurationProperties);
     }
 
+    @Override
+    protected KStream<String, MapJson> decorateStream(ArchiveJobDto job, String taskName, KStream<String, MapJson> stream) {
+        stream = super.decorateStream(job, taskName, stream)
+                .filter(new ValidateFilenameFilter(job));
+
+        return stream;
+    }
 }

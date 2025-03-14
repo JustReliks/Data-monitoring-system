@@ -3,6 +3,7 @@ package ru.spbstu.rakitin.management.engine.processors.archive;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -49,8 +50,8 @@ public class ArchiveJobProcessor extends AbstractQueueProcessor<ArchiveJobDto> {
         collection.forEach(mapJson -> {
             try {
                 String filename = getFilename(mapJson);
-                Path dirName = getDirName();
-                if (fileSystem.exists(dirName)) {
+                String dirName = getDirName();
+                if (fileSystem.exists(new Path(dirName + filename))) {
                     if (archiveJobDto.isAccessOverwriting()) {
                         log.info("Overwriting archive file {} at {}", filename, dirName);
                     } else {
@@ -74,14 +75,18 @@ public class ArchiveJobProcessor extends AbstractQueueProcessor<ArchiveJobDto> {
         });
     }
 
-    private Path getDirName() {
+    private String getDirName() {
         String folderName = archiveJobDto.getJobFolderName();
         String basePath = hdfsConfigurationProperties.getBasePath();
 
-        return new Path(basePath + "/" + folderName + "/");
+        return basePath + "/" + folderName + "/";
     }
 
     private String getFilename(MapJson mapJson) {
-        return mapJson.get(archiveJobDto.getSchema().getFilenameFieldName()).toString() + ".json";
+        String filename = mapJson.get(archiveJobDto.getSchema().getFilenameFieldName()).toString();
+        if (FilenameUtils.getExtension(filename).isEmpty()) {
+            filename += ".json";
+        }
+        return filename;
     }
 }
