@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AmplicodeJpaPluginProjectSettings">
+    <option name="lastSelectedLanguage" value="Java" />
+  </component>
+  <component name="AmplicodePersistenceUnitSettings">
+    <persistence-units>
+      <persistence-unit moduleName="administration_service" name="Default">
+        <packages>
+          <package value="ru.spbstu.rakitin.administration" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit moduleName="common-starter" name="Default">
+        <packages>
+          <package value="ru.spbstu.rakitin.commonstarter.admin" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit moduleName="common-entites" name="Default" />
+      <persistence-unit moduleName="archive_service" name="Default">
+        <packages>
+          <package value="ru.spbstu.rakitin.archive_service" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit moduleName="data-managment-service" name="Default">
+        <packages>
+          <package value="ru.spbstu.rakitin.management" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit moduleName="fulltext_service" name="Default">
+        <packages>
+          <package value="ru.spbstu.rakitin.fulltext_service" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit moduleName="user_api_service" name="Default">
+        <packages>
+          <package value="ru.spbstu.rakitin.user_api_service" />
+        </packages>
+      </persistence-unit>
+    </persistence-units>
+  </component>
+</project>
