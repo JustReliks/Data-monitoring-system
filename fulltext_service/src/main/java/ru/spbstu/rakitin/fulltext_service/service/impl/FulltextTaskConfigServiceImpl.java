@@ -25,7 +25,7 @@ public class FulltextTaskConfigServiceImpl implements FulltextTaskConfigService 
     private final FulltextTaskConfigMapper fulltextTaskConfigMapper;
 
     @Override
-    public void createConfig(FulltextTaskConfig config, Authentication authentication) throws ConfigAlreadyExists, QuotaExceededException, ForbiddenRequestException, UnavailableTopicException, InvalidSchemaException {
+    public long createConfig(FulltextTaskConfig config, Authentication authentication) throws ConfigAlreadyExists, QuotaExceededException, ForbiddenRequestException, UnavailableTopicException, InvalidSchemaException {
         if (fulltextTaskConfigRepository.existsByNameAndProjectId(config.getName(), config.getProject().getId())) {
             throw new ConfigAlreadyExists(String.format("Config with name %s already exists in project %s", config.getName(), config.getProject().getProjectName()));
         }
@@ -40,7 +40,7 @@ public class FulltextTaskConfigServiceImpl implements FulltextTaskConfigService 
         } catch (InvalidSchemaException invalidSchemaException) {
             throw new InvalidSchemaException(String.format("Unable to create config for fulltext task %s because schema is invalid!", config.getName()), invalidSchemaException);
         }
-        fulltextTaskConfigRepository.save(config);
+        return fulltextTaskConfigRepository.save(config).getId();
 
     }
 

@@ -8,13 +8,16 @@ import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.datamanagement.DataManagementManager;
 import ru.spbstu.rakitin.commonstarter.dto.JobNameDto;
+import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
 import ru.spbstu.rakitin.commonstarter.exception.InstanceInitiationFailedException;
 import ru.spbstu.rakitin.fulltext_service.dto.FulltextTaskConfigMapper;
 import ru.spbstu.rakitin.fulltext_service.engine.SolrClientManager;
-import ru.spbstu.rakitin.fulltext_service.exception.*;
+import ru.spbstu.rakitin.fulltext_service.exception.FulltextConfigNotFoundException;
+import ru.spbstu.rakitin.fulltext_service.exception.FulltextStatusWontChangedException;
+import ru.spbstu.rakitin.fulltext_service.exception.FulltextTaskInstanceAlreadyRunningException;
+import ru.spbstu.rakitin.fulltext_service.exception.FulltextTaskInstanceNotFoundException;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskConfig;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskInstance;
-import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
 import ru.spbstu.rakitin.fulltext_service.repository.FulltextTaskInstanceRepository;
 import ru.spbstu.rakitin.fulltext_service.service.FulltextTaskConfigService;
 import ru.spbstu.rakitin.fulltext_service.service.FulltextTaskInstanceService;
@@ -51,7 +54,7 @@ public class FulltextTaskInstanceServiceImpl implements FulltextTaskInstanceServ
     }
 
     @Override
-    public void resume(long configId, Authentication authentication)
+    public long resume(long configId, Authentication authentication)
             throws FulltextConfigNotFoundException,
             FulltextTaskInstanceAlreadyRunningException,
             InstanceInitiationFailedException {
@@ -89,7 +92,7 @@ public class FulltextTaskInstanceServiceImpl implements FulltextTaskInstanceServ
         try {
             dataManagementManager.startFulltextJob(fulltextTaskConfigMapper.mapFulltextTaskConfigToJobDto(taskInstance), authentication);
             taskInstance.setTaskStatus(TaskStatus.RUNNING);
-            fulltextTaskInstanceRepository.save(taskInstance);
+            return fulltextTaskInstanceRepository.save(taskInstance).getId();
         } catch (Exception e) {
             taskInstance.setTaskStatus(TaskStatus.FAILED);
             fulltextTaskInstanceRepository.save(taskInstance);

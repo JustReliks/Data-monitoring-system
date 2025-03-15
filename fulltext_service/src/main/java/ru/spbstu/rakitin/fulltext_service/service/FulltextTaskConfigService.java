@@ -10,7 +10,7 @@ import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskConfig;
 
 public interface FulltextTaskConfigService {
 
-    void createConfig(FulltextTaskConfig config, Authentication authentication) throws ConfigAlreadyExists, QuotaExceededException, UnavailableTopicException, InvalidSchemaException;
+    long createConfig(FulltextTaskConfig config, Authentication authentication) throws ConfigAlreadyExists, QuotaExceededException, UnavailableTopicException, InvalidSchemaException;
 
     FulltextTaskConfig findById(long id) throws FulltextConfigNotFoundException;
 

@@ -1,0 +1,28 @@
+package ru.spbstu.rakitin.monitoring_service.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
+
+@Entity
+@Table(schema = "dms", name = "t_monitoring_task_instance")
+@Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class MonitoringTaskInstance {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "config_id")
+    private MonitoringTaskConfig config;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private TaskStatus taskStatus;
+
+}

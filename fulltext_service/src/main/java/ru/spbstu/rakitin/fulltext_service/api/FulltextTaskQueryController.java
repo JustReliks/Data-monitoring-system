@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
 import ru.spbstu.rakitin.commonstarter.utils.MapJson;
 import ru.spbstu.rakitin.fulltext_service.dto.SolrQueryDto;
 import ru.spbstu.rakitin.fulltext_service.exception.FulltextConfigNotFoundException;
@@ -22,6 +23,7 @@ public class FulltextTaskQueryController {
     private final FulltextTaskService fulltextTaskService;
 
     @PostMapping("/{taskId}")
+    @LogController
     public List<MapJson> query(@RequestBody SolrQueryDto solrQuery, @PathVariable long taskId, Authentication authentication) throws FulltextConfigNotFoundException, FulltextTaskInstanceNotFoundException, SolrServerException, IOException, FulltextTaskInstanceNotRunningException {
         return fulltextTaskService.query(solrQuery, taskId, authentication);
 

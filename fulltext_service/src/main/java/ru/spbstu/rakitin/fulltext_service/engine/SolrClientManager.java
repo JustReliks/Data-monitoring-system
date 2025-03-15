@@ -45,7 +45,7 @@ public class SolrClientManager {
     }
 
     public List<MapJson> query(FulltextTaskConfig fulltextTaskConfig, SolrQueryDto solrQueryDto) throws SolrServerException, IOException {
-        QueryRequest request = new QueryRequest(getSorlQueryFromDto(solrQueryDto));
+        QueryRequest request = new QueryRequest(getSolrQueryFromDto(solrQueryDto));
         QueryResponse response = this.sendRequest(request, SolrUtils.buildReadCollectionName(fulltextTaskConfig.getProject().getProjectName(), fulltextTaskConfig.getName()));
         return response.getResults().stream().map(entries -> {
             MapJson mapJson = new MapJson();
@@ -54,7 +54,7 @@ public class SolrClientManager {
         }).toList();
     }
 
-    private static SolrQuery getSorlQueryFromDto(SolrQueryDto solrQueryDto) {
+    private static SolrQuery getSolrQueryFromDto(SolrQueryDto solrQueryDto) {
         SolrQuery query = new SolrQuery(solrQueryDto.getQuery());
         if (solrQueryDto.getSort() != null) {
             solrQueryDto.getSort().forEach(solrSort -> query.setSort(solrSort.getField(), solrSort.getOrder()));

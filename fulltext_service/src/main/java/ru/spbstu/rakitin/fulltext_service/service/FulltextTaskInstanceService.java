@@ -12,7 +12,7 @@ public interface FulltextTaskInstanceService {
 
     void suspendTask(long taskId, Authentication authentication) throws FulltextTaskInstanceNotFoundException, FulltextStatusWontChangedException;
 
-    void resume(long configId, Authentication authentication) throws FulltextConfigNotFoundException, IllegalAccessException, FulltextTaskInstanceAlreadyRunningException, InstanceInitiationFailedException;
+    long resume(long configId, Authentication authentication) throws FulltextConfigNotFoundException, IllegalAccessException, FulltextTaskInstanceAlreadyRunningException, InstanceInitiationFailedException;
 
     void forceChangeFulltextInstanceStatus(long instanceId, TaskStatus taskStatus) throws FulltextTaskInstanceNotFoundException, FulltextStatusWontChangedException;
 
