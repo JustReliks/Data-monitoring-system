@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 class MonitoringServiceApplicationTests {
 
     public static final String URL = "http://localhost:8886";
+    public static final char[] CHAR_ARRAY = "dF3vpj-U1e-jz728GN70HiZgJAD3JYpi9PF1McbSGQzC5zlVpnyMVSHBJcqtxGkp1skjJGCAcINMjfbgv6lbTw==".toCharArray();
     private static char[] token = "MyInitialAdminToken0==".toCharArray();
     private static String org = "my-org";
     private static String bucket = "my-bucket";
@@ -28,7 +29,7 @@ class MonitoringServiceApplicationTests {
 
     @Test
     public void testInfluxDB() {
-        try (InfluxDBClient influxDBClient = InfluxDBClientFactory.create(URL, "dF3vpj-U1e-jz728GN70HiZgJAD3JYpi9PF1McbSGQzC5zlVpnyMVSHBJcqtxGkp1skjJGCAcINMjfbgv6lbTw==".toCharArray());
+        try (InfluxDBClient influxDBClient = InfluxDBClientFactory.create(URL, token);
         ) {
             WriteApiBlocking writeApi = influxDBClient.getWriteApiBlocking();
             List<String> locations = Stream.of("north", "west", "south", "east").toList();

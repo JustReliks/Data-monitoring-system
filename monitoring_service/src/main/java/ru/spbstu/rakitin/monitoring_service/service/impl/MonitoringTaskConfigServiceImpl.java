@@ -32,7 +32,7 @@ public class MonitoringTaskConfigServiceImpl implements MonitoringTaskConfigServ
             throw new ConfigAlreadyExists(String.format("Config with name %s already exists in project %s", config.getName(), config.getProject().getProjectName()));
         }
         if (config.getProject().getMonitoringQuota() <= monitoringTaskConfigRepository.countByProjectId(config.getProject().getId())) {
-            throw new QuotaExceededException("Fulltext quota exceeded for project " + config.getProject().getProjectName());
+            throw new QuotaExceededException("Monitoring quota exceeded for project " + config.getProject().getProjectName());
         }
         if (!config.getTopic().getProject().getId().equals(config.getProject().getId())) {
             throw new UnavailableTopicException("The topic for the task must be from the same project as the task itself.");

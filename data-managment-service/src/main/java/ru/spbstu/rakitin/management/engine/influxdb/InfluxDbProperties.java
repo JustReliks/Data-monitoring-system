@@ -1,4 +1,4 @@
-package ru.spbstu.rakitin.monitoring_service.configuration;
+package ru.spbstu.rakitin.management.engine.influxdb;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

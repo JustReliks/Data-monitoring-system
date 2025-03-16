@@ -14,7 +14,7 @@ public class InfluxDbClientConfiguration {
 
     @Bean
     public InfluxDBClient influxDbClient() {
-        return InfluxDBClientFactory.create(influxDbProperties.getUrl(), influxDbProperties.getAdminToken().toCharArray());
+        return InfluxDBClientFactory.create(influxDbProperties.getUrl(), influxDbProperties.getUsername(), influxDbProperties.getPassword().toCharArray());
     }
 
 }

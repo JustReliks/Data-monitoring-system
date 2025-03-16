@@ -9,6 +9,7 @@ import ru.spbstu.rakitin.commonstarter.discovery.ServiceName;
 import ru.spbstu.rakitin.commonstarter.dto.JobNameDto;
 import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveJobDto;
 import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextJobDto;
+import ru.spbstu.rakitin.commonstarter.dto.monitoring.MonitoringJobDto;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,8 @@ public class DataManagementManager {
     private static final String STOP_FULLTEXT_JOB = "/api/v1/job/fulltext/stop";
     private static final String STOP_ARCHIVE_JOB = "/api/v1/job/archive/stop";
     private static final String START_ARCHIVE_JOB = "/api/v1/job/archive/start";
+    private static final String STOP_MONITORING_JOB = "/api/v1/job/monitoring/stop";
+    private static final String START_MONITORING_JOB = "/api/v1/job/monitoring/start";
 
     private final InnerServiceRequestFactory innerServiceRequestFactory;
 
@@ -42,6 +45,13 @@ public class DataManagementManager {
         innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, STOP_ARCHIVE_JOB, jobName, Void.TYPE);
     }
 
+    public void startMonitoringJob(MonitoringJobDto monitoringJobDto, Authentication authentication) {
+        innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, START_MONITORING_JOB, monitoringJobDto, Void.TYPE);
+    }
+
+    public void stopMonitoringJob(JobNameDto jobName, Authentication authentication) {
+        innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, STOP_MONITORING_JOB, jobName, Void.TYPE);
+    }
 
 
 }

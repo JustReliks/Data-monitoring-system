@@ -53,4 +53,9 @@ public class ArchiveJobService extends AbstractJobService<ArchiveJobDto> {
 
         return stream;
     }
+
+    @Override
+    protected String getServiceName() {
+        return "archive";
+    }
 }

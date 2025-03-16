@@ -9,8 +9,8 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveJobDto;
 import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.management.engine.AbstractJsonQueueProcessor;
 import ru.spbstu.rakitin.management.engine.hdfs.HdfsConfigurationProperties;
-import ru.spbstu.rakitin.management.engine.processors.AbstractQueueProcessor;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 @Slf4j
 @Getter
-public class ArchiveJobProcessor extends AbstractQueueProcessor<ArchiveJobDto> {
+public class ArchiveJobProcessor extends AbstractJsonQueueProcessor<ArchiveJobDto> {
 
     private final FileSystem fileSystem;
     private final String taskName;
@@ -73,6 +73,17 @@ public class ArchiveJobProcessor extends AbstractQueueProcessor<ArchiveJobDto> {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        try {
+            fileSystem.close();
+        } catch (IOException e) {
+            log.error("Unable to close hdfs file system", e);
+            throw new RuntimeException(e);
+        }
     }
 
     private String getDirName() {

@@ -42,7 +42,7 @@ public class HdfsManager {
         //Step 1: create project folder if not exists
         tasks.add(new SequentialTask() {
             @Override
-            public void perform(Map<String, String> context) throws Exception {
+            public void perform(Map<String, Object> context) throws Exception {
                 if (!fileSystem.exists(new Path(projectFolder))) {
                     fileSystem.mkdirs(new Path(projectFolder));
                     context.put(PROJECT_FOLDER_CREATED, Boolean.TRUE.toString());
@@ -52,8 +52,8 @@ public class HdfsManager {
             }
 
             @Override
-            public void rollback(Map<String, String> context) throws Exception {
-                if (Boolean.getBoolean(context.get(PROJECT_FOLDER_CREATED))) {
+            public void rollback(Map<String, Object> context) throws Exception {
+                if (Boolean.getBoolean(context.get(PROJECT_FOLDER_CREATED).toString())) {
                     fileSystem.delete(new Path(projectFolder), true);
                 }
             }
@@ -63,12 +63,12 @@ public class HdfsManager {
         //Step 2: create task folder
         tasks.add(new SequentialTask() {
             @Override
-            public void perform(Map<String, String> context) throws Exception {
+            public void perform(Map<String, Object> context) throws Exception {
                 fileSystem.mkdirs(new Path(taskFolder));
             }
 
             @Override
-            public void rollback(Map<String, String> context) throws Exception {
+            public void rollback(Map<String, Object> context) throws Exception {
                 fileSystem.delete(new Path(taskFolder), true);
             }
         });

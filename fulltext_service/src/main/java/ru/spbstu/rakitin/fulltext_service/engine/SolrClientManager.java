@@ -73,7 +73,7 @@ public class SolrClientManager {
         Queue<SequentialTask> tasks = new LinkedList<>();
         tasks.add(new SequentialTask() {
             @Override
-            public void perform(Map<String, String> context) throws SolrServerException, IOException {
+            public void perform(Map<String, Object> context) throws SolrServerException, IOException {
                 ConfigSetAdminRequest.Create create = new ConfigSetAdminRequest.Create();
                 create.setBaseConfigSetName(DEFAULT_SCHEMA);
                 create.setConfigSetName(basePath);
@@ -85,7 +85,7 @@ public class SolrClientManager {
             }
 
             @Override
-            public void rollback(Map<String, String> context) throws SolrServerException, IOException {
+            public void rollback(Map<String, Object> context) throws SolrServerException, IOException {
                 ConfigSetAdminRequest.Delete delete = new ConfigSetAdminRequest.Delete();
                 delete.setConfigSetName(basePath);
                 sendRequest(delete);
@@ -95,7 +95,7 @@ public class SolrClientManager {
 
         tasks.add(new SequentialTask() {
             @Override
-            public void perform(Map<String, String> context) throws SolrServerException, IOException {
+            public void perform(Map<String, Object> context) throws SolrServerException, IOException {
                 ConfigSetAdminRequest.Upload uploadConfigSet = new ConfigSetAdminRequest.Upload();
                 uploadConfigSet.setFilePath("managed-schema.xml");
                 uploadConfigSet.setOverwrite(true);
@@ -105,7 +105,7 @@ public class SolrClientManager {
             }
 
             @Override
-            public void rollback(Map<String, String> context) {
+            public void rollback(Map<String, Object> context) {
                 // nothing to do
             }
         });
@@ -113,7 +113,7 @@ public class SolrClientManager {
 
         tasks.add(new SequentialTask() {
             @Override
-            public void perform(Map<String, String> context) throws SolrServerException, IOException {
+            public void perform(Map<String, Object> context) throws SolrServerException, IOException {
                 CollectionAdminRequest.Create collection = CollectionAdminRequest.createCollection(collectionName, basePath, fulltextTaskConfig.getShardsCount(), fulltextTaskConfig.getReplicationFactor());
 
                 sendRequest(collection);
@@ -121,7 +121,7 @@ public class SolrClientManager {
             }
 
             @Override
-            public void rollback(Map<String, String> context) throws SolrServerException, IOException {
+            public void rollback(Map<String, Object> context) throws SolrServerException, IOException {
                 CollectionAdminRequest.Delete deleteCollection = CollectionAdminRequest.deleteCollection(collectionName);
                 sendRequest(deleteCollection);
             }
@@ -129,7 +129,7 @@ public class SolrClientManager {
 
         tasks.add(new SequentialTask() {
             @Override
-            public void perform(Map<String, String> context) throws SolrServerException, IOException {
+            public void perform(Map<String, Object> context) throws SolrServerException, IOException {
                 for (Map<String, Object> fieldDesc : schema.getFieldsDescriptions()) {
                     SchemaRequest.AddField addField = new SchemaRequest.AddField(fieldDesc);
                     sendRequest(addField, collectionName);
@@ -137,14 +137,14 @@ public class SolrClientManager {
             }
 
             @Override
-            public void rollback(Map<String, String> context) {
+            public void rollback(Map<String, Object> context) {
                 // nothing to do
             }
         });
 
         tasks.add(new SequentialTask() {
             @Override
-            public void perform(Map<String, String> context) throws SolrServerException, IOException {
+            public void perform(Map<String, Object> context) throws SolrServerException, IOException {
                 String readAliasName = basePath + "_READ";
                 CollectionAdminRequest.CreateAlias createAlias = CollectionAdminRequest.createAlias(readAliasName, collectionName);
                 sendRequest(createAlias);
@@ -152,7 +152,7 @@ public class SolrClientManager {
             }
 
             @Override
-            public void rollback(Map<String, String> context) throws SolrServerException, IOException {
+            public void rollback(Map<String, Object> context) throws SolrServerException, IOException {
                 CollectionAdminRequest.DeleteAlias deleteAlias = CollectionAdminRequest.deleteAlias(basePath + "_READ");
                 sendRequest(deleteAlias);
             }
@@ -160,14 +160,14 @@ public class SolrClientManager {
 
         tasks.add(new SequentialTask() {
             @Override
-            public void perform(Map<String, String> context) throws SolrServerException, IOException {
+            public void perform(Map<String, Object> context) throws SolrServerException, IOException {
                 String readAliasName = basePath + "_WRITE";
                 CollectionAdminRequest.CreateAlias createAlias = CollectionAdminRequest.createAlias(readAliasName, collectionName);
                 sendRequest(createAlias);
             }
 
             @Override
-            public void rollback(Map<String, String> context) throws SolrServerException, IOException {
+            public void rollback(Map<String, Object> context) throws SolrServerException, IOException {
                 CollectionAdminRequest.DeleteAlias deleteAlias = CollectionAdminRequest.deleteAlias(basePath + "_WRITE");
                 sendRequest(deleteAlias);
             }

@@ -6,8 +6,10 @@ import org.apache.solr.client.solrj.request.UpdateRequest;
 import org.apache.solr.common.SolrInputDocument;
 import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextJobDto;
 import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.management.engine.AbstractJsonQueueProcessor;
 import ru.spbstu.rakitin.management.engine.processors.AbstractQueueProcessor;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,7 +17,7 @@ import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Slf4j
-public class FulltextJobProcessor extends AbstractQueueProcessor<FulltextJobDto> {
+public class FulltextJobProcessor extends AbstractJsonQueueProcessor<FulltextJobDto> {
 
     private final FulltextJobDto fulltextJobDto;
     private final CloudSolrClient cloudSolrClient;
@@ -56,4 +58,14 @@ public class FulltextJobProcessor extends AbstractQueueProcessor<FulltextJobDto>
         return solrInputDocument;
     }
 
+    @Override
+    public void close() {
+        super.close();
+        try {
+            cloudSolrClient.close();
+        } catch (IOException e) {
+            log.error("Unable to close cloud solr client", e);
+            throw new RuntimeException(e);
+        }
+    }
 }

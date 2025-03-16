@@ -26,6 +26,8 @@ public class MonitoringTaskConfigMapper {
                 .name(dto.getName())
                 .project(adminManager.findProjectById(dto.getProjectId()))
                 .topic(dataManagementManager.findTopicById(dto.getTopicId(), authentication))
+                .retentionTimeSeconds(dto.getRetentionTimeSeconds())
+                .shardGroupDurationSeconds(dto.getShardGroupDurationSeconds())
                 .schema(Optional.of(dto.getSchema()).map(this::mapDtoToMonitoringTaskSchema).orElseThrow(() -> new IllegalArgumentException("Schema must be defined"))).build();
     }
 
@@ -51,6 +53,7 @@ public class MonitoringTaskConfigMapper {
                 .taskName(config.getName())
                 .projectId(config.getProject().getId())
                 .topicId(config.getTopic().getId())
+                .organization(config.getProject().getProjectName())
                 .schema(mapMonitoringSchemaToSchemaDto(config.getSchema())).build();
     }
 

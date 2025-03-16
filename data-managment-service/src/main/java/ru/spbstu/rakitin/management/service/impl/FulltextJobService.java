@@ -61,6 +61,11 @@ public class FulltextJobService extends AbstractJobService<FulltextJobDto> {
     }
 
     @Override
+    protected String getServiceName() {
+        return "fulltext";
+    }
+
+    @Override
     public long getFetchTasksRetryTimeoutMillis() {
         return fulltextJobProperties.getFetchTasksTimeoutMs();
     }

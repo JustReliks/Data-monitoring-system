@@ -7,10 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
-import ru.spbstu.rakitin.commonstarter.exception.InstanceInitiationFailedException;
-import ru.spbstu.rakitin.fulltext_service.service.FulltextTaskInstanceService;
+import ru.spbstu.rakitin.monitoring_service.exception.MonitoringStatusWontChangedException;
 import ru.spbstu.rakitin.monitoring_service.exception.MonitoringTaskConfigNotFoundException;
-import ru.spbstu.rakitin.monitoring_service.exception.MonitoringTaskResumeException;
+import ru.spbstu.rakitin.monitoring_service.exception.MonitoringTaskInstanceNotFoundException;
 import ru.spbstu.rakitin.monitoring_service.service.MonitoringTaskInstanceService;
 
 @RestController
@@ -22,13 +21,13 @@ public class MonitoringTaskInstanceController {
 
     @PostMapping("/resume/{configId}")
     @LogController
-    public long resume(@PathVariable("configId") long configId, Authentication authentication) throws MonitoringTaskConfigNotFoundException, MonitoringTaskResumeException {
+    public long resume(@PathVariable("configId") long configId, Authentication authentication) throws Exception {
         return fulltextTaskInstanceService.resume(configId, authentication);
     }
 
     @PostMapping("/suspend/{configId}")
     @LogController
-    public void suspend(@PathVariable("configId") long configId, Authentication authentication)  {
+    public void suspend(@PathVariable("configId") long configId, Authentication authentication) throws MonitoringStatusWontChangedException, MonitoringTaskConfigNotFoundException, MonitoringTaskInstanceNotFoundException {
         fulltextTaskInstanceService.suspendTask(configId, authentication);
     }
 

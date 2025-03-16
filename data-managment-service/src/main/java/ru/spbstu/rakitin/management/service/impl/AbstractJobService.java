@@ -115,7 +115,7 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
         this.runningKafkaStreams = new HashMap<>();
         Thread thread = new Thread(new FetchFromService(this));
         thread.setDaemon(true);
-        thread.setName("task-fetcher");
+        thread.setName("task-fetcher-"+ getServiceName());
         thread.start();
 
     }
@@ -140,6 +140,8 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
         return stream;
     }
 
+    protected abstract String getServiceName();
+
     @RequiredArgsConstructor
     private final class FetchFromService implements Runnable {
 
@@ -151,12 +153,12 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
             List<T> runningJobs = null;
             while (!fetched) {
                 try {
-                    log.info("Try to fetch all running tasks from fulltext service...");
+                    log.info("Try to fetch all running tasks from {} service...", jobService.getServiceName());
                     runningJobs = jobService.fetchRunningTasks();
                     log.info("Tasks with id {} was fetched!", runningJobs.stream().map(JobDto::getInstanceId).toList());
                     fetched = true;
                 } catch (Throwable e) {
-                    log.error("Unable to fetch all running tasks from fulltext service. Waiting for {} millis", jobService.getFetchTasksRetryTimeoutMillis(), e);
+                    log.error("Unable to fetch all running tasks from {} service. Waiting for {} millis", jobService.getServiceName(), jobService.getFetchTasksRetryTimeoutMillis(), e);
                     try {
                         Thread.sleep(jobService.getFetchTasksRetryTimeoutMillis());
                     } catch (InterruptedException ex) {
@@ -170,7 +172,7 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
                 } catch (TaskAlreadyInContextException taskAlreadyInContextException) {
                     log.warn("Unable to start task with id {} cause it already started", jobDto.getInstanceId());
                 } catch (Exception e) {
-                    log.error("Error occurred for fulltext task {}. Changing status from RUNNING to FAILED...", jobDto.getInstanceId(), e);
+                    log.error("Error occurred for {} task {}. Changing status from RUNNING to FAILED...", jobService.getServiceName(), jobDto.getInstanceId(), e);
                     jobService.changeTaskStatus(jobDto.getInstanceId(), "FAILED");
                 }
             }

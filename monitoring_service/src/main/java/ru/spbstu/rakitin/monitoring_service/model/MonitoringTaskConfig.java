@@ -32,4 +32,10 @@ public class MonitoringTaskConfig {
     @Convert(converter = SchemaConverter.class)
     private MonitoringTaskSchema schema;
 
+    @Column(name = "retention_time_sec", nullable = false)
+    private int retentionTimeSeconds;
+
+    @Column(name = "shard_group_duration_sec", nullable = false)
+    private long shardGroupDurationSeconds;
+
 }

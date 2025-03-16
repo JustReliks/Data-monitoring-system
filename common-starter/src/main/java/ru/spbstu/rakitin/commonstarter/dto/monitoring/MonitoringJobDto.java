@@ -12,9 +12,12 @@ import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
 @NoArgsConstructor
 public class MonitoringJobDto extends JobDto<TaskSchemaDto> {
 
+    private String organization;
+
 
     @Builder
-    public MonitoringJobDto(long projectId, long instanceId, long topicId, String taskName, TaskSchemaDto schema) {
+    public MonitoringJobDto(long projectId, long instanceId, long topicId, String taskName, TaskSchemaDto schema, String organization) {
         super(projectId, instanceId, topicId, taskName, schema);
+        this.organization = organization;
     }
 }

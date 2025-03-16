@@ -14,7 +14,7 @@ public class SequentialEngine {
 
     public void performSequential(Queue<SequentialTask> sequentialTasks) throws Exception {
         Stack<SequentialTask> finishedTasks = new Stack<>();
-        Map<String, String> context = new HashMap<>();
+        Map<String, Object> context = new HashMap<>();
         while (!sequentialTasks.isEmpty()) {
             SequentialTask nextTask = sequentialTasks.poll();
             try {

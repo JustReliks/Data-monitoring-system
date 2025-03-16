@@ -10,5 +10,7 @@ public class MonitoringTaskConfigDto {
     private long projectId;
     private long topicId;
     private TaskSchemaDto schema;
+    private int retentionTimeSeconds;
+    private long shardGroupDurationSeconds;
 
 }

@@ -320,7 +320,7 @@ services:
       - data-infra
   influxdb2:
     container_name: influxdb
-    image: influxdb:2
+    image: influxdb:2.7.8
     ports:
       - 8886:8086
     environment:
