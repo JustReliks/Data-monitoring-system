@@ -1,56 +1,54 @@
 package ru.spbstu.rakitin.monitoring_service.engine;
 
-import com.influxdb.client.InfluxDBClient;
-import com.influxdb.client.OrganizationsApi;
-import com.influxdb.client.OrganizationsQuery;
-import com.influxdb.client.domain.Bucket;
-import com.influxdb.client.domain.BucketRetentionRules;
-import com.influxdb.client.domain.Organization;
+import com.influxdb.client.*;
+import com.influxdb.client.domain.*;
 import com.influxdb.exceptions.NotFoundException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.spbstu.rakitin.commonstarter.sequence.engine.SequentialEngine;
 import ru.spbstu.rakitin.commonstarter.sequence.engine.SequentialTask;
+import ru.spbstu.rakitin.monitoring_service.exception.OrganizationNotFoundException;
 import ru.spbstu.rakitin.monitoring_service.model.MonitoringTaskConfig;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class InfluxDBManager {
 
     public static final String ORGANIZATION_CREATED = "ORGANIZATION_CREATED";
     public static final String ORGANIZATION = "organization";
     private final InfluxDBClient influxDBClient;
     private final SequentialEngine sequentialEngine;
+    private final OrganizationsApi organizationsApi;
+    private final AuthorizationsApi authorizationsApi;
+    private final BucketsApi bucketsApi;
+
+    public InfluxDBManager(InfluxDBClient influxDBClient, SequentialEngine sequentialEngine) {
+        this.influxDBClient = influxDBClient;
+        this.sequentialEngine = sequentialEngine;
+        organizationsApi = influxDBClient.getOrganizationsApi();
+        authorizationsApi = influxDBClient.getAuthorizationsApi();
+        bucketsApi = influxDBClient.getBucketsApi();
+    }
+
 
     public void initiateMonitoringTask(MonitoringTaskConfig monitoringTaskConfig) throws Exception {
 
         Queue<SequentialTask> taskQueue = new LinkedList<>();
 
         String organizationName = monitoringTaskConfig.getProject().getProjectName();
-        OrganizationsApi organizationsApi = influxDBClient.getOrganizationsApi();
         taskQueue.add(new SequentialTask() {
             @Override
             public void perform(Map<String, Object> context) throws Exception {
-                OrganizationsQuery organizationsQuery = new OrganizationsQuery();
-                organizationsQuery.setOrg(organizationName);
-                Organization organization;
-                try {
-                    List<Organization> organizations = organizationsApi.findOrganizations(organizationsQuery);
+                Optional<Organization> organization = findOrganization(organizationName);
+                if (organization.isPresent()) {
                     context.put(ORGANIZATION_CREATED, false);
-                    organization = organizations.stream().findFirst().get();
-                } catch (NotFoundException notFoundException) {
+                } else {
                     log.info("Organization not found: {}. Creating a new one.", organizationName);
-                    organization = organizationsApi.createOrganization(organizationName);
+                    organization = Optional.of(organizationsApi.createOrganization(organizationName));
                     context.put(ORGANIZATION_CREATED, true);
                 }
-
                 context.put(ORGANIZATION, organization);
 
             }
@@ -78,6 +76,32 @@ public class InfluxDBManager {
         sequentialEngine.performSequential(taskQueue);
     }
 
+    public String createReadApiKey(String description, String organizationName, List<String> buckets) throws OrganizationNotFoundException {
+        Organization organization = findOrganization(organizationName)
+                .orElseThrow(() -> new OrganizationNotFoundException(
+                        String.format("Organization with name %s not found", organizationName)));
+        List<Permission> permissions = buckets.stream().map(bucket -> {
+            Permission permission = new Permission();
+            PermissionResource permissionResource = new PermissionResource();
+            permissionResource.orgID(organization.getId())
+                    .name(bucket)
+                    .id(getBucket(bucket).getId())
+                    .type("buckets");
+            permission.action(Permission.ActionEnum.READ)
+                    .resource(permissionResource);
+            permission.resource(permissionResource);
+
+            return permission;
+
+        }).toList();
+        Authorization authorization = new Authorization();
+        authorization.orgID(organization.getId())
+                .permissions(permissions)
+                .description(description);
+        authorization = authorizationsApi.createAuthorization(authorization);
+        return authorization.getToken();
+    }
+
     private Bucket createBucket(MonitoringTaskConfig monitoringTaskConfig, Organization organization) {
         Bucket bucket = new Bucket();
         bucket.setOrgID(organization.getId());
@@ -89,17 +113,24 @@ public class InfluxDBManager {
         return influxDBClient.getBucketsApi().createBucket(bucket);
     }
 
-    public Organization createOrganizationIfNotExists(String organizationName) {
+    public Optional<Organization> findOrganization(String organizationName) {
         OrganizationsQuery organizationsQuery = new OrganizationsQuery();
         organizationsQuery.setOrg(organizationName);
-        OrganizationsApi organizationsApi = influxDBClient.getOrganizationsApi();
         try {
             List<Organization> organizations = organizationsApi.findOrganizations(organizationsQuery);
-            return organizations.stream().findFirst().get();
+            return organizations.stream().findFirst();
         } catch (NotFoundException notFoundException) {
-            log.info("Organization not found: {}. Creating a new one.", organizationName);
-            return organizationsApi.createOrganization(organizationName);
+            return Optional.empty();
         }
+    }
+
+    public Organization getOrganizationOrCreate(String organizationName) {
+        return findOrganization(organizationName).orElseGet(() ->
+                organizationsApi.createOrganization(organizationName));
+    }
+
+    public Bucket getBucket(String bucketName) {
+        return bucketsApi.findBucketByName(bucketName);
     }
 
 

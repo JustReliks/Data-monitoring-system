@@ -109,4 +109,9 @@ public class MonitoringTaskInstanceServiceImpl implements MonitoringTaskInstance
         monitoringTaskInstanceRepository.save(instance);
 
     }
+
+    @Override
+    public List<MonitoringTaskInstance> findAllByConfigIds(List<Long> configIds) {
+        return monitoringTaskInstanceRepository.findByConfigIdIn(configIds);
+    }
 }

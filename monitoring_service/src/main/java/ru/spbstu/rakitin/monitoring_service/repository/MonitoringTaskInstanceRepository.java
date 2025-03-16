@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
 import ru.spbstu.rakitin.monitoring_service.model.MonitoringTaskInstance;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,4 +14,6 @@ public interface MonitoringTaskInstanceRepository extends JpaRepository<Monitori
     Optional<MonitoringTaskInstance> findFirstByConfigId(Long configId);
 
     List<MonitoringTaskInstance> findAllByTaskStatus(TaskStatus taskStatus);
+
+    List<MonitoringTaskInstance> findByConfigIdIn(List<Long> ids);
 }

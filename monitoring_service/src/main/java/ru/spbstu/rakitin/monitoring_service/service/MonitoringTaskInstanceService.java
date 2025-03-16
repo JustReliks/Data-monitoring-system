@@ -19,4 +19,6 @@ public interface MonitoringTaskInstanceService {
     List<MonitoringTaskInstance> findAllTaskInstancesWithStatus(TaskStatus status);
 
     void forceChangeMonitoringInstanceStatus(long taskId, TaskStatus status) throws MonitoringTaskInstanceNotFoundException, MonitoringStatusWontChangedException;
+    List<MonitoringTaskInstance> findAllByConfigIds(List<Long> configIds);
 }
+
