@@ -7,6 +7,7 @@ import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
+import ru.spbstu.rakitin.commonstarter.dto.TaskType;
 import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextJobDto;
 import ru.spbstu.rakitin.commonstarter.fulltext.FulltextServiceManager;
 import ru.spbstu.rakitin.commonstarter.utils.MapJson;
@@ -68,5 +69,10 @@ public class FulltextJobService extends AbstractJobService<FulltextJobDto> {
     @Override
     public long getFetchTasksRetryTimeoutMillis() {
         return fulltextJobProperties.getFetchTasksTimeoutMs();
+    }
+
+    @Override
+    public TaskType getTaskType() {
+        return TaskType.FULLTEXT;
     }
 }

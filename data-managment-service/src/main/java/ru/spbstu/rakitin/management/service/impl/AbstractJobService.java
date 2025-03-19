@@ -22,6 +22,7 @@ import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.dto.JobDto;
 import ru.spbstu.rakitin.commonstarter.dto.JobNameDto;
 import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.management.dto.KafkaJobStream;
 import ru.spbstu.rakitin.management.engine.processors.AddTimestampFieldAction;
 import ru.spbstu.rakitin.management.engine.processors.ExpressionFilter;
 import ru.spbstu.rakitin.management.engine.processors.RemoveExtraFieldsAction;
@@ -31,13 +32,14 @@ import ru.spbstu.rakitin.management.service.JobService;
 import ru.spbstu.rakitin.management.service.KafkaService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
-public abstract class AbstractJobService<T extends JobDto> implements JobService<T> {
+public abstract class AbstractJobService<T extends JobDto<?>> implements JobService<T> {
 
 
-    private Map<String, KafkaStreams> runningKafkaStreams;
+    private Map<String, KafkaJobStream> runningKafkaStreams;
     private final AdminManager adminManager;
     private final BeanFactory beanFactory;
     private final KafkaService kafkaService;
@@ -73,7 +75,9 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
             return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_CLIENT;
         });
         streams.start();
-        runningKafkaStreams.put(taskName, streams);
+        runningKafkaStreams.put(taskName, KafkaJobStream.builder()
+                .job(job)
+                .kafkaStreams(streams).build());
 
     }
 
@@ -104,7 +108,7 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
     @Override
     public void stopJob(JobNameDto jobName) {
         String taskName = jobName.getProjectName() + "." + jobName.getTaskName();
-        KafkaStreams streams = Objects.requireNonNull(this.runningKafkaStreams.get(taskName), String.format("Job with name %s not found in tasks list", taskName));
+        KafkaStreams streams = Objects.requireNonNull(this.runningKafkaStreams.get(taskName), String.format("Job with name %s not found in tasks list", taskName)).getKafkaStreams();
         streams.close();
         this.runningKafkaStreams.remove(taskName);
     }
@@ -115,9 +119,14 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
         this.runningKafkaStreams = new HashMap<>();
         Thread thread = new Thread(new FetchFromService(this));
         thread.setDaemon(true);
-        thread.setName("task-fetcher-"+ getServiceName());
+        thread.setName("task-fetcher-" + getServiceName());
         thread.start();
 
+    }
+
+    @Override
+    public List<JobDto<?>> getJobs() {
+        return runningKafkaStreams.values().stream().map(KafkaJobStream::getJob).collect(Collectors.toList());
     }
 
     public long getFetchTasksRetryTimeoutMillis() {
@@ -127,7 +136,7 @@ public abstract class AbstractJobService<T extends JobDto> implements JobService
     @PreDestroy
     @Override
     public void onShutdown() {
-        runningKafkaStreams.values().forEach(KafkaStreams::close);
+        runningKafkaStreams.values().stream().map(KafkaJobStream::getKafkaStreams).forEach(KafkaStreams::close);
     }
 
     protected abstract List<T> fetchRunningTasks();

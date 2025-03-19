@@ -4,6 +4,7 @@ import org.apache.kafka.streams.processor.api.Processor;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
+import ru.spbstu.rakitin.commonstarter.dto.TaskType;
 import ru.spbstu.rakitin.commonstarter.dto.monitoring.MonitoringJobDto;
 import ru.spbstu.rakitin.commonstarter.monitoring.MonitoringServiceManager;
 import ru.spbstu.rakitin.commonstarter.utils.MapJson;
@@ -43,5 +44,10 @@ public class MonitoringJobService extends AbstractJobService<MonitoringJobDto> {
     @Override
     protected String getServiceName() {
         return "monitoring";
+    }
+
+    @Override
+    public TaskType getTaskType() {
+        return TaskType.MONITORING;
     }
 }

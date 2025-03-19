@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.archive.ArchiveServiceManager;
 import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
+import ru.spbstu.rakitin.commonstarter.dto.TaskType;
 import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveJobDto;
 import ru.spbstu.rakitin.commonstarter.utils.MapJson;
 import ru.spbstu.rakitin.management.engine.hdfs.HdfsConfigurationProperties;
@@ -57,5 +58,10 @@ public class ArchiveJobService extends AbstractJobService<ArchiveJobDto> {
     @Override
     protected String getServiceName() {
         return "archive";
+    }
+
+    @Override
+    public TaskType getTaskType() {
+        return TaskType.ARCHIVE;
     }
 }
