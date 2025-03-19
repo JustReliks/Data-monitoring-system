@@ -37,8 +37,12 @@ public class TaskServiceImpl implements TaskService {
 
         return jobServiceMap.values().stream().filter(jobService -> taskTypes.contains(jobService.getTaskType()))
                 .flatMap(jobService -> jobService.getJobs().stream()
-                        .map(jobDto -> TaskDto.builder().jobDto(jobDto)
-                                .taskType(jobService.getTaskType()).build()))
-                .filter(taskDto -> projectIds.contains(taskDto.getJobDto().getProjectId())).toList();
+                        .filter(jobDto -> projectIds.contains(jobDto.getProjectId()))
+                        .map(jobDto ->
+                                TaskDto
+                                        .builder()
+                                        .jobDto(jobDto)
+                                        .taskType(jobService.getTaskType()).build()))
+                .toList();
     }
 }
