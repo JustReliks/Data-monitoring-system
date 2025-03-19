@@ -1,5 +1,6 @@
 package ru.spbstu.rakitin.commonstarter.discovery;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
@@ -9,7 +10,11 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import ru.spbstu.rakitin.commonstarter.admin.auth.SecurityUserDetails;
 import ru.spbstu.rakitin.commonstarter.admin.exception.InternalRequestException;
+import ru.spbstu.rakitin.commonstarter.exception.ServiceNotFoundException;
 
+import java.net.ConnectException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -29,9 +34,8 @@ public class InnerServiceRequestFactory {
         return sendRequest(serviceName, path, body, method, responseClass, getJwtTokenSupplierFromAuthentication(authentication), uriVariables);
     }
 
+    @SneakyThrows
     public <RESULT, BODY> RESULT sendRequest(ServiceName serviceName, String path, BODY body, HttpMethod method, Class<RESULT> responseClass, Supplier<String> jwtToken, Object... uriVariables) {
-        String host = discoveryService.findServiceHost(serviceName);
-        path = host + path;
         HttpEntity<BODY> requestEntity = createHttpEntity(body, jwtToken);
         try {
             if (method == HttpMethod.GET) {
@@ -39,16 +43,47 @@ public class InnerServiceRequestFactory {
                     log.warn("The request body for the GET method was set. It will be ignored.");
                 }
             }
-            ResponseEntity<RESULT> response = restTemplate.exchange(path, method, requestEntity, responseClass, uriVariables);
+            ResponseEntity<RESULT> response = sendRequest(serviceName, path, method, responseClass, uriVariables, requestEntity, new ArrayList<>());
             return response.getBody();
         } catch (Exception e) {
             throw new InternalRequestException(String.format("Exception during request to %s. Message: %s", path, e.getMessage()), e);
         }
     }
 
+    private <RESULT, BODY> ResponseEntity<RESULT> sendRequest(ServiceName serviceName,
+                                                              String path,
+                                                              HttpMethod method,
+                                                              Class<RESULT> responseClass,
+                                                              Object[] uriVariables,
+                                                              HttpEntity<BODY> requestEntity, List<String> blackList) throws ServiceNotFoundException {
+        String serviceHost = discoveryService.findServiceHost(serviceName, blackList);
+        try {
+            return sendRequest(serviceHost, path, method, responseClass, uriVariables, requestEntity);
+        } catch (Exception ex) {
+            if (ex.getCause() instanceof ConnectException) {
+                blackList.add(serviceHost);
+                log.warn("Unable to connect to {}. Try next host.", serviceHost, ex);
+                return sendRequest(serviceName, path, method, responseClass, uriVariables, requestEntity, blackList);
+            }
+            throw ex;
+        }
+    }
 
+    private <RESULT, BODY> ResponseEntity<RESULT> sendRequest(String host,
+                                                              String path,
+                                                              HttpMethod method,
+                                                              Class<RESULT> responseClass,
+                                                              Object[] uriVariables,
+                                                              HttpEntity<BODY> requestEntity) {
+        path = host + path;
+        return restTemplate.exchange(path, method, requestEntity, responseClass, uriVariables);
+    }
+
+
+    @SneakyThrows
     public <BODY, JWT> HttpStatusCode sendRequest(ServiceName serviceName, String path, BODY body, HttpMethod method, JWT authentication, Object... uriVariables) {
-        path = discoveryService.findServiceHost(serviceName) + path;
+        List<String> deadServers = new ArrayList<>();
+        path = discoveryService.findServiceHost(serviceName, deadServers) + path;
         HttpEntity<BODY> requestEntity = createHttpEntity(body, getJwtTokenSupplierFromAuthentication(authentication));
         ResponseEntity<Void> response = restTemplate.exchange(path, method, requestEntity, Void.TYPE, uriVariables);
         return response.getStatusCode();
