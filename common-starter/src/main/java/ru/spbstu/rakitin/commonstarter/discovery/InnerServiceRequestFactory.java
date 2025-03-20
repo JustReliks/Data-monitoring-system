@@ -4,15 +4,18 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import ru.spbstu.rakitin.commonstarter.admin.auth.SecurityUserDetails;
 import ru.spbstu.rakitin.commonstarter.admin.exception.InternalRequestException;
+import ru.spbstu.rakitin.commonstarter.configuration.InnerRequestConfiguration;
 import ru.spbstu.rakitin.commonstarter.exception.ServiceNotFoundException;
 
 import java.net.ConnectException;
+import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,9 +28,15 @@ public class InnerServiceRequestFactory {
     private final DiscoveryService discoveryService;
     private final RestTemplate restTemplate;
 
-    public InnerServiceRequestFactory(DiscoveryService discoveryService) {
+    public InnerServiceRequestFactory(DiscoveryService discoveryService, InnerRequestConfiguration innerRequestConfiguration) {
         this.discoveryService = discoveryService;
-        this.restTemplate = new RestTemplateBuilder().build();
+        RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
+        if (innerRequestConfiguration.isUseHttp2()) {
+            restTemplateBuilder.requestFactory(() -> new JdkClientHttpRequestFactory(HttpClient
+                    .newBuilder()
+                    .version(HttpClient.Version.HTTP_2).build()));
+        }
+        this.restTemplate = restTemplateBuilder.build();
     }
 
     public <RESULT, BODY, JWT> RESULT sendRequest(ServiceName serviceName, String path, BODY body, HttpMethod method, Class<RESULT> responseClass, JWT authentication, Object... uriVariables) {
