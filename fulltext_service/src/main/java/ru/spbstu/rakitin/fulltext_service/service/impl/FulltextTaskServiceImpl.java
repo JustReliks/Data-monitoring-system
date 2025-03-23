@@ -33,7 +33,7 @@ public class FulltextTaskServiceImpl implements FulltextTaskService {
 
     @Override
     public List<MapJson> query(SolrQueryDto query, long taskId, Authentication authentication) throws FulltextConfigNotFoundException, FulltextTaskInstanceNotFoundException, FulltextTaskInstanceNotRunningException, SolrServerException, IOException {
-        FulltextTaskConfig config = fulltextTaskConfigService.findById(taskId);
+        FulltextTaskConfig config = fulltextTaskConfigService.findById(taskId, authentication);
         adminManager.checkAccessThrowable(authentication, config.getProject().getId(), PermissionTypeEnum.FULL_TEXT_VIEW_TASK);
         FulltextTaskInstance instance = fulltextTaskInstanceService.findByConfigId(taskId);
         if (instance.getTaskStatus() == TaskStatus.INITIATION_FAILED || instance.getTaskStatus() == TaskStatus.CREATED) {

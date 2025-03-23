@@ -26,4 +26,6 @@ public class ArchiveTaskInstance {
     @Column(name = "status", nullable = false)
     private TaskStatus status;
 
+    private boolean needUpdate;
+
 }

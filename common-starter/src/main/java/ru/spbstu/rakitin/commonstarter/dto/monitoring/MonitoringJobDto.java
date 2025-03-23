@@ -16,8 +16,8 @@ public class MonitoringJobDto extends JobDto<TaskSchemaDto> {
 
 
     @Builder
-    public MonitoringJobDto(long projectId, long instanceId, long topicId, String taskName, TaskSchemaDto schema, String organization) {
-        super(projectId, instanceId, topicId, taskName, schema);
+    public MonitoringJobDto(long projectId, long instanceId, long topicId, String taskName, boolean needUpdate, TaskSchemaDto schema, String organization) {
+        super(projectId, instanceId, topicId, taskName, needUpdate, schema);
         this.organization = organization;
     }
 }

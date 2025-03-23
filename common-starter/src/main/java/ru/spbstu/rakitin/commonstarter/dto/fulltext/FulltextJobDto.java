@@ -13,9 +13,10 @@ import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
 public class FulltextJobDto extends JobDto<TaskSchemaDto> {
 
     private String collectionName;
+
     @Builder
-    public FulltextJobDto(long projectId, long instanceId, long topicId, String fulltextTaskName, String collectionName, TaskSchemaDto schema) {
-        super(projectId, instanceId, topicId, fulltextTaskName, schema);
+    public FulltextJobDto(long projectId, long instanceId, long topicId, String fulltextTaskName, String collectionName, TaskSchemaDto schema, boolean needUpdate) {
+        super(projectId, instanceId, topicId, fulltextTaskName, needUpdate, schema);
         this.collectionName = collectionName;
     }
 }

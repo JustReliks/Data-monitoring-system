@@ -25,4 +25,6 @@ public class MonitoringTaskInstance {
     @Column(name = "status")
     private TaskStatus taskStatus;
 
+    private boolean needUpdate;
+
 }

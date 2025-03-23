@@ -38,6 +38,8 @@ public class MonitoringTaskInstanceServiceImpl implements MonitoringTaskInstance
     @Override
     public long resume(long configId, Authentication authentication) throws Exception {
         MonitoringTaskConfig config = monitoringTaskConfigService.getConfig(configId, authentication);
+        adminManager.checkAccessThrowable(authentication, config.getProject().getId(), PermissionTypeEnum.ARCHIVE_MANAGE_TASK);
+
         MonitoringTaskInstance instance = monitoringTaskInstanceRepository.findFirstByConfigId(configId).orElseGet(() -> {
             MonitoringTaskInstance monitoringTaskInstance = new MonitoringTaskInstance();
             monitoringTaskInstance.setTaskStatus(TaskStatus.CREATED);

@@ -84,6 +84,9 @@ public abstract class AbstractJobService<T extends JobDto<?>> implements JobServ
     private StreamsBuilder buildStream(T job, String taskName, Topic topic) {
         StreamsBuilder streamsBuilder = new StreamsBuilder();
         ExpressionFilter expressionFilter = new ExpressionFilter(job.getSchema());
+        if (job.isNeedUpdate()) {
+            log.warn("Starting task instance for config [{}] with outdated config! Update it as soon as possible!", taskName);
+        }
         streamsBuilder.stream(topic.getNameInKafka(), Consumed.with(Serdes.String(), Serdes.String()))
                 .mapValues((readOnlyKey, value) -> {
                     try {

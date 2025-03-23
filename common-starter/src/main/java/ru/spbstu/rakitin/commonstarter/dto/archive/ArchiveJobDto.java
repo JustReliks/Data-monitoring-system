@@ -16,8 +16,8 @@ public class ArchiveJobDto extends JobDto<ArchiveTaskSchemaDto> {
 
 
     @Builder
-    public ArchiveJobDto(long projectId, long instanceId, long topicId, String archiveTaskName, String jobFolderName, boolean accessOverwriting, ArchiveTaskSchemaDto schema) {
-        super(projectId, instanceId, topicId, archiveTaskName, schema);
+    public ArchiveJobDto(long projectId, long instanceId, long topicId, String archiveTaskName, String jobFolderName, boolean accessOverwriting, boolean needUpdate, ArchiveTaskSchemaDto schema) {
+        super(projectId, instanceId, topicId, archiveTaskName, needUpdate, schema);
         this.jobFolderName = jobFolderName;
         this.accessOverwriting = accessOverwriting;
     }

@@ -57,6 +57,7 @@ public class ArchiveTaskConfigMapper {
                 .projectId(archiveTaskInstance.getConfig().getProject().getId())
                 .accessOverwriting(archiveTaskInstance.getConfig().isOverwritingEnabled())
                 .jobFolderName(getJobFolderName(archiveTaskInstance))
+                .needUpdate(archiveTaskInstance.isNeedUpdate())
                 .schema(mapArchiveTaskSchemaToArchiveTaskSchemaDto(archiveTaskInstance.getConfig().getSchema())).build();
     }
 

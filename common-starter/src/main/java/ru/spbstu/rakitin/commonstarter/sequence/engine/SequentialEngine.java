@@ -13,17 +13,23 @@ import java.util.Stack;
 public class SequentialEngine {
 
     public void performSequential(Queue<SequentialTask> sequentialTasks) throws Exception {
+        int step = 0;
         Stack<SequentialTask> finishedTasks = new Stack<>();
         Map<String, Object> context = new HashMap<>();
         while (!sequentialTasks.isEmpty()) {
             SequentialTask nextTask = sequentialTasks.poll();
             try {
+                step++;
                 nextTask.perform(context);
+                log.info("Finished sequential task on step {}", step);
             } catch (Throwable throwable) {
+                log.error("Error while performing sequential task on step {}", step, throwable);
                 while (!finishedTasks.empty()) {
-                    log.error("Unable to perform task. Rollback");
+                    step--;
+                    log.warn("Rollback step {}", step);
                     SequentialTask prevTask = finishedTasks.pop();
                     prevTask.rollback(context);
+                    log.warn("Step {} rollback successfully", step);
                 }
                 throw throwable;
             }

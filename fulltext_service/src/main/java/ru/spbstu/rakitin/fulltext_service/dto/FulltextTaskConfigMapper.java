@@ -32,6 +32,18 @@ public class FulltextTaskConfigMapper {
                 .schema(Optional.of(dto.getSchema()).map(this::mapDtoToFulltextTaskSchema).orElseThrow(() -> new IllegalArgumentException("Schema must be defined"))).build();
     }
 
+    public FulltextTaskConfigDto mapFulltextTaskConfigToDto(FulltextTaskConfig fulltextTaskConfig) {
+        return FulltextTaskConfigDto.builder()
+                .name(fulltextTaskConfig.getName())
+                .projectId(fulltextTaskConfig.getProject().getId())
+                .topicId(fulltextTaskConfig.getTopic().getId())
+                .replicationFactor(fulltextTaskConfig.getReplicationFactor())
+                .shardsCount(fulltextTaskConfig.getReplicationFactor())
+                .schema(
+                        mapFulltextSchemaToSchemaDto(fulltextTaskConfig.getSchema())
+                ).build();
+    }
+
     public FulltextTaskSchema mapDtoToFulltextTaskSchema(TaskSchemaDto schemaDto) {
         FulltextTaskSchema schema = new FulltextTaskSchema();
         schema.setSchema(schemaDto.getFields().stream().map(schemaFieldDto -> SchemaField.builder().fieldName(schemaFieldDto.getFieldName()).fieldType(mapFieldTypeDtoToFieldType(schemaFieldDto.getFieldType())).subType(mapFieldTypeDtoToFieldType(schemaFieldDto.getSubType())).build()).toList());
@@ -54,8 +66,16 @@ public class FulltextTaskConfigMapper {
                 .fulltextTaskName(config.getName())
                 .projectId(config.getProject().getId())
                 .topicId(config.getTopic().getId())
+                .needUpdate(instance.isNeedUpdate())
                 .collectionName(SolrUtils.buildWriteCollectionName(config.getProject().getProjectName(), config.getName()))
                 .schema(mapFulltextSchemaToSchemaDto(config.getSchema())).build();
+    }
+
+    public FulltextTaskInstanceResponse mapFulltextTaskInstanceToFulltextTaskInstanceResponse(FulltextTaskInstance instance) {
+        return FulltextTaskInstanceResponse.builder()
+                .id(instance.getId())
+                .status(instance.getTaskStatus())
+                .needUpdate(instance.isNeedUpdate()).build();
     }
 
     public TaskSchemaDto mapFulltextSchemaToSchemaDto(FulltextTaskSchema schema) {

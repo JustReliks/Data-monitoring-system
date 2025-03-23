@@ -1,5 +1,6 @@
 package ru.spbstu.rakitin.commonstarter.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class FilterExpression {
     private boolean negate;
     private List<ExpressionConnection> connections;
 
+    @JsonIgnore
     public List<String> getAllExpressions() {
         List<String> res = new ArrayList<>();
         if (connections != null && !connections.isEmpty()) {

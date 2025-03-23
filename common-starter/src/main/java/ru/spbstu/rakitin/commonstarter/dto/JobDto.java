@@ -15,6 +15,7 @@ public class JobDto<T extends TaskSchemaDto> {
     private long instanceId;
     private long topicId;
     private String taskName;
+    private boolean needUpdate;
     private T schema;
 
 }

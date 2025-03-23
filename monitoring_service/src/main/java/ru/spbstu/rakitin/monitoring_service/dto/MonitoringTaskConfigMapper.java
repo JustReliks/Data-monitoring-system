@@ -54,6 +54,7 @@ public class MonitoringTaskConfigMapper {
                 .projectId(config.getProject().getId())
                 .topicId(config.getTopic().getId())
                 .organization(config.getProject().getProjectName())
+                .needUpdate(instance.isNeedUpdate())
                 .schema(mapMonitoringSchemaToSchemaDto(config.getSchema())).build();
     }
 

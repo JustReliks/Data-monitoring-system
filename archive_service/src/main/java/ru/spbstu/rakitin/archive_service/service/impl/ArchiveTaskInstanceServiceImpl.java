@@ -40,6 +40,7 @@ public class ArchiveTaskInstanceServiceImpl implements ArchiveTaskInstanceServic
     public long resume(long configId, Authentication authentication) throws Exception {
         Optional<ArchiveTaskInstance> archiveTaskInstanceOptional = archiveTaskInstanceRepository.findArchiveTaskInstanceByConfigId(configId);
         ArchiveTaskConfig archiveTaskConfig = archiveTaskConfigRepository.findById(configId).orElseThrow(() -> new ArchiveConfigNotFoundException(String.format("Archive config with id %s not found", configId)));
+        adminManager.checkAccessThrowable(authentication, archiveTaskConfig.getProject().getId(), PermissionTypeEnum.ARCHIVE_MANAGE_TASK);
 
         ArchiveTaskInstance archiveTaskInstance = archiveTaskInstanceOptional.orElseGet(() -> {
             ArchiveTaskInstance newArchiveTaskInstance = new ArchiveTaskInstance();
