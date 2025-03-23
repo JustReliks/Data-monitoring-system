@@ -65,13 +65,15 @@ public class InnerServiceRequestFactory {
                                                               Class<RESULT> responseClass,
                                                               Object[] uriVariables,
                                                               HttpEntity<BODY> requestEntity, List<String> blackList) throws ServiceNotFoundException {
+        log.info("Searching for the service: {}", serviceName);
         String serviceHost = discoveryService.findServiceHost(serviceName, blackList);
+        log.info("Found host: {}", serviceHost);
         try {
             return sendRequest(serviceHost, path, method, responseClass, uriVariables, requestEntity);
         } catch (Exception ex) {
             if (ex.getCause() instanceof ConnectException) {
                 blackList.add(serviceHost);
-                log.warn("Unable to connect to {}. Try next host.", serviceHost, ex);
+                log.warn("Unable to connect to {}. Try next host.", serviceHost);
                 return sendRequest(serviceName, path, method, responseClass, uriVariables, requestEntity, blackList);
             }
             throw ex;

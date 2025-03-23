@@ -14,7 +14,6 @@ import org.apache.solr.client.solrj.request.schema.SchemaRequest;
 import org.apache.solr.client.solrj.response.CollectionAdminResponse;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.util.ContentStreamBase;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import ru.spbstu.rakitin.commonstarter.sequence.engine.SequentialEngine;
 import ru.spbstu.rakitin.commonstarter.sequence.engine.SequentialTask;
@@ -75,7 +74,7 @@ public class SolrClientManager {
     }
 
 
-    @NotNull
+    
     private static String getTaskFullName(FulltextTaskConfig fulltextTaskConfig) {
         return fulltextTaskConfig.getProject().getProjectName() + "." + fulltextTaskConfig.getName();
     }
@@ -168,7 +167,7 @@ public class SolrClientManager {
         };
     }
 
-    @NotNull
+    
     private static String getStringFromList(List<String> collections) {
         return new StringBuilder(collections.toString()).substring(1, collections.toString().length() - 1).toString();
     }
@@ -180,7 +179,7 @@ public class SolrClientManager {
         return collections;
     }
 
-    @NotNull
+    
     private SequentialTask createWriteAlias(String collectionName, String basePath) {
         return new SequentialTask() {
             @Override
@@ -198,7 +197,7 @@ public class SolrClientManager {
         };
     }
 
-    @NotNull
+    
     private SequentialTask createReadAlias(List<String> collectionName, String basePath, String contextPropertyWithCollectionNames) {
         return new SequentialTask() {
             @Override
@@ -230,7 +229,7 @@ public class SolrClientManager {
         return createReadAlias(collectionName, basePath, null);
     }
 
-    @NotNull
+    
     private SequentialTask addFieldsToSchema(String collectionName, SolrSchema schema) {
         return new SequentialTask() {
             @Override
@@ -248,7 +247,7 @@ public class SolrClientManager {
         };
     }
 
-    @NotNull
+    
     private SequentialTask createCollection(FulltextTaskConfig fulltextTaskConfig, String collectionName) {
         return new SequentialTask() {
             @Override
@@ -267,7 +266,7 @@ public class SolrClientManager {
     }
 
 
-    @NotNull
+    
     private SequentialTask uploadSchemaToFolder(String basePath, SolrSchema schema) {
         return new SequentialTask() {
             @Override
@@ -287,7 +286,7 @@ public class SolrClientManager {
         };
     }
 
-    @NotNull
+    
     private SequentialTask createSchemaFolder(String basePath) {
         return new SequentialTask() {
             @Override

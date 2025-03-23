@@ -1,7 +1,6 @@
 package ru.spbstu.rakitin.fulltext_service.service;
 
 import org.apache.solr.client.solrj.SolrServerException;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.Authentication;
 import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
 import ru.spbstu.rakitin.commonstarter.exception.InstanceInitiationFailedException;

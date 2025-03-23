@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.discovery.AdminUserService;
 import ru.spbstu.rakitin.commonstarter.discovery.InnerServiceRequestFactory;
@@ -18,6 +19,9 @@ public class FulltextServiceManager {
 
     private static final String CHANGE_STATUS = "/api/v1/internal/fulltext/instance/%s/status/%s";
     private static final String FIND_ALL_BY_STATUS = "/api/v1/internal/fulltext/instance/status/%s";
+    private static final String RESUME = "/api/v1/fulltext/instance/resume/%s";
+    private static final String SUSPEND = "/api/v1/fulltext/instance/suspend/%s";
+    private static final String UPDATE = "/api/v1/fulltext/instance/update/%s";
 
     private final InnerServiceRequestFactory requestFactory;
     private final AdminUserService adminUserService;
@@ -37,4 +41,15 @@ public class FulltextServiceManager {
         }
     }
 
+    public long resume(long configId, Authentication authentication) {
+        return requestFactory.doPost(ServiceName.FULL_TEXT, authentication, String.format(RESUME, configId), null, Long.class);
+    }
+
+    public void suspendTask(long configId, Authentication authentication) {
+        requestFactory.doPost(ServiceName.FULL_TEXT, authentication, String.format(SUSPEND, configId), null, Void.TYPE);
+    }
+
+    public void update(long configId, Authentication authentication) {
+        requestFactory.doPost(ServiceName.FULL_TEXT, authentication, String.format(UPDATE, configId), null, Void.TYPE);
+    }
 }
