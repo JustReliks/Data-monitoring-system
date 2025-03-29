@@ -9,8 +9,10 @@ import ru.spbstu.rakitin.archive_service.model.ArchiveTaskSchema;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.datamanagement.DataManagementManager;
 import ru.spbstu.rakitin.commonstarter.dto.FieldType;
+import ru.spbstu.rakitin.commonstarter.dto.TaskInstanceResponse;
 import ru.spbstu.rakitin.commonstarter.dto.TimestampFieldDto;
 import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveJobDto;
+import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveTaskConfigDto;
 import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveTaskSchemaDto;
 
 import java.util.Optional;
@@ -40,6 +42,23 @@ public class ArchiveTaskConfigMapper {
         schema.setFilenameFieldName(schemaDto.getFilenameFieldName());
         return schema;
     }
+
+    public ArchiveTaskConfigDto mapArchiveTaskConfigToDto(final ArchiveTaskConfig archiveTaskConfig) {
+        return ArchiveTaskConfigDto.builder()
+                .name(archiveTaskConfig.getName())
+                .overwritingEnabled(archiveTaskConfig.isOverwritingEnabled())
+                .projectId(archiveTaskConfig.getProject().getId())
+                .topicId(archiveTaskConfig.getTopic().getId())
+                .schema(mapArchiveTaskSchemaToArchiveTaskSchemaDto(archiveTaskConfig.getSchema())).build();
+    }
+
+    public TaskInstanceResponse mapArchiveTaskInstanceToTaskInstanceResponse(ArchiveTaskInstance instance) {
+        return TaskInstanceResponse.builder()
+                .id(instance.getId())
+                .status(instance.getStatus())
+                .needUpdate(instance.isNeedUpdate()).build();
+    }
+
 
     public ArchiveTaskSchemaDto mapArchiveTaskSchemaToArchiveTaskSchemaDto(final ArchiveTaskSchema archiveTaskSchema) {
         return ArchiveTaskSchemaDto.builder()

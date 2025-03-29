@@ -5,13 +5,14 @@ import jakarta.annotation.PreDestroy;
 import ru.spbstu.rakitin.commonstarter.dto.JobDto;
 import ru.spbstu.rakitin.commonstarter.dto.JobNameDto;
 import ru.spbstu.rakitin.commonstarter.dto.TaskType;
+import ru.spbstu.rakitin.management.exception.JobDisabledException;
 
 import java.util.List;
 
 public interface JobService<T extends JobDto<?>> {
 
     void startJob(T job) throws Exception;
-    void stopJob(JobNameDto jobName);
+    void stopJob(JobNameDto jobName) throws JobDisabledException;
     TaskType getTaskType();
     List<JobDto<?>> getJobs();
 

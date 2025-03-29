@@ -6,7 +6,9 @@ import ru.spbstu.rakitin.archive_service.exception.ArchiveTaskInstanceNotFoundEx
 import ru.spbstu.rakitin.archive_service.model.ArchiveTaskInstance;
 import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public interface ArchiveTaskInstanceService {
 
@@ -19,4 +21,14 @@ public interface ArchiveTaskInstanceService {
     List<ArchiveTaskInstance> findAllTaskInstancesWithStatus(TaskStatus taskStatus);
 
     ArchiveTaskInstance findByConfigId(long configId) throws ArchiveTaskInstanceNotFoundException;
+
+    Optional<ArchiveTaskInstance> findByConfigIdOptionally(long configId);
+
+    ArchiveTaskInstance findById(long id) throws ArchiveTaskInstanceNotFoundException;
+
+    void removeInstance(long id, Authentication authentication) throws ArchiveTaskInstanceNotFoundException, ArchiveStatusWontChangedException, IOException;
+
+    void saveInstance(ArchiveTaskInstance archiveTaskInstance);
+
+    void update(long configId, Authentication authentication) throws Exception;
 }

@@ -3,7 +3,7 @@ package ru.spbstu.rakitin.fulltext_service.service;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.security.core.Authentication;
 import ru.spbstu.rakitin.commonstarter.utils.MapJson;
-import ru.spbstu.rakitin.fulltext_service.dto.SolrQueryDto;
+import ru.spbstu.rakitin.commonstarter.dto.fulltext.SolrQueryDto;
 import ru.spbstu.rakitin.fulltext_service.exception.FulltextConfigNotFoundException;
 import ru.spbstu.rakitin.fulltext_service.exception.FulltextTaskInstanceNotFoundException;
 import ru.spbstu.rakitin.fulltext_service.exception.FulltextTaskInstanceNotRunningException;

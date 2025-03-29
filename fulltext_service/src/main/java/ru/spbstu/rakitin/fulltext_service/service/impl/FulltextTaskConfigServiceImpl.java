@@ -10,6 +10,7 @@ import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.admin.exception.ForbiddenRequestException;
 import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
+import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
 import ru.spbstu.rakitin.commonstarter.exception.ConfigAlreadyExists;
 import ru.spbstu.rakitin.commonstarter.exception.InvalidSchemaException;
 import ru.spbstu.rakitin.commonstarter.exception.QuotaExceededException;

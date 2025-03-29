@@ -2,10 +2,7 @@ package ru.spbstu.rakitin.archive_service.api;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.spbstu.rakitin.archive_service.exception.ArchiveStatusWontChangedException;
 import ru.spbstu.rakitin.archive_service.exception.ArchiveTaskInstanceNotFoundException;
 import ru.spbstu.rakitin.archive_service.service.ArchiveTaskInstanceService;
@@ -27,6 +24,11 @@ public class ArchiveTaskInstanceController {
     @LogController
     public void suspend(@PathVariable("configId") long configId, Authentication authentication) throws ArchiveStatusWontChangedException, ArchiveTaskInstanceNotFoundException {
         archiveTaskInstanceService.suspendTask(configId, authentication);
+    }
+
+    @PutMapping("/update/{configId}")
+    public void update(@PathVariable long configId, Authentication authentication) throws Exception {
+        archiveTaskInstanceService.update(configId, authentication);
     }
 
 

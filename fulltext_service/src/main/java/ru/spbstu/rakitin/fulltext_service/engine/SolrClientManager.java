@@ -15,10 +15,10 @@ import org.apache.solr.client.solrj.response.CollectionAdminResponse;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.util.ContentStreamBase;
 import org.springframework.stereotype.Component;
+import ru.spbstu.rakitin.commonstarter.dto.fulltext.SolrQueryDto;
 import ru.spbstu.rakitin.commonstarter.sequence.engine.SequentialEngine;
 import ru.spbstu.rakitin.commonstarter.sequence.engine.SequentialTask;
 import ru.spbstu.rakitin.commonstarter.utils.MapJson;
-import ru.spbstu.rakitin.fulltext_service.dto.SolrQueryDto;
 import ru.spbstu.rakitin.fulltext_service.engine.schema.SolrSchema;
 import ru.spbstu.rakitin.fulltext_service.engine.utils.SolrUtils;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskConfig;
@@ -62,7 +62,7 @@ public class SolrClientManager {
     private static SolrQuery getSolrQueryFromDto(SolrQueryDto solrQueryDto) {
         SolrQuery query = new SolrQuery(solrQueryDto.getQuery());
         if (solrQueryDto.getSort() != null) {
-            solrQueryDto.getSort().forEach(solrSort -> query.setSort(solrSort.getField(), solrSort.getOrder()));
+            solrQueryDto.getSort().forEach(solrSort -> query.setSort(solrSort.getField(), SolrQuery.ORDER.valueOf(solrSort.getOrder().name())));
         }
         if (solrQueryDto.getFilters() != null) {
             query.setFilterQueries(solrQueryDto.getFilters().toArray(new String[0]));
@@ -74,7 +74,6 @@ public class SolrClientManager {
     }
 
 
-    
     private static String getTaskFullName(FulltextTaskConfig fulltextTaskConfig) {
         return fulltextTaskConfig.getProject().getProjectName() + "." + fulltextTaskConfig.getName();
     }
@@ -167,7 +166,7 @@ public class SolrClientManager {
         };
     }
 
-    
+
     private static String getStringFromList(List<String> collections) {
         return new StringBuilder(collections.toString()).substring(1, collections.toString().length() - 1).toString();
     }
@@ -179,7 +178,7 @@ public class SolrClientManager {
         return collections;
     }
 
-    
+
     private SequentialTask createWriteAlias(String collectionName, String basePath) {
         return new SequentialTask() {
             @Override
@@ -197,7 +196,7 @@ public class SolrClientManager {
         };
     }
 
-    
+
     private SequentialTask createReadAlias(List<String> collectionName, String basePath, String contextPropertyWithCollectionNames) {
         return new SequentialTask() {
             @Override
@@ -229,7 +228,7 @@ public class SolrClientManager {
         return createReadAlias(collectionName, basePath, null);
     }
 
-    
+
     private SequentialTask addFieldsToSchema(String collectionName, SolrSchema schema) {
         return new SequentialTask() {
             @Override
@@ -247,7 +246,7 @@ public class SolrClientManager {
         };
     }
 
-    
+
     private SequentialTask createCollection(FulltextTaskConfig fulltextTaskConfig, String collectionName) {
         return new SequentialTask() {
             @Override
@@ -266,7 +265,6 @@ public class SolrClientManager {
     }
 
 
-    
     private SequentialTask uploadSchemaToFolder(String basePath, SolrSchema schema) {
         return new SequentialTask() {
             @Override
@@ -286,7 +284,7 @@ public class SolrClientManager {
         };
     }
 
-    
+
     private SequentialTask createSchemaFolder(String basePath) {
         return new SequentialTask() {
             @Override

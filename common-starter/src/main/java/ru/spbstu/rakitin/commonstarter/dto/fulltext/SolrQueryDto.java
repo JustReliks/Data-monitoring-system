@@ -1,7 +1,6 @@
-package ru.spbstu.rakitin.fulltext_service.dto;
+package ru.spbstu.rakitin.commonstarter.dto.fulltext;
 
 import lombok.Data;
-import org.apache.solr.client.solrj.SolrQuery;
 
 import java.util.List;
 
@@ -16,7 +15,11 @@ public class SolrQueryDto {
     @Data
     public static class SolrSort {
         private String field;
-        private SolrQuery.ORDER order;
+        private SortOrder order;
+    }
+
+    public enum SortOrder {
+        asc, desc
     }
 
 }

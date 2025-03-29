@@ -2,6 +2,7 @@ package ru.spbstu.rakitin.management.service.impl;
 
 import org.apache.kafka.streams.processor.api.Processor;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.dto.TaskType;
@@ -15,6 +16,7 @@ import ru.spbstu.rakitin.management.service.KafkaService;
 import java.util.List;
 
 @Service
+@ConditionalOnProperty(name = "mds.monitoring.enabled", havingValue = "true", matchIfMissing = true)
 public class MonitoringJobService extends AbstractJobService<MonitoringJobDto> {
 
     private final InfluxDbClientFactory influxDbClientFactory;

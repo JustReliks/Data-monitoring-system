@@ -1,6 +1,5 @@
 package ru.spbstu.rakitin.fulltext_service.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +14,7 @@ import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
 import ru.spbstu.rakitin.commonstarter.exception.InstanceInitiationFailedException;
 import ru.spbstu.rakitin.fulltext_service.dto.FulltextTaskConfigMapper;
 import ru.spbstu.rakitin.fulltext_service.engine.SolrClientManager;
-import ru.spbstu.rakitin.fulltext_service.exception.FulltextConfigNotFoundException;
-import ru.spbstu.rakitin.fulltext_service.exception.FulltextStatusWontChangedException;
-import ru.spbstu.rakitin.fulltext_service.exception.FulltextTaskInstanceNotFoundException;
-import ru.spbstu.rakitin.fulltext_service.exception.FulltextTaskInstanceResumeException;
+import ru.spbstu.rakitin.fulltext_service.exception.*;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskConfig;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskInstance;
 import ru.spbstu.rakitin.fulltext_service.repository.FulltextTaskInstanceRepository;
@@ -136,9 +132,19 @@ public class FulltextTaskInstanceServiceImpl implements FulltextTaskInstanceServ
     @Override
     public void update(long configId, Authentication authentication) throws Exception {
         FulltextTaskInstance instance = findByConfigId(configId);
+        if (instance.getTaskStatus() == TaskStatus.CREATED || instance.getTaskStatus() == TaskStatus.INITIATION_FAILED) {
+            throw new FulltextTaskInstanceUpdateException("Cant update not initiated task");
+        }
+        boolean running = instance.getTaskStatus() == TaskStatus.RUNNING;
+        if (running) {
+            suspendTask(configId, authentication);
+        }
         solrClientManager.updateFulltextTaskInstance(instance.getConfig());
         instance.setNeedUpdate(false);
         update(instance);
+        if (running) {
+            resume(configId, authentication);
+        }
     }
 
     @Override

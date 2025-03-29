@@ -1,4 +1,4 @@
-package ru.spbstu.rakitin.user_api_service.api;
+package ru.spbstu.rakitin.user_api_service.api.fulltext;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

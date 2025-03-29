@@ -1,11 +1,10 @@
-package ru.spbstu.rakitin.fulltext_service.dto;
+package ru.spbstu.rakitin.commonstarter.dto.fulltext;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
+import ru.spbstu.rakitin.commonstarter.dto.TaskInstanceResponse;
 
 @Data
 @Builder
@@ -15,5 +14,5 @@ public class FulltextTaskResponse {
 
     private long id;
     private FulltextTaskConfigDto config;
-    private FulltextTaskInstanceResponse instance;
+    private TaskInstanceResponse instance;
 }

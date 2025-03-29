@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.utils.MapJson;
-import ru.spbstu.rakitin.fulltext_service.dto.SolrQueryDto;
+import ru.spbstu.rakitin.commonstarter.dto.fulltext.SolrQueryDto;
 import ru.spbstu.rakitin.fulltext_service.engine.SolrClientManager;
 import ru.spbstu.rakitin.fulltext_service.exception.FulltextConfigNotFoundException;
 import ru.spbstu.rakitin.fulltext_service.exception.FulltextTaskInstanceNotFoundException;

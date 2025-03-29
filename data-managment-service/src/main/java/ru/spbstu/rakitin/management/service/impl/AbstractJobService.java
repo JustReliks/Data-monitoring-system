@@ -27,6 +27,7 @@ import ru.spbstu.rakitin.management.engine.processors.AddTimestampFieldAction;
 import ru.spbstu.rakitin.management.engine.processors.ExpressionFilter;
 import ru.spbstu.rakitin.management.engine.processors.RemoveExtraFieldsAction;
 import ru.spbstu.rakitin.management.engine.processors.SchemaCompatibleFilter;
+import ru.spbstu.rakitin.management.exception.JobDisabledException;
 import ru.spbstu.rakitin.management.exception.TaskAlreadyInContextException;
 import ru.spbstu.rakitin.management.service.JobService;
 import ru.spbstu.rakitin.management.service.KafkaService;

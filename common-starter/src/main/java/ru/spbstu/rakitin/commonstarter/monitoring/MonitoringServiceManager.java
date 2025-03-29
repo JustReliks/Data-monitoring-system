@@ -12,6 +12,9 @@ import ru.spbstu.rakitin.commonstarter.dto.monitoring.MonitoringJobDto;
 
 import java.util.List;
 
+import static ru.spbstu.rakitin.commonstarter.discovery.ParametrizedTypes.STRING_TYPE;
+import static ru.spbstu.rakitin.commonstarter.discovery.ParametrizedTypes.VOID_TYPE;
+
 @Service
 @RequiredArgsConstructor
 public class MonitoringServiceManager {
@@ -24,11 +27,11 @@ public class MonitoringServiceManager {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public void changeTaskStatus(long taskId, String taskStatus) {
-        requestFactory.doPost(ServiceName.MONITORING, adminUserService.getJwt(), String.format(CHANGE_STATUS, taskId, taskStatus), null, Void.TYPE);
+        requestFactory.doPost(ServiceName.MONITORING, adminUserService.getJwt(), String.format(CHANGE_STATUS, taskId, taskStatus), null, VOID_TYPE);
     }
 
     public List<MonitoringJobDto> findAllByStatus(String taskStatus) {
-        String rawResult = requestFactory.doGet(ServiceName.MONITORING, adminUserService.getJwt(), String.format(FIND_ALL_BY_STATUS, taskStatus), String.class);
+        String rawResult = requestFactory.doGet(ServiceName.MONITORING, adminUserService.getJwt(), String.format(FIND_ALL_BY_STATUS, taskStatus), STRING_TYPE);
         try {
             return objectMapper.readValue(rawResult, new TypeReference<List<MonitoringJobDto>>() {
             });

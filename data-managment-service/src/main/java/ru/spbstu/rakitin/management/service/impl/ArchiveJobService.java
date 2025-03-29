@@ -4,6 +4,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.archive.ArchiveServiceManager;
@@ -19,6 +20,7 @@ import ru.spbstu.rakitin.management.service.KafkaService;
 import java.util.List;
 
 @Service
+@ConditionalOnProperty(name = "mds.archive.enabled", havingValue = "true", matchIfMissing = true)
 public class ArchiveJobService extends AbstractJobService<ArchiveJobDto> {
 
     private final FileSystem fileSystem;

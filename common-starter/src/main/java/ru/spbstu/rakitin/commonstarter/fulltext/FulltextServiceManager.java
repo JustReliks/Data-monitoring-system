@@ -10,8 +10,13 @@ import ru.spbstu.rakitin.commonstarter.discovery.AdminUserService;
 import ru.spbstu.rakitin.commonstarter.discovery.InnerServiceRequestFactory;
 import ru.spbstu.rakitin.commonstarter.discovery.ServiceName;
 import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextJobDto;
+import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskConfigDto;
+import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskResponse;
+import ru.spbstu.rakitin.commonstarter.utils.Utils;
 
 import java.util.List;
+
+import static ru.spbstu.rakitin.commonstarter.discovery.ParametrizedTypes.*;
 
 @Service
 @RequiredArgsConstructor
@@ -22,17 +27,21 @@ public class FulltextServiceManager {
     private static final String RESUME = "/api/v1/fulltext/instance/resume/%s";
     private static final String SUSPEND = "/api/v1/fulltext/instance/suspend/%s";
     private static final String UPDATE = "/api/v1/fulltext/instance/update/%s";
+    private static final String CREATE_CONFIG = "/api/v1//fulltext/config/create";
+    private static final String REMOVE_CONFIG = "/api/v1/fulltext/config/%s/delete?forceDelete=%s";
+    private static final String UPDATE_CONFIG = "/api/v1/fulltext/config/%s/update";
+    private static final String LIST_CONFIG = "/api/v1/fulltext/config/list?projects=%s";
 
     private final InnerServiceRequestFactory requestFactory;
     private final AdminUserService adminUserService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public void changeTaskStatus(long taskId, String taskStatus) {
-        requestFactory.doPost(ServiceName.FULL_TEXT, adminUserService.getJwt(), String.format(CHANGE_STATUS, taskId, taskStatus), null, Void.TYPE);
+        requestFactory.doPost(ServiceName.FULL_TEXT, adminUserService.getJwt(), String.format(CHANGE_STATUS, taskId, taskStatus), null, VOID_TYPE);
     }
 
     public List<FulltextJobDto> findAllByStatus(String taskStatus) {
-        String rawResult = requestFactory.doGet(ServiceName.FULL_TEXT, adminUserService.getJwt(), String.format(FIND_ALL_BY_STATUS, taskStatus), String.class);
+        String rawResult = requestFactory.doGet(ServiceName.FULL_TEXT, adminUserService.getJwt(), String.format(FIND_ALL_BY_STATUS, taskStatus), STRING_TYPE);
         try {
             return objectMapper.readValue(rawResult, new TypeReference<List<FulltextJobDto>>() {
             });
@@ -42,14 +51,32 @@ public class FulltextServiceManager {
     }
 
     public long resume(long configId, Authentication authentication) {
-        return requestFactory.doPost(ServiceName.FULL_TEXT, authentication, String.format(RESUME, configId), null, Long.class);
+        return requestFactory.doPost(ServiceName.FULL_TEXT, authentication, String.format(RESUME, configId), null, LONG_TYPE);
     }
 
     public void suspendTask(long configId, Authentication authentication) {
-        requestFactory.doPost(ServiceName.FULL_TEXT, authentication, String.format(SUSPEND, configId), null, Void.TYPE);
+        requestFactory.doPost(ServiceName.FULL_TEXT, authentication, String.format(SUSPEND, configId), null, VOID_TYPE);
     }
 
     public void update(long configId, Authentication authentication) {
-        requestFactory.doPost(ServiceName.FULL_TEXT, authentication, String.format(UPDATE, configId), null, Void.TYPE);
+        requestFactory.doPost(ServiceName.FULL_TEXT, authentication, String.format(UPDATE, configId), null, VOID_TYPE);
     }
+
+    public long createConfig(FulltextTaskConfigDto configDto, Authentication authentication) {
+        return requestFactory.doPost(ServiceName.FULL_TEXT, authentication, String.format(CREATE_CONFIG), configDto, LONG_TYPE);
+    }
+
+    public List<FulltextTaskResponse> list(List<Long> projects, Authentication authentication) {
+        return requestFactory.doGet(ServiceName.FULL_TEXT, authentication, String.format(LIST_CONFIG, Utils.getParamsStringFromArray(projects)), LIST_FULLTEXT_TASK_RESPONSE_TYPE_REFERENCE);
+    }
+
+    public void removeConfig(Long configId, boolean forceDelete, Authentication authentication) {
+        requestFactory.doDelete(ServiceName.FULL_TEXT, authentication, String.format(REMOVE_CONFIG, configId, forceDelete), null, VOID_TYPE);
+    }
+
+    public void updateConfig(long configId, FulltextTaskConfigDto configDto, Authentication authentication) {
+        requestFactory.doPut(ServiceName.FULL_TEXT, authentication, String.format(UPDATE_CONFIG, configId), configDto, VOID_TYPE);
+    }
+
+
 }

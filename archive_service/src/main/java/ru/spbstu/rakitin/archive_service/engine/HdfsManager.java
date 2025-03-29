@@ -1,6 +1,7 @@
 package ru.spbstu.rakitin.archive_service.engine;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.constraints.NotNull;
 import org.apache.hadoop.fs.*;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.archive_service.configuration.HdfsProperties;
@@ -111,4 +112,10 @@ public class HdfsManager {
     }
 
 
+    public void removeArchiveInstance(@NotNull ArchiveTaskConfig config) throws IOException {
+        String taskFolder = String.format("/%s/%s/%s", hdfsProperties.getBasePath(), config.getProject().getProjectName(), config.getName());
+        if (fileSystem.exists(new Path(taskFolder))) {
+            fileSystem.delete(new Path(taskFolder), true);
+        }
+    }
 }

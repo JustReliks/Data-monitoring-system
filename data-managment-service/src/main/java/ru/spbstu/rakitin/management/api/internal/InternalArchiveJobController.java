@@ -1,6 +1,7 @@
 package ru.spbstu.rakitin.management.api.internal;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,7 @@ import ru.spbstu.rakitin.management.service.impl.ArchiveJobService;
 @RestController
 @RequestMapping("/api/v1/job/archive")
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "mds.archive.enabled", havingValue = "true", matchIfMissing = true)
 public class InternalArchiveJobController {
 
     private final ArchiveJobService jobService;

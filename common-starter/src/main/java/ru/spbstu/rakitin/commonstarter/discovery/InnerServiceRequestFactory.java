@@ -3,7 +3,11 @@ package ru.spbstu.rakitin.commonstarter.discovery;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.*;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -39,12 +43,12 @@ public class InnerServiceRequestFactory {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public <RESULT, BODY, JWT> RESULT sendRequest(ServiceName serviceName, String path, BODY body, HttpMethod method, Class<RESULT> responseClass, JWT authentication, Object... uriVariables) {
+    public <RESULT, BODY, JWT> RESULT sendRequest(ServiceName serviceName, String path, BODY body, HttpMethod method, ParameterizedTypeReference<RESULT> responseClass, JWT authentication, Object... uriVariables) {
         return sendRequest(serviceName, path, body, method, responseClass, getJwtTokenSupplierFromAuthentication(authentication), uriVariables);
     }
 
     @SneakyThrows
-    public <RESULT, BODY> RESULT sendRequest(ServiceName serviceName, String path, BODY body, HttpMethod method, Class<RESULT> responseClass, Supplier<String> jwtToken, Object... uriVariables) {
+    public <RESULT, BODY> RESULT sendRequest(ServiceName serviceName, String path, BODY body, HttpMethod method, ParameterizedTypeReference<RESULT> responseClass, Supplier<String> jwtToken, Object... uriVariables) {
         HttpEntity<BODY> requestEntity = createHttpEntity(body, jwtToken);
         try {
             if (method == HttpMethod.GET) {
@@ -59,10 +63,11 @@ public class InnerServiceRequestFactory {
         }
     }
 
+
     private <RESULT, BODY> ResponseEntity<RESULT> sendRequest(ServiceName serviceName,
                                                               String path,
                                                               HttpMethod method,
-                                                              Class<RESULT> responseClass,
+                                                              ParameterizedTypeReference<RESULT> responseClass,
                                                               Object[] uriVariables,
                                                               HttpEntity<BODY> requestEntity, List<String> blackList) throws ServiceNotFoundException {
         log.info("Searching for the service: {}", serviceName);
@@ -83,7 +88,7 @@ public class InnerServiceRequestFactory {
     private <RESULT, BODY> ResponseEntity<RESULT> sendRequest(String host,
                                                               String path,
                                                               HttpMethod method,
-                                                              Class<RESULT> responseClass,
+                                                              ParameterizedTypeReference<RESULT> responseClass,
                                                               Object[] uriVariables,
                                                               HttpEntity<BODY> requestEntity) {
         path = host + path;
@@ -91,29 +96,20 @@ public class InnerServiceRequestFactory {
     }
 
 
-    @SneakyThrows
-    public <BODY, JWT> HttpStatusCode sendRequest(ServiceName serviceName, String path, BODY body, HttpMethod method, JWT authentication, Object... uriVariables) {
-        List<String> deadServers = new ArrayList<>();
-        path = discoveryService.findServiceHost(serviceName, deadServers) + path;
-        HttpEntity<BODY> requestEntity = createHttpEntity(body, getJwtTokenSupplierFromAuthentication(authentication));
-        ResponseEntity<Void> response = restTemplate.exchange(path, method, requestEntity, Void.TYPE, uriVariables);
-        return response.getStatusCode();
-    }
-
-
-    public <RESULT, BODY, JWT> RESULT doPost(ServiceName serviceName, JWT authentication, String uri, BODY body, Class<RESULT> responseClass) {
+    public <RESULT, BODY, JWT> RESULT doPost(ServiceName serviceName, JWT authentication, String uri, BODY body, ParameterizedTypeReference<RESULT> responseClass) {
         return sendRequest(serviceName, uri, body, HttpMethod.POST, responseClass, authentication);
     }
 
-    public <RESULT, JWT> RESULT doGet(ServiceName serviceName, JWT authentication, String uri, Class<RESULT> responseClass) {
-        return sendRequest(serviceName, uri, null, HttpMethod.GET, responseClass, authentication);
+    public <RESULT, JWT> RESULT doGet(ServiceName serviceName, JWT authentication, String uri, ParameterizedTypeReference<RESULT> typeReference) {
+        return sendRequest(serviceName, uri, null, HttpMethod.GET, typeReference, getJwtTokenSupplierFromAuthentication(authentication));
     }
 
-    public <RESULT, BODY, JWT> RESULT doPut(ServiceName serviceName, JWT authentication, String uri, BODY body, Class<RESULT> responseClass) {
+
+    public <RESULT, BODY, JWT> RESULT doPut(ServiceName serviceName, JWT authentication, String uri, BODY body, ParameterizedTypeReference<RESULT> responseClass) {
         return sendRequest(serviceName, uri, body, HttpMethod.PUT, responseClass, authentication);
     }
 
-    public <RESULT, BODY, JWT> RESULT doDelete(ServiceName serviceName, JWT authentication, String uri, BODY body, Class<RESULT> responseClass) {
+    public <RESULT, BODY, JWT> RESULT doDelete(ServiceName serviceName, JWT authentication, String uri, BODY body, ParameterizedTypeReference<RESULT> responseClass) {
         return sendRequest(serviceName, uri, body, HttpMethod.DELETE, responseClass, authentication);
     }
 

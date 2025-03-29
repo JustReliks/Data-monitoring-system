@@ -27,6 +27,7 @@ public class UserAuthenticationController {
 
     @GetMapping("/hello/{test}")
     @LogController()
+    @Operation(hidden = true)
     public String helloWorld(Authentication authentication, @PathVariable(name = "test") String test, @ExcludeFromLog @RequestParam(name = "test2", required = false) String test2) {
 //        throw new RuntimeException("test");
         return "Hello World!" + " " + test;

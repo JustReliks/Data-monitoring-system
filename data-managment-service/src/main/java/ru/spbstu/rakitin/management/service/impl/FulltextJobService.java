@@ -5,6 +5,7 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.dto.TaskType;
@@ -20,6 +21,7 @@ import java.util.UUID;
 
 @Service
 @Slf4j
+@ConditionalOnProperty(name = "mds.fulltext.enabled", havingValue = "true", matchIfMissing = true)
 public class FulltextJobService extends AbstractJobService<FulltextJobDto> {
 
     private static final String ID_FIELD = "id";

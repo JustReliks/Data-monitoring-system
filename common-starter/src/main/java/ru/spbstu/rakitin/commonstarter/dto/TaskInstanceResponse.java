@@ -1,16 +1,15 @@
-package ru.spbstu.rakitin.fulltext_service.dto;
+package ru.spbstu.rakitin.commonstarter.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class FulltextTaskInstanceResponse {
+@AllArgsConstructor
+public class TaskInstanceResponse {
 
     private long id;
     private TaskStatus status;

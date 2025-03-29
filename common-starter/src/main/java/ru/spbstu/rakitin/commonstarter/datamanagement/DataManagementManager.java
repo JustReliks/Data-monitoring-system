@@ -11,6 +11,9 @@ import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveJobDto;
 import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextJobDto;
 import ru.spbstu.rakitin.commonstarter.dto.monitoring.MonitoringJobDto;
 
+import static ru.spbstu.rakitin.commonstarter.discovery.ParametrizedTypes.TOPIC_TYPE;
+import static ru.spbstu.rakitin.commonstarter.discovery.ParametrizedTypes.VOID_TYPE;
+
 @Service
 @RequiredArgsConstructor
 public class DataManagementManager {
@@ -26,31 +29,31 @@ public class DataManagementManager {
     private final InnerServiceRequestFactory innerServiceRequestFactory;
 
     public Topic findTopicById(long id, Authentication authentication) {
-        return innerServiceRequestFactory.doGet(ServiceName.DATA_MANAGEMENT, authentication, String.format(FIND_TOPIC_BY_ID, id), Topic.class);
+        return innerServiceRequestFactory.doGet(ServiceName.DATA_MANAGEMENT, authentication, String.format(FIND_TOPIC_BY_ID, id), TOPIC_TYPE);
     }
 
     public void startFulltextJob(FulltextJobDto fulltextJobDto, Authentication authentication) {
-        innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, START_FULLTEXT_JOB, fulltextJobDto, Void.TYPE);
+        innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, START_FULLTEXT_JOB, fulltextJobDto, VOID_TYPE);
     }
 
     public void stopFulltextJob(JobNameDto jobName, Authentication authentication) {
-        innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, STOP_FULLTEXT_JOB, jobName, Void.TYPE);
+        innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, STOP_FULLTEXT_JOB, jobName, VOID_TYPE);
     }
 
     public void startArchiveJob(ArchiveJobDto archiveJobDto, Authentication authentication) {
-        innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, START_ARCHIVE_JOB, archiveJobDto, Void.TYPE);
+        innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, START_ARCHIVE_JOB, archiveJobDto, VOID_TYPE);
     }
 
     public void stopArchiveJob(JobNameDto jobName, Authentication authentication) {
-        innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, STOP_ARCHIVE_JOB, jobName, Void.TYPE);
+        innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, STOP_ARCHIVE_JOB, jobName, VOID_TYPE);
     }
 
     public void startMonitoringJob(MonitoringJobDto monitoringJobDto, Authentication authentication) {
-        innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, START_MONITORING_JOB, monitoringJobDto, Void.TYPE);
+        innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, START_MONITORING_JOB, monitoringJobDto, VOID_TYPE);
     }
 
     public void stopMonitoringJob(JobNameDto jobName, Authentication authentication) {
-        innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, STOP_MONITORING_JOB, jobName, Void.TYPE);
+        innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, STOP_MONITORING_JOB, jobName, VOID_TYPE);
     }
 
 

@@ -3,7 +3,6 @@ package ru.spbstu.rakitin.fulltext_service.api;
 import lombok.RequiredArgsConstructor;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
@@ -14,9 +13,9 @@ import ru.spbstu.rakitin.commonstarter.exception.ConfigAlreadyExists;
 import ru.spbstu.rakitin.commonstarter.exception.InvalidSchemaException;
 import ru.spbstu.rakitin.commonstarter.exception.QuotaExceededException;
 import ru.spbstu.rakitin.commonstarter.exception.UnavailableTopicException;
-import ru.spbstu.rakitin.fulltext_service.dto.FulltextTaskConfigDto;
+import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskConfigDto;
 import ru.spbstu.rakitin.fulltext_service.dto.FulltextTaskConfigMapper;
-import ru.spbstu.rakitin.fulltext_service.dto.FulltextTaskResponse;
+import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskResponse;
 import ru.spbstu.rakitin.fulltext_service.exception.*;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskInstance;
 import ru.spbstu.rakitin.fulltext_service.service.FulltextTaskConfigService;
@@ -45,22 +44,18 @@ public class FulltextTaskController {
 
     @GetMapping("/list")
     @LogController
-    public ResponseEntity<List<FulltextTaskResponse>> list(Authentication authentication, @RequestParam List<Long> projects) {
-        List<FulltextTaskResponse> list = fulltextTaskConfigService.findForProjects(projects, authentication)
+    public List<FulltextTaskResponse> list(Authentication authentication, @RequestParam List<Long> projects) {
+
+        return fulltextTaskConfigService.findForProjects(projects, authentication)
                 .stream().map(fulltextTaskConfig -> {
                     FulltextTaskResponse response = new FulltextTaskResponse();
                     FulltextTaskConfigDto fulltextTaskConfigDto = fulltextTaskConfigMapper.mapFulltextTaskConfigToDto(fulltextTaskConfig);
                     response.setId(fulltextTaskConfig.getId());
                     response.setConfig(fulltextTaskConfigDto);
                     Optional<FulltextTaskInstance> fulltextTaskInstance = fulltextTaskInstanceService.findByConfigIdOptionally(fulltextTaskConfig.getId());
-                    fulltextTaskInstance.ifPresent(fulltextTaskInstanceResponse -> response.setInstance(fulltextTaskConfigMapper.mapFulltextTaskInstanceToFulltextTaskInstanceResponse(fulltextTaskInstanceResponse)));
+                    fulltextTaskInstance.ifPresent(fulltextTaskInstanceResponse -> response.setInstance(fulltextTaskConfigMapper.mapFulltextTaskInstanceToTaskInstanceResponse(fulltextTaskInstanceResponse)));
                     return response;
                 }).toList();
-
-        if (list.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return ResponseEntity.ok(list);
     }
 
     @DeleteMapping("/{configId}/delete")

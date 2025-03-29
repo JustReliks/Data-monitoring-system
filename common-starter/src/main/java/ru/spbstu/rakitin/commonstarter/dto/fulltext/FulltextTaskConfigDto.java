@@ -1,4 +1,4 @@
-package ru.spbstu.rakitin.fulltext_service.dto;
+package ru.spbstu.rakitin.commonstarter.dto.fulltext;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
