@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.ProjectIdContainer;
-import ru.spbstu.rakitin.monitoring_service.dto.ApiKeyDto;
-import ru.spbstu.rakitin.monitoring_service.dto.CreateReadApiKeyDto;
+import ru.spbstu.rakitin.commonstarter.dto.monitoring.ApiKeyDto;
+import ru.spbstu.rakitin.commonstarter.dto.monitoring.CreateReadApiKeyDto;
 import ru.spbstu.rakitin.monitoring_service.exception.OrganizationNotFoundException;
 import ru.spbstu.rakitin.monitoring_service.service.ApiKeyService;
 

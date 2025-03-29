@@ -82,6 +82,9 @@ public class ArchiveTaskConfigServiceImpl implements ArchiveTaskConfigService {
         if (!archiveTaskConfig.getName().equals(config.getName())) {
             throw new ArchiveConfigUpdateException("Can not change task name");
         }
+        config.setSchema(archiveTaskConfig.getSchema());
+        config.setTopic(archiveTaskConfig.getTopic());
+        config.setOverwritingEnabled(archiveTaskConfig.isOverwritingEnabled());
         Optional<ArchiveTaskInstance> instance = archiveTaskInstanceService.findByConfigIdOptionally(configId);
         if (instance.isPresent()) {
             ArchiveTaskInstance archiveTaskInstance = instance.get();
@@ -92,7 +95,7 @@ public class ArchiveTaskConfigServiceImpl implements ArchiveTaskConfigService {
         }
         archiveTaskConfig.setId(configId);
 
-        return archiveTaskConfigRepository.save(archiveTaskConfig);
+        return archiveTaskConfigRepository.save(config);
     }
 
     @Override

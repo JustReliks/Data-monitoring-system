@@ -1,9 +1,15 @@
-package ru.spbstu.rakitin.monitoring_service.dto;
+package ru.spbstu.rakitin.commonstarter.dto.monitoring;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MonitoringTaskConfigDto {
 
     private String name;

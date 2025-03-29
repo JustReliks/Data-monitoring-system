@@ -134,4 +134,9 @@ public class InfluxDBManager {
     }
 
 
+    public void removeMonitoringInstance(MonitoringTaskConfig config) {
+        Bucket bucketByName = bucketsApi.findBucketByName(config.getName());
+        assert bucketByName != null;
+        bucketsApi.deleteBucket(bucketByName);
+    }
 }

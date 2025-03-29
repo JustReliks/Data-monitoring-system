@@ -10,10 +10,6 @@ import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.ProjectIdContainer;
 import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskConfigDto;
 import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskResponse;
-import ru.spbstu.rakitin.commonstarter.exception.ConfigAlreadyExists;
-import ru.spbstu.rakitin.commonstarter.exception.InvalidSchemaException;
-import ru.spbstu.rakitin.commonstarter.exception.QuotaExceededException;
-import ru.spbstu.rakitin.commonstarter.exception.UnavailableTopicException;
 import ru.spbstu.rakitin.commonstarter.fulltext.FulltextServiceManager;
 
 import java.util.List;
@@ -30,7 +26,7 @@ public class FulltextConfigController {
     @LogController
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(description = "Создание конфигурации задачи полнотекстовой индексации")
-    public long create(Authentication authentication, @RequestBody @ProjectIdContainer(innerFieldName = "projectId") FulltextTaskConfigDto configDto) throws ConfigAlreadyExists, QuotaExceededException, UnavailableTopicException, InvalidSchemaException {
+    public long create(Authentication authentication, @RequestBody @ProjectIdContainer(innerFieldName = "projectId") FulltextTaskConfigDto configDto) {
         return fulltextServiceManager.createConfig(configDto, authentication);
     }
 

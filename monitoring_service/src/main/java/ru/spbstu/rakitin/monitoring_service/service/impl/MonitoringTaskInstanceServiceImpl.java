@@ -22,6 +22,7 @@ import ru.spbstu.rakitin.monitoring_service.service.MonitoringTaskConfigService;
 import ru.spbstu.rakitin.monitoring_service.service.MonitoringTaskInstanceService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -78,8 +79,7 @@ public class MonitoringTaskInstanceServiceImpl implements MonitoringTaskInstance
 
     @Override
     public void suspendTask(long configId, Authentication authentication) throws MonitoringTaskConfigNotFoundException, MonitoringTaskInstanceNotFoundException, MonitoringStatusWontChangedException {
-        MonitoringTaskInstance instance = monitoringTaskInstanceRepository.findFirstByConfigId(configId)
-                .orElseThrow(() -> new MonitoringTaskInstanceNotFoundException("Task instance with id %s not found!"));
+        MonitoringTaskInstance instance = findByConfigId(configId);
         MonitoringTaskConfig config = instance.getConfig();
         adminManager.checkAccessThrowable(authentication, config.getProject().getId(), PermissionTypeEnum.ARCHIVE_MANAGE_TASK);
         if (instance.getTaskStatus() != TaskStatus.RUNNING) {
@@ -90,6 +90,22 @@ public class MonitoringTaskInstanceServiceImpl implements MonitoringTaskInstance
                 .taskName(config.getName()).build(), authentication);
         forceChangeMonitoringInstanceStatus(instance.getId(), TaskStatus.SUSPENDED);
 
+    }
+
+    @Override
+    public void update(long configId, Authentication authentication) throws Exception {
+        MonitoringTaskInstance instance = findByConfigId(configId);
+        adminManager.checkAccessThrowable(authentication, instance.getConfig().getProject().getId(), PermissionTypeEnum.ARCHIVE_MANAGE_TASK);
+        if (instance.getTaskStatus() == TaskStatus.RUNNING) {
+            suspendTask(configId, authentication);
+            resume(configId, authentication);
+        }
+    }
+
+    @Override
+    public MonitoringTaskInstance findByConfigId(long configId) throws MonitoringTaskInstanceNotFoundException {
+        return monitoringTaskInstanceRepository.findFirstByConfigId(configId)
+                .orElseThrow(() -> new MonitoringTaskInstanceNotFoundException("Task instance with id %s not found!"));
     }
 
     @Override
@@ -115,5 +131,33 @@ public class MonitoringTaskInstanceServiceImpl implements MonitoringTaskInstance
     @Override
     public List<MonitoringTaskInstance> findAllByConfigIds(List<Long> configIds) {
         return monitoringTaskInstanceRepository.findByConfigIdIn(configIds);
+    }
+
+    @Override
+    public Optional<MonitoringTaskInstance> findByConfigIdOptionally(Long id) {
+        return monitoringTaskInstanceRepository.findById(id);
+    }
+
+    @Override
+    public void removeInstance(Long id, Authentication authentication) throws MonitoringStatusWontChangedException, MonitoringTaskConfigNotFoundException, MonitoringTaskInstanceNotFoundException {
+        MonitoringTaskInstance instance = findById(id);
+        TaskStatus taskStatus = instance.getTaskStatus();
+        if (taskStatus == TaskStatus.RUNNING) {
+            suspendTask(instance.getConfig().getId(), authentication);
+        }
+        if (taskStatus != TaskStatus.CREATED && taskStatus != TaskStatus.INITIATION_FAILED) {
+            influxDBManager.removeMonitoringInstance(instance.getConfig());
+        }
+        monitoringTaskInstanceRepository.deleteById(id);
+    }
+
+    @Override
+    public MonitoringTaskInstance findById(Long id) throws MonitoringTaskInstanceNotFoundException {
+        return monitoringTaskInstanceRepository.findById(id).orElseThrow(() -> new MonitoringTaskInstanceNotFoundException(String.format("Task instance with id %s not found", id)));
+    }
+
+    @Override
+    public void saveInstance(MonitoringTaskInstance monitoringTaskInstance) {
+        monitoringTaskInstanceRepository.save(monitoringTaskInstance);
     }
 }

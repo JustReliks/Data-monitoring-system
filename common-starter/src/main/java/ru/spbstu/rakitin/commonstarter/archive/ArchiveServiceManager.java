@@ -75,6 +75,6 @@ public class ArchiveServiceManager {
     }
 
     public void update(long configId, Authentication authentication) {
-        requestFactory.doPost(ServiceName.ARCHIVE, authentication, String.format(UPDATE, configId), null, VOID_TYPE);
+        requestFactory.doPut(ServiceName.ARCHIVE, authentication, String.format(UPDATE, configId), null, VOID_TYPE);
     }
 }

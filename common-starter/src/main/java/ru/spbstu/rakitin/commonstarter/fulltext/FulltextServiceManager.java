@@ -59,7 +59,7 @@ public class FulltextServiceManager {
     }
 
     public void update(long configId, Authentication authentication) {
-        requestFactory.doPost(ServiceName.FULL_TEXT, authentication, String.format(UPDATE, configId), null, VOID_TYPE);
+        requestFactory.doPut(ServiceName.FULL_TEXT, authentication, String.format(UPDATE, configId), null, VOID_TYPE);
     }
 
     public long createConfig(FulltextTaskConfigDto configDto, Authentication authentication) {

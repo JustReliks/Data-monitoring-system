@@ -1,15 +1,14 @@
 package ru.spbstu.rakitin.monitoring_service.dto;
 
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.datamanagement.DataManagementManager;
-import ru.spbstu.rakitin.commonstarter.dto.FieldType;
-import ru.spbstu.rakitin.commonstarter.dto.SchemaFieldDto;
-import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
-import ru.spbstu.rakitin.commonstarter.dto.TimestampFieldDto;
+import ru.spbstu.rakitin.commonstarter.dto.*;
 import ru.spbstu.rakitin.commonstarter.dto.monitoring.MonitoringJobDto;
+import ru.spbstu.rakitin.commonstarter.dto.monitoring.MonitoringTaskConfigDto;
 import ru.spbstu.rakitin.monitoring_service.model.*;
 
 import java.util.Optional;
@@ -85,4 +84,20 @@ public class MonitoringTaskConfigMapper {
         return schemaFieldDto != null ? FieldType.valueOf(schemaFieldDto.name()) : null;
     }
 
+    public MonitoringTaskConfigDto mapMonitoringTaskConfigToDto(MonitoringTaskConfig monitoringTaskConfig) {
+        return MonitoringTaskConfigDto.builder()
+                .name(monitoringTaskConfig.getName())
+                .projectId(monitoringTaskConfig.getProject().getId())
+                .topicId(monitoringTaskConfig.getTopic().getId())
+                .shardGroupDurationSeconds(monitoringTaskConfig.getShardGroupDurationSeconds())
+                .retentionTimeSeconds(monitoringTaskConfig.getRetentionTimeSeconds())
+                .schema(mapMonitoringSchemaToSchemaDto(monitoringTaskConfig.getSchema())).build();
+    }
+
+    public TaskInstanceResponse mapMonitoringInstanceToTaskInstanceResponse(@NotNull MonitoringTaskInstance monitoringTaskInstance) {
+        return TaskInstanceResponse.builder()
+                .id(monitoringTaskInstance.getId())
+                .needUpdate(monitoringTaskInstance.isNeedUpdate())
+                .status(monitoringTaskInstance.getTaskStatus()).build();
+    }
 }
