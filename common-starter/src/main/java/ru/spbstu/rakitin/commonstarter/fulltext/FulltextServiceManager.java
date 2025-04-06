@@ -12,6 +12,8 @@ import ru.spbstu.rakitin.commonstarter.discovery.ServiceName;
 import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextJobDto;
 import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskConfigDto;
 import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskResponse;
+import ru.spbstu.rakitin.commonstarter.dto.fulltext.SolrQueryDto;
+import ru.spbstu.rakitin.commonstarter.utils.MapJson;
 import ru.spbstu.rakitin.commonstarter.utils.Utils;
 
 import java.util.List;
@@ -31,6 +33,7 @@ public class FulltextServiceManager {
     private static final String REMOVE_CONFIG = "/api/v1/fulltext/config/%s/delete?forceDelete=%s";
     private static final String UPDATE_CONFIG = "/api/v1/fulltext/config/%s/update";
     private static final String LIST_CONFIG = "/api/v1/fulltext/config/list?projects=%s";
+    private static final String QUERY = "/api/v1/fulltext/query/%s";
 
     private final InnerServiceRequestFactory requestFactory;
     private final AdminUserService adminUserService;
@@ -79,4 +82,7 @@ public class FulltextServiceManager {
     }
 
 
+    public List<MapJson> query(SolrQueryDto solrQuery, long taskId, Authentication authentication) {
+        return requestFactory.doPut(ServiceName.FULL_TEXT, authentication, String.format(QUERY, taskId), solrQuery, MAP_JSON_LIST);
+    }
 }

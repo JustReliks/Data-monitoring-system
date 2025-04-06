@@ -9,9 +9,7 @@ import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.discovery.AdminUserService;
 import ru.spbstu.rakitin.commonstarter.discovery.InnerServiceRequestFactory;
 import ru.spbstu.rakitin.commonstarter.discovery.ServiceName;
-import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveJobDto;
-import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveTaskConfigDto;
-import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveTaskResponse;
+import ru.spbstu.rakitin.commonstarter.dto.archive.*;
 import ru.spbstu.rakitin.commonstarter.utils.Utils;
 
 import java.util.List;
@@ -31,6 +29,8 @@ public class ArchiveServiceManager {
     private static final String RESUME = "/api/v1/archive/instance/resume/%s";
     private static final String SUSPEND = "/api/v1/archive/instance/suspend/%s";
     private static final String UPDATE = "/api/v1/archive/instance/update/%s";
+    private static final String FILE_LIST = "/api/v1/archive/query/%s/list";
+    private static final String GET_FILE = "/api/v1/archive/query/%s/file/%s";
 
     private final InnerServiceRequestFactory requestFactory;
     private final AdminUserService adminUserService;
@@ -76,5 +76,13 @@ public class ArchiveServiceManager {
 
     public void update(long configId, Authentication authentication) {
         requestFactory.doPut(ServiceName.ARCHIVE, authentication, String.format(UPDATE, configId), null, VOID_TYPE);
+    }
+
+    public List<FileInformationDto> getAllFilesForTask(long configId, Authentication authentication) {
+        return requestFactory.doGet(ServiceName.ARCHIVE, authentication, String.format(FILE_LIST, configId), FILE_INFORMATION_LIST);
+    }
+
+    public FileDto getFile(long configId, String filename, Authentication authentication) {
+        return requestFactory.doGet(ServiceName.ARCHIVE, authentication, String.format(GET_FILE, configId, filename), FILE);
     }
 }

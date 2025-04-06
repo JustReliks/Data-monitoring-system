@@ -3,9 +3,12 @@ package ru.spbstu.rakitin.commonstarter.discovery;
 import org.springframework.core.ParameterizedTypeReference;
 import ru.spbstu.rakitin.commonentites.model.Topic;
 import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveTaskResponse;
+import ru.spbstu.rakitin.commonstarter.dto.archive.FileDto;
+import ru.spbstu.rakitin.commonstarter.dto.archive.FileInformationDto;
 import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskResponse;
 import ru.spbstu.rakitin.commonstarter.dto.monitoring.ApiKeyDto;
 import ru.spbstu.rakitin.commonstarter.dto.monitoring.MonitoringTaskResponse;
+import ru.spbstu.rakitin.commonstarter.utils.MapJson;
 
 import java.util.List;
 
@@ -26,4 +29,13 @@ public class ParametrizedTypes {
     };
     public static final ParameterizedTypeReference<ApiKeyDto> API_KEY_REFERENCE = new ParameterizedTypeReference<>() {
     };
+
+    public static final ParameterizedTypeReference<List<MapJson>> MAP_JSON_LIST = new ParameterizedTypeReference<>() {
+    };
+
+    public static final ParameterizedTypeReference<List<FileInformationDto>> FILE_INFORMATION_LIST = new ParameterizedTypeReference<>() {
+    };
+    public static final ParameterizedTypeReference<FileDto> FILE = new ParameterizedTypeReference<>() {
+    };
+
 }

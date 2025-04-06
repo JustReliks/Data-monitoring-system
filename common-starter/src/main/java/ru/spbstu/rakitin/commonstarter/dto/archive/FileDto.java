@@ -1,4 +1,4 @@
-package ru.spbstu.rakitin.archive_service.dto;
+package ru.spbstu.rakitin.commonstarter.dto.archive;
 
 import lombok.Builder;
 import lombok.Data;
