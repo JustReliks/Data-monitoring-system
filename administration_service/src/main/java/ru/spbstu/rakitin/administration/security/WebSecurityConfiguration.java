@@ -13,11 +13,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import ru.spbstu.rakitin.administration.service.auth.UserService;
+import ru.spbstu.rakitin.commonstarter.security.WebSecurityConfigurationBean;
 
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class WebSecurityConfiguration {
+public class WebSecurityConfiguration implements WebSecurityConfigurationBean {
 
     private final OnlyAdminSecurityFilterChain onlyAdminSecurityFilterChain;
     private final UserService userService;
