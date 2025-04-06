@@ -37,5 +37,7 @@ public class ParametrizedTypes {
     };
     public static final ParameterizedTypeReference<FileDto> FILE = new ParameterizedTypeReference<>() {
     };
+    public static final ParameterizedTypeReference<Double> DOUBLE = new ParameterizedTypeReference<>() {
+    };
 
 }

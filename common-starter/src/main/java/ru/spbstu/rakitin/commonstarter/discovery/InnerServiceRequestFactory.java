@@ -85,7 +85,7 @@ public class InnerServiceRequestFactory {
         }
     }
 
-    private <RESULT, BODY> ResponseEntity<RESULT> sendRequest(String host,
+    public <RESULT, BODY> ResponseEntity<RESULT> sendRequest(String host,
                                                               String path,
                                                               HttpMethod method,
                                                               ParameterizedTypeReference<RESULT> responseClass,

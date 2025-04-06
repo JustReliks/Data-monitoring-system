@@ -14,8 +14,9 @@ public class MetricsController {
     private final MetricsEndpoint metricsEndpoint;
 
     @GetMapping("/cpu")
-    public long getCpuUsage() {
-        return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+    public double getCpuUsage() {
+        MetricsEndpoint.MetricDescriptor metric = metricsEndpoint.metric("process.cpu.usage", null);
+        return metric.getMeasurements().stream().filter(sample -> sample.getStatistic().name().equals("VALUE")).findFirst().get().getValue();
     }
 
 }
