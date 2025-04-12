@@ -22,9 +22,9 @@ import ru.spbstu.rakitin.administration.service.auth.PermissionService;
 import ru.spbstu.rakitin.administration.service.auth.UserService;
 import ru.spbstu.rakitin.commonentites.model.Permission;
 import ru.spbstu.rakitin.commonentites.model.User;
-import ru.spbstu.rakitin.commonstarter.dto.AuthUserDto;
-import ru.spbstu.rakitin.commonstarter.dto.UserDto;
-import ru.spbstu.rakitin.commonstarter.dto.ValidateUserTokenDto;
+import ru.spbstu.rakitin.dto.AuthUserDto;
+import ru.spbstu.rakitin.dto.UserDto;
+import ru.spbstu.rakitin.dto.ValidateUserTokenDto;
 
 import java.util.List;
 

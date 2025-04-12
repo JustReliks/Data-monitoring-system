@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.ProjectIdContainer;
 import ru.spbstu.rakitin.commonstarter.archive.ArchiveServiceManager;
-import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveTaskConfigDto;
-import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveTaskResponse;
+import ru.spbstu.rakitin.dto.archive.ArchiveTaskConfigDto;
+import ru.spbstu.rakitin.dto.archive.ArchiveTaskResponse;
 
 import java.util.List;
 

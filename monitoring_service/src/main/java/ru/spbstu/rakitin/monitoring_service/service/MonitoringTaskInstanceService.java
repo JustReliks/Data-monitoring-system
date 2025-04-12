@@ -1,14 +1,12 @@
 package ru.spbstu.rakitin.monitoring_service.service;
 
 import org.springframework.security.core.Authentication;
-import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
+import ru.spbstu.rakitin.dto.TaskStatus;
 import ru.spbstu.rakitin.monitoring_service.exception.MonitoringStatusWontChangedException;
 import ru.spbstu.rakitin.monitoring_service.exception.MonitoringTaskConfigNotFoundException;
 import ru.spbstu.rakitin.monitoring_service.exception.MonitoringTaskInstanceNotFoundException;
-import ru.spbstu.rakitin.monitoring_service.exception.MonitoringTaskResumeException;
 import ru.spbstu.rakitin.monitoring_service.model.MonitoringTaskInstance;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 

@@ -5,10 +5,10 @@ import com.influxdb.client.WriteApiBlocking;
 import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.client.write.Point;
 import lombok.extern.slf4j.Slf4j;
-import ru.spbstu.rakitin.commonstarter.dto.FieldType;
-import ru.spbstu.rakitin.commonstarter.dto.SchemaFieldDto;
-import ru.spbstu.rakitin.commonstarter.dto.monitoring.MonitoringJobDto;
-import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.dto.FieldType;
+import ru.spbstu.rakitin.dto.SchemaFieldDto;
+import ru.spbstu.rakitin.dto.monitoring.MonitoringJobDto;
+import ru.spbstu.rakitin.dto.MapJson;
 import ru.spbstu.rakitin.management.engine.influxdb.InfluxDbClientFactory;
 import ru.spbstu.rakitin.management.engine.processors.AbstractQueueProcessor;
 

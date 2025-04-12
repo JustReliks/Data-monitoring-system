@@ -3,8 +3,8 @@ package ru.spbstu.rakitin.monitoring_service.api.internal;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
-import ru.spbstu.rakitin.commonstarter.dto.monitoring.MonitoringJobDto;
+import ru.spbstu.rakitin.dto.TaskStatus;
+import ru.spbstu.rakitin.dto.monitoring.MonitoringJobDto;
 import ru.spbstu.rakitin.monitoring_service.dto.MonitoringTaskConfigMapper;
 import ru.spbstu.rakitin.monitoring_service.exception.MonitoringStatusWontChangedException;
 import ru.spbstu.rakitin.monitoring_service.exception.MonitoringTaskInstanceNotFoundException;

@@ -3,8 +3,8 @@ package ru.spbstu.rakitin.management.engine.processors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.kstream.Predicate;
-import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
-import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.dto.TaskSchemaDto;
+import ru.spbstu.rakitin.dto.MapJson;
 
 
 @Slf4j

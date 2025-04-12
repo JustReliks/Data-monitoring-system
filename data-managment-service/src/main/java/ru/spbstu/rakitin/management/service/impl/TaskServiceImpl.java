@@ -5,7 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
-import ru.spbstu.rakitin.commonstarter.dto.TaskType;
+import ru.spbstu.rakitin.dto.TaskType;
 import ru.spbstu.rakitin.management.dto.TaskDto;
 import ru.spbstu.rakitin.management.service.JobService;
 import ru.spbstu.rakitin.management.service.TaskService;

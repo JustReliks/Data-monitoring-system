@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import ru.spbstu.rakitin.commonentites.model.Project;
+import ru.spbstu.rakitin.commonentites.model.Topic;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.datamanagement.DataManagementManager;
-import ru.spbstu.rakitin.commonstarter.dto.*;
-import ru.spbstu.rakitin.commonstarter.dto.monitoring.MonitoringJobDto;
-import ru.spbstu.rakitin.commonstarter.dto.monitoring.MonitoringTaskConfigDto;
+import ru.spbstu.rakitin.dto.*;
+import ru.spbstu.rakitin.dto.monitoring.MonitoringJobDto;
+import ru.spbstu.rakitin.dto.monitoring.MonitoringTaskConfigDto;
 import ru.spbstu.rakitin.monitoring_service.model.*;
 
 import java.util.Optional;
@@ -24,7 +26,7 @@ public class MonitoringTaskConfigMapper {
         return MonitoringTaskConfig.builder()
                 .name(dto.getName())
                 .project(adminManager.findProjectById(dto.getProjectId()))
-                .topic(dataManagementManager.findTopicById(dto.getTopicId(), authentication))
+                .topic(mapTopicDtoToTopic(dataManagementManager.findTopicById(dto.getTopicId(), authentication)))
                 .retentionTimeSeconds(dto.getRetentionTimeSeconds())
                 .shardGroupDurationSeconds(dto.getShardGroupDurationSeconds())
                 .schema(Optional.of(dto.getSchema()).map(this::mapDtoToMonitoringTaskSchema).orElseThrow(() -> new IllegalArgumentException("Schema must be defined"))).build();
@@ -68,6 +70,28 @@ public class MonitoringTaskConfigMapper {
         return TimestampFieldDto.builder()
                 .fieldName(schema.getTimestampField().getFieldName())
                 .useInsertionDate(schema.getTimestampField().isUseInsertionDate()).build();
+    }
+
+    public Topic mapTopicDtoToTopic(final TopicDto topicDto) {
+        return Topic.builder()
+                .project(mapProjectDtoToProject(topicDto.getProject()))
+                .id(topicDto.getId())
+                .uuid(topicDto.getUuid())
+                .name(topicDto.getName())
+                .nameInKafka(topicDto.getNameInKafka())
+                .partitions(topicDto.getPartitions())
+                .replicationFactor(topicDto.getReplicationFactor()).build();
+    }
+
+    public Project mapProjectDtoToProject(final ProjectDto projectDto) {
+        return Project.builder()
+                .archiveQuota(projectDto.getArchiveQuota())
+                .fulltextQuota(projectDto.getFulltextQuota())
+                .id(projectDto.getId())
+                .projectName(projectDto.getProjectName())
+                .monitoringQuota(projectDto.getMonitoringQuota())
+                .topicQuota(projectDto.getTopicQuota())
+                .build();
     }
 
     private SchemaFieldDto mapSchemaFieldToDto(SchemaField schemaField) {

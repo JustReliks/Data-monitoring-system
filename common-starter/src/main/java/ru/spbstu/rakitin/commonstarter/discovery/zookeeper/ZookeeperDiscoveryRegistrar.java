@@ -10,7 +10,7 @@ import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
-import ru.spbstu.rakitin.commonstarter.discovery.ServiceName;
+import ru.spbstu.rakitin.dto.ServiceName;
 
 @Slf4j
 @RequiredArgsConstructor

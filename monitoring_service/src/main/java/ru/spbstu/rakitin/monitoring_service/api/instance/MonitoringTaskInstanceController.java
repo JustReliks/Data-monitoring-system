@@ -14,24 +14,24 @@ import ru.spbstu.rakitin.monitoring_service.service.MonitoringTaskInstanceServic
 @RequiredArgsConstructor
 public class MonitoringTaskInstanceController {
 
-    private final MonitoringTaskInstanceService fulltextTaskInstanceService;
+    private final MonitoringTaskInstanceService monitoringTaskInstanceService;
 
     @PostMapping("/resume/{configId}")
     @LogController
     public long resume(@PathVariable("configId") long configId, Authentication authentication) throws Exception {
-        return fulltextTaskInstanceService.resume(configId, authentication);
+        return monitoringTaskInstanceService.resume(configId, authentication);
     }
 
     @PostMapping("/suspend/{configId}")
     @LogController
     public void suspend(@PathVariable("configId") long configId, Authentication authentication) throws MonitoringStatusWontChangedException, MonitoringTaskConfigNotFoundException, MonitoringTaskInstanceNotFoundException {
-        fulltextTaskInstanceService.suspendTask(configId, authentication);
+        monitoringTaskInstanceService.suspendTask(configId, authentication);
     }
 
     @PutMapping("/suspend/{configId}")
     @LogController
     public void update(@PathVariable("configId") long configId, Authentication authentication) throws Exception {
-        fulltextTaskInstanceService.update(configId, authentication);
+        monitoringTaskInstanceService.update(configId, authentication);
     }
 
 }

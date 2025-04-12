@@ -1,13 +1,12 @@
 package ru.spbstu.rakitin.commonstarter.discovery.impl;
 
 import io.micrometer.common.util.StringUtils;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.configuration.InnerRequestConfiguration;
 import ru.spbstu.rakitin.commonstarter.discovery.AbstractDiscoveryService;
-import ru.spbstu.rakitin.commonstarter.discovery.ServiceName;
+import ru.spbstu.rakitin.dto.ServiceName;
 import ru.spbstu.rakitin.commonstarter.discovery.ServicePeakStrategy;
 
 import java.util.Arrays;

@@ -4,7 +4,7 @@ import org.springframework.security.core.Authentication;
 import ru.spbstu.rakitin.archive_service.exception.ArchiveStatusWontChangedException;
 import ru.spbstu.rakitin.archive_service.exception.ArchiveTaskInstanceNotFoundException;
 import ru.spbstu.rakitin.archive_service.model.ArchiveTaskInstance;
-import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
+import ru.spbstu.rakitin.dto.TaskStatus;
 
 import java.io.IOException;
 import java.util.List;

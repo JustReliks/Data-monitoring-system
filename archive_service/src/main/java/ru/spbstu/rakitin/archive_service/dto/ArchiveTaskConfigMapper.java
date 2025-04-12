@@ -6,14 +6,14 @@ import org.springframework.stereotype.Component;
 import ru.spbstu.rakitin.archive_service.model.ArchiveTaskConfig;
 import ru.spbstu.rakitin.archive_service.model.ArchiveTaskInstance;
 import ru.spbstu.rakitin.archive_service.model.ArchiveTaskSchema;
+import ru.spbstu.rakitin.commonentites.model.Project;
+import ru.spbstu.rakitin.commonentites.model.Topic;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.datamanagement.DataManagementManager;
-import ru.spbstu.rakitin.commonstarter.dto.FieldType;
-import ru.spbstu.rakitin.commonstarter.dto.TaskInstanceResponse;
-import ru.spbstu.rakitin.commonstarter.dto.TimestampFieldDto;
-import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveJobDto;
-import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveTaskConfigDto;
-import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveTaskSchemaDto;
+import ru.spbstu.rakitin.dto.*;
+import ru.spbstu.rakitin.dto.archive.ArchiveJobDto;
+import ru.spbstu.rakitin.dto.archive.ArchiveTaskConfigDto;
+import ru.spbstu.rakitin.dto.archive.ArchiveTaskSchemaDto;
 
 import java.util.Optional;
 
@@ -28,7 +28,7 @@ public class ArchiveTaskConfigMapper {
     public ArchiveTaskConfig mapDtoToArchiveTaskConfig(final ArchiveTaskConfigDto archiveTaskConfigDto, Authentication authentication) {
         return ArchiveTaskConfig.builder()
                 .project(adminManager.findProjectById(archiveTaskConfigDto.getProjectId()))
-                .topic(dataManagementManager.findTopicById(archiveTaskConfigDto.getTopicId(), authentication))
+                .topic(mapTopicDtoToTopic(dataManagementManager.findTopicById(archiveTaskConfigDto.getTopicId(), authentication)))
                 .name(archiveTaskConfigDto.getName())
                 .overwritingEnabled(archiveTaskConfigDto.isOverwritingEnabled())
                 .schema(mapDtoToArchiveTaskSchema(archiveTaskConfigDto.getSchema())).build();
@@ -41,6 +41,28 @@ public class ArchiveTaskConfigMapper {
         schema.setFilter(schemaDto.getFilterExpression());
         schema.setFilenameFieldName(schemaDto.getFilenameFieldName());
         return schema;
+    }
+
+    public Topic mapTopicDtoToTopic(final TopicDto topicDto) {
+        return Topic.builder()
+                .project(mapProjectDtoToProject(topicDto.getProject()))
+                .id(topicDto.getId())
+                .uuid(topicDto.getUuid())
+                .name(topicDto.getName())
+                .nameInKafka(topicDto.getNameInKafka())
+                .partitions(topicDto.getPartitions())
+                .replicationFactor(topicDto.getReplicationFactor()).build();
+    }
+
+    public Project mapProjectDtoToProject(final ProjectDto projectDto) {
+        return Project.builder()
+                .archiveQuota(projectDto.getArchiveQuota())
+                .fulltextQuota(projectDto.getFulltextQuota())
+                .id(projectDto.getId())
+                .projectName(projectDto.getProjectName())
+                .monitoringQuota(projectDto.getMonitoringQuota())
+                .topicQuota(projectDto.getTopicQuota())
+                .build();
     }
 
     public ArchiveTaskConfigDto mapArchiveTaskConfigToDto(final ArchiveTaskConfig archiveTaskConfig) {

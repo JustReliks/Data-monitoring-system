@@ -6,7 +6,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.spbstu.rakitin.commonstarter.discovery.InnerServiceRequestFactory;
-import ru.spbstu.rakitin.commonstarter.discovery.ParametrizedTypes;
+import ru.spbstu.rakitin.dto.ParametrizedTypes;
 
 import java.util.Optional;
 

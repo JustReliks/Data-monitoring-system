@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
-import ru.spbstu.rakitin.commonstarter.dto.JobNameDto;
-import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveJobDto;
+import ru.spbstu.rakitin.dto.JobNameDto;
+import ru.spbstu.rakitin.dto.archive.ArchiveJobDto;
 import ru.spbstu.rakitin.management.service.impl.ArchiveJobService;
 
 @RestController

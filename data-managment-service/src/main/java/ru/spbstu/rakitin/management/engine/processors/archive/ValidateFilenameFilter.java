@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.kafka.streams.kstream.Predicate;
-import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveJobDto;
-import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.dto.archive.ArchiveJobDto;
+import ru.spbstu.rakitin.dto.MapJson;
 
 import java.util.Arrays;
 

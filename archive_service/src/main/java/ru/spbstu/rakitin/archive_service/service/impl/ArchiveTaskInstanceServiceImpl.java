@@ -1,6 +1,5 @@
 package ru.spbstu.rakitin.archive_service.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -20,8 +19,8 @@ import ru.spbstu.rakitin.archive_service.service.ArchiveTaskInstanceService;
 import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.datamanagement.DataManagementManager;
-import ru.spbstu.rakitin.commonstarter.dto.JobNameDto;
-import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
+import ru.spbstu.rakitin.dto.JobNameDto;
+import ru.spbstu.rakitin.dto.TaskStatus;
 
 import java.io.IOException;
 import java.util.List;

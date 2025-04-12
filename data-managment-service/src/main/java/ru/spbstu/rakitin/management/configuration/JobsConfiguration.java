@@ -2,7 +2,7 @@ package ru.spbstu.rakitin.management.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.spbstu.rakitin.commonstarter.dto.TaskType;
+import ru.spbstu.rakitin.dto.TaskType;
 import ru.spbstu.rakitin.management.service.JobService;
 
 import java.util.List;

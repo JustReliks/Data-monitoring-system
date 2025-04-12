@@ -5,13 +5,13 @@ import jakarta.validation.constraints.NotNull;
 import org.apache.hadoop.fs.*;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.archive_service.configuration.HdfsProperties;
-import ru.spbstu.rakitin.commonstarter.dto.archive.FileDto;
-import ru.spbstu.rakitin.commonstarter.dto.archive.FileInformationDto;
+import ru.spbstu.rakitin.dto.archive.FileDto;
+import ru.spbstu.rakitin.dto.archive.FileInformationDto;
 import ru.spbstu.rakitin.archive_service.exception.FileNotFoundInArchiveException;
 import ru.spbstu.rakitin.archive_service.model.ArchiveTaskConfig;
 import ru.spbstu.rakitin.commonstarter.sequence.engine.SequentialEngine;
 import ru.spbstu.rakitin.commonstarter.sequence.engine.SequentialTask;
-import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.dto.MapJson;
 
 import java.io.BufferedReader;
 import java.io.IOException;

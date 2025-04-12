@@ -2,7 +2,7 @@ package ru.spbstu.rakitin.fulltext_service.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
+import ru.spbstu.rakitin.dto.TaskStatus;
 
 @Entity
 @Table(schema = "dms", name = "t_fulltext_task_instance")

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import ru.spbstu.rakitin.commonstarter.admin.exception.InternalRequestException;
+import ru.spbstu.rakitin.dto.ErrorResponse;
 
 import java.util.Date;
 import java.util.regex.Matcher;

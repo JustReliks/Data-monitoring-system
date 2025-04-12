@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.ExcludeFromLog;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
-import ru.spbstu.rakitin.commonstarter.dto.AuthUserDto;
+import ru.spbstu.rakitin.dto.AuthUserDto;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,7 +29,6 @@ public class UserAuthenticationController {
     @LogController()
     @Operation(hidden = true)
     public String helloWorld(Authentication authentication, @PathVariable(name = "test") String test, @ExcludeFromLog @RequestParam(name = "test2", required = false) String test2) {
-//        throw new RuntimeException("test");
         return "Hello World!" + " " + test;
     }
 

@@ -7,8 +7,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveJobDto;
-import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.dto.archive.ArchiveJobDto;
+import ru.spbstu.rakitin.dto.MapJson;
 import ru.spbstu.rakitin.management.engine.AbstractJsonQueueProcessor;
 import ru.spbstu.rakitin.management.engine.hdfs.HdfsConfigurationProperties;
 

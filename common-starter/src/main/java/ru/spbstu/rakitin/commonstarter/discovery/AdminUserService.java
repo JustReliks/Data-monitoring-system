@@ -3,7 +3,7 @@ package ru.spbstu.rakitin.commonstarter.discovery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
-import ru.spbstu.rakitin.commonstarter.dto.AuthUserDto;
+import ru.spbstu.rakitin.dto.AuthUserDto;
 
 @Service
 @RequiredArgsConstructor

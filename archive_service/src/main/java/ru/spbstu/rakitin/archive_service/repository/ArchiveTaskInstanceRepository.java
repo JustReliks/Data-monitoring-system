@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.spbstu.rakitin.archive_service.model.ArchiveTaskInstance;
-import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
+import ru.spbstu.rakitin.dto.TaskStatus;
 
 import java.util.List;
 import java.util.Optional;

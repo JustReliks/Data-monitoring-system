@@ -1,7 +1,7 @@
 package ru.spbstu.rakitin.fulltext_service.model;
 
 import lombok.Data;
-import ru.spbstu.rakitin.commonstarter.dto.FilterExpression;
+import ru.spbstu.rakitin.dto.FilterExpression;
 
 import java.util.List;
 

@@ -2,9 +2,9 @@ package ru.spbstu.rakitin.management.service;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import ru.spbstu.rakitin.commonstarter.dto.JobDto;
-import ru.spbstu.rakitin.commonstarter.dto.JobNameDto;
-import ru.spbstu.rakitin.commonstarter.dto.TaskType;
+import ru.spbstu.rakitin.dto.JobDto;
+import ru.spbstu.rakitin.dto.JobNameDto;
+import ru.spbstu.rakitin.dto.TaskType;
 import ru.spbstu.rakitin.management.exception.JobDisabledException;
 
 import java.util.List;

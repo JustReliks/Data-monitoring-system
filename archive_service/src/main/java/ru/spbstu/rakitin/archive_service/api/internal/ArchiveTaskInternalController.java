@@ -7,8 +7,8 @@ import ru.spbstu.rakitin.archive_service.dto.ArchiveTaskConfigMapper;
 import ru.spbstu.rakitin.archive_service.exception.ArchiveStatusWontChangedException;
 import ru.spbstu.rakitin.archive_service.exception.ArchiveTaskInstanceNotFoundException;
 import ru.spbstu.rakitin.archive_service.service.ArchiveTaskInstanceService;
-import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
-import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveJobDto;
+import ru.spbstu.rakitin.dto.TaskStatus;
+import ru.spbstu.rakitin.dto.archive.ArchiveJobDto;
 
 import java.util.List;
 

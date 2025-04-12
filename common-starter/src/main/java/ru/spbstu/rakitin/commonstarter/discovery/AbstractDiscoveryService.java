@@ -4,6 +4,7 @@ package ru.spbstu.rakitin.commonstarter.discovery;
 import lombok.RequiredArgsConstructor;
 import ru.spbstu.rakitin.commonstarter.configuration.InnerRequestConfiguration;
 import ru.spbstu.rakitin.commonstarter.exception.ServiceNotFoundException;
+import ru.spbstu.rakitin.dto.ServiceName;
 
 import java.util.List;
 

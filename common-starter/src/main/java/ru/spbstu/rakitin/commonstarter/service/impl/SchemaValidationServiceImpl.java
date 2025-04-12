@@ -1,8 +1,8 @@
 package ru.spbstu.rakitin.commonstarter.service.impl;
 
-import ru.spbstu.rakitin.commonstarter.dto.FieldType;
-import ru.spbstu.rakitin.commonstarter.dto.SchemaFieldDto;
-import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
+import ru.spbstu.rakitin.dto.FieldType;
+import ru.spbstu.rakitin.dto.SchemaFieldDto;
+import ru.spbstu.rakitin.dto.TaskSchemaDto;
 import ru.spbstu.rakitin.commonstarter.exception.InvalidSchemaException;
 import ru.spbstu.rakitin.commonstarter.service.SchemaValidationService;
 

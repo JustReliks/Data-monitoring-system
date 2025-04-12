@@ -1,8 +1,8 @@
 package ru.spbstu.rakitin.archive_service.service;
 
 import org.springframework.security.core.Authentication;
-import ru.spbstu.rakitin.commonstarter.dto.archive.FileDto;
-import ru.spbstu.rakitin.commonstarter.dto.archive.FileInformationDto;
+import ru.spbstu.rakitin.dto.archive.FileDto;
+import ru.spbstu.rakitin.dto.archive.FileInformationDto;
 import ru.spbstu.rakitin.archive_service.exception.ArchiveTaskInstanceNotFoundException;
 import ru.spbstu.rakitin.archive_service.exception.FileNotFoundInArchiveException;
 

@@ -13,8 +13,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.spbstu.rakitin.commonstarter.admin.AdminRequestFactory;
-import ru.spbstu.rakitin.commonstarter.dto.UserDto;
-import ru.spbstu.rakitin.commonstarter.dto.ValidateUserTokenDto;
+import ru.spbstu.rakitin.dto.UserDto;
+import ru.spbstu.rakitin.dto.ValidateUserTokenDto;
 
 import java.io.IOException;
 

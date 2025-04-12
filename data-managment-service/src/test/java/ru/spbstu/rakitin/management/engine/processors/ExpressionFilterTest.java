@@ -5,8 +5,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import ru.spbstu.rakitin.commonstarter.dto.*;
-import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.dto.MapJson;
 
 import java.nio.charset.Charset;
 import java.util.List;

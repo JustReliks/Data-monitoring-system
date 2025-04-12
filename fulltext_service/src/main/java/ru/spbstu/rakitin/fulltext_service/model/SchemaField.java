@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.spbstu.rakitin.commonstarter.dto.FieldType;
+import ru.spbstu.rakitin.dto.FieldType;
 
 @Data
 @Builder

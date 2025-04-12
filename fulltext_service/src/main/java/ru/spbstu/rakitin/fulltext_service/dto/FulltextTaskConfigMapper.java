@@ -3,11 +3,13 @@ package ru.spbstu.rakitin.fulltext_service.dto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import ru.spbstu.rakitin.commonentites.model.Project;
+import ru.spbstu.rakitin.commonentites.model.Topic;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.datamanagement.DataManagementManager;
-import ru.spbstu.rakitin.commonstarter.dto.*;
-import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextJobDto;
-import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskConfigDto;
+import ru.spbstu.rakitin.dto.*;
+import ru.spbstu.rakitin.dto.fulltext.FulltextJobDto;
+import ru.spbstu.rakitin.dto.fulltext.FulltextTaskConfigDto;
 import ru.spbstu.rakitin.fulltext_service.engine.utils.SolrUtils;
 import ru.spbstu.rakitin.fulltext_service.model.*;
 
@@ -24,7 +26,7 @@ public class FulltextTaskConfigMapper {
         return FulltextTaskConfig.builder()
                 .name(dto.getName())
                 .project(adminManager.findProjectById(dto.getProjectId()))
-                .topic(dataManagementManager.findTopicById(dto.getTopicId(), authentication))
+                .topic(mapTopicDtoToTopic(dataManagementManager.findTopicById(dto.getTopicId(), authentication)))
                 .replicationFactor(dto.getReplicationFactor())
                 .shardsCount(dto.getShardsCount())
                 .schema(Optional.of(dto.getSchema()).map(this::mapDtoToFulltextTaskSchema).orElseThrow(() -> new IllegalArgumentException("Schema must be defined"))).build();
@@ -41,6 +43,29 @@ public class FulltextTaskConfigMapper {
                         mapFulltextSchemaToSchemaDto(fulltextTaskConfig.getSchema())
                 ).build();
     }
+
+    public Topic mapTopicDtoToTopic(final TopicDto topicDto) {
+        return Topic.builder()
+                .project(mapProjectDtoToProject(topicDto.getProject()))
+                .id(topicDto.getId())
+                .uuid(topicDto.getUuid())
+                .name(topicDto.getName())
+                .nameInKafka(topicDto.getNameInKafka())
+                .partitions(topicDto.getPartitions())
+                .replicationFactor(topicDto.getReplicationFactor()).build();
+    }
+
+    public Project mapProjectDtoToProject(final ProjectDto projectDto) {
+        return Project.builder()
+                .archiveQuota(projectDto.getArchiveQuota())
+                .fulltextQuota(projectDto.getFulltextQuota())
+                .id(projectDto.getId())
+                .projectName(projectDto.getProjectName())
+                .monitoringQuota(projectDto.getMonitoringQuota())
+                .topicQuota(projectDto.getTopicQuota())
+                .build();
+    }
+
 
     public FulltextTaskSchema mapDtoToFulltextTaskSchema(TaskSchemaDto schemaDto) {
         FulltextTaskSchema schema = new FulltextTaskSchema();

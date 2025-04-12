@@ -5,8 +5,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
-import ru.spbstu.rakitin.commonstarter.dto.JobNameDto;
-import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextJobDto;
+import ru.spbstu.rakitin.dto.JobNameDto;
+import ru.spbstu.rakitin.dto.fulltext.FulltextJobDto;
 import ru.spbstu.rakitin.management.service.impl.FulltextJobService;
 
 @RestController

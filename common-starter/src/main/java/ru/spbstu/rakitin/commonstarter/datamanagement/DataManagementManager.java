@@ -5,14 +5,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonentites.model.Topic;
 import ru.spbstu.rakitin.commonstarter.discovery.InnerServiceRequestFactory;
-import ru.spbstu.rakitin.commonstarter.discovery.ServiceName;
-import ru.spbstu.rakitin.commonstarter.dto.JobNameDto;
-import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveJobDto;
-import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextJobDto;
-import ru.spbstu.rakitin.commonstarter.dto.monitoring.MonitoringJobDto;
+import ru.spbstu.rakitin.dto.ServiceName;
+import ru.spbstu.rakitin.dto.JobNameDto;
+import ru.spbstu.rakitin.dto.TopicDto;
+import ru.spbstu.rakitin.dto.archive.ArchiveJobDto;
+import ru.spbstu.rakitin.dto.fulltext.FulltextJobDto;
+import ru.spbstu.rakitin.dto.monitoring.MonitoringJobDto;
 
-import static ru.spbstu.rakitin.commonstarter.discovery.ParametrizedTypes.TOPIC_TYPE;
-import static ru.spbstu.rakitin.commonstarter.discovery.ParametrizedTypes.VOID_TYPE;
+import static ru.spbstu.rakitin.dto.ParametrizedTypes.TOPIC_TYPE;
+import static ru.spbstu.rakitin.dto.ParametrizedTypes.VOID_TYPE;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ public class DataManagementManager {
 
     private final InnerServiceRequestFactory innerServiceRequestFactory;
 
-    public Topic findTopicById(long id, Authentication authentication) {
+    public TopicDto findTopicById(long id, Authentication authentication) {
         return innerServiceRequestFactory.doGet(ServiceName.DATA_MANAGEMENT, authentication, String.format(FIND_TOPIC_BY_ID, id), TOPIC_TYPE);
     }
 

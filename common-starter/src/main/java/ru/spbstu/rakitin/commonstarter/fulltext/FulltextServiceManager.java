@@ -8,17 +8,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.discovery.AdminUserService;
 import ru.spbstu.rakitin.commonstarter.discovery.InnerServiceRequestFactory;
-import ru.spbstu.rakitin.commonstarter.discovery.ServiceName;
-import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextJobDto;
-import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskConfigDto;
-import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskResponse;
-import ru.spbstu.rakitin.commonstarter.dto.fulltext.SolrQueryDto;
-import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.dto.ServiceName;
+import ru.spbstu.rakitin.dto.fulltext.FulltextJobDto;
+import ru.spbstu.rakitin.dto.fulltext.FulltextTaskConfigDto;
+import ru.spbstu.rakitin.dto.fulltext.FulltextTaskResponse;
+import ru.spbstu.rakitin.dto.fulltext.SolrQueryDto;
+import ru.spbstu.rakitin.dto.MapJson;
 import ru.spbstu.rakitin.commonstarter.utils.Utils;
 
 import java.util.List;
 
-import static ru.spbstu.rakitin.commonstarter.discovery.ParametrizedTypes.*;
+import static ru.spbstu.rakitin.dto.ParametrizedTypes.*;
 
 @Service
 @RequiredArgsConstructor

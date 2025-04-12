@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonentites.model.Project;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
-import ru.spbstu.rakitin.commonstarter.dto.monitoring.CreateReadApiKeyDto;
+import ru.spbstu.rakitin.dto.monitoring.CreateReadApiKeyDto;
 import ru.spbstu.rakitin.monitoring_service.engine.InfluxDBManager;
 import ru.spbstu.rakitin.monitoring_service.exception.OrganizationNotFoundException;
 import ru.spbstu.rakitin.monitoring_service.model.MonitoringTaskInstance;

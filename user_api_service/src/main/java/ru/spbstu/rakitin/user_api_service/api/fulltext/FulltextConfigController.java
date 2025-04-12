@@ -8,8 +8,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.ProjectIdContainer;
-import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskConfigDto;
-import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextTaskResponse;
+import ru.spbstu.rakitin.dto.fulltext.FulltextTaskConfigDto;
+import ru.spbstu.rakitin.dto.fulltext.FulltextTaskResponse;
 import ru.spbstu.rakitin.commonstarter.fulltext.FulltextServiceManager;
 
 import java.util.List;

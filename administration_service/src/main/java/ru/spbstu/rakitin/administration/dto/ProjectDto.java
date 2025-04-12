@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class ProjectDto {
 
-    private long id;
+    private Long id;
     private String projectName;
     private int fulltextQuota;
     private int archiveQuota;

@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.kafka.streams.KafkaStreams;
-import ru.spbstu.rakitin.commonstarter.dto.JobDto;
+import ru.spbstu.rakitin.dto.JobDto;
 
 @Data
 @Builder

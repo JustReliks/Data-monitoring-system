@@ -3,11 +3,11 @@ package ru.spbstu.rakitin.management.engine.processors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.streams.kstream.Predicate;
-import ru.spbstu.rakitin.commonstarter.dto.FieldType;
-import ru.spbstu.rakitin.commonstarter.dto.FilterExpression;
-import ru.spbstu.rakitin.commonstarter.dto.SchemaFieldDto;
-import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
-import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.dto.FieldType;
+import ru.spbstu.rakitin.dto.FilterExpression;
+import ru.spbstu.rakitin.dto.SchemaFieldDto;
+import ru.spbstu.rakitin.dto.TaskSchemaDto;
+import ru.spbstu.rakitin.dto.MapJson;
 
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;

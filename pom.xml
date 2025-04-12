@@ -19,6 +19,7 @@
         <lombok.version>1.18.36</lombok.version>
     </properties>
     <modules>
+        <module>client-dtos</module>
         <module>common-starter</module>
         <module>common-entites</module>
         <module>administration_service</module>
@@ -27,6 +28,7 @@
         <module>fulltext_service</module>
         <module>archive_service</module>
         <module>monitoring_service</module>
+        <module>mds-system-client</module>
     </modules>
     <packaging>pom</packaging>
 </project>

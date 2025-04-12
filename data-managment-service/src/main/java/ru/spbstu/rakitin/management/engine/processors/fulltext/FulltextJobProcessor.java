@@ -4,10 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.request.UpdateRequest;
 import org.apache.solr.common.SolrInputDocument;
-import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextJobDto;
-import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.dto.fulltext.FulltextJobDto;
+import ru.spbstu.rakitin.dto.MapJson;
 import ru.spbstu.rakitin.management.engine.AbstractJsonQueueProcessor;
-import ru.spbstu.rakitin.management.engine.processors.AbstractQueueProcessor;
 
 import java.io.IOException;
 import java.util.ArrayList;

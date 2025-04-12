@@ -1,9 +1,9 @@
 package ru.spbstu.rakitin.archive_service.model;
 
 import lombok.Data;
-import ru.spbstu.rakitin.commonstarter.dto.FilterExpression;
-import ru.spbstu.rakitin.commonstarter.dto.SchemaFieldDto;
-import ru.spbstu.rakitin.commonstarter.dto.TimestampFieldDto;
+import ru.spbstu.rakitin.dto.FilterExpression;
+import ru.spbstu.rakitin.dto.SchemaFieldDto;
+import ru.spbstu.rakitin.dto.TimestampFieldDto;
 
 import java.util.List;
 

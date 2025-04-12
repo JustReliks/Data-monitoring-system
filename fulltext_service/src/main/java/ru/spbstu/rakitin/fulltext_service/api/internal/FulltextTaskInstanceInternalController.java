@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.spbstu.rakitin.commonstarter.dto.fulltext.FulltextJobDto;
+import ru.spbstu.rakitin.dto.fulltext.FulltextJobDto;
 import ru.spbstu.rakitin.fulltext_service.dto.FulltextTaskConfigMapper;
 import ru.spbstu.rakitin.fulltext_service.exception.FulltextStatusWontChangedException;
 import ru.spbstu.rakitin.fulltext_service.exception.FulltextTaskInstanceNotFoundException;
-import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
+import ru.spbstu.rakitin.dto.TaskStatus;
 import ru.spbstu.rakitin.fulltext_service.service.FulltextTaskInstanceService;
 
 import java.util.List;

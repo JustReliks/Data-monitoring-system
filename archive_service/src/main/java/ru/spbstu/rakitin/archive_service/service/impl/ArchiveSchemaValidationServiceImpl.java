@@ -1,8 +1,8 @@
 package ru.spbstu.rakitin.archive_service.service.impl;
 
 import org.springframework.stereotype.Service;
-import ru.spbstu.rakitin.commonstarter.dto.FieldType;
-import ru.spbstu.rakitin.commonstarter.dto.archive.ArchiveTaskSchemaDto;
+import ru.spbstu.rakitin.dto.FieldType;
+import ru.spbstu.rakitin.dto.archive.ArchiveTaskSchemaDto;
 import ru.spbstu.rakitin.commonstarter.exception.InvalidSchemaException;
 import ru.spbstu.rakitin.commonstarter.service.impl.SchemaValidationServiceImpl;
 

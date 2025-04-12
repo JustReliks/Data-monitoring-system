@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
-import ru.spbstu.rakitin.commonstarter.dto.fulltext.SolrQueryDto;
+import ru.spbstu.rakitin.dto.fulltext.SolrQueryDto;
 import ru.spbstu.rakitin.commonstarter.fulltext.FulltextServiceManager;
-import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.dto.MapJson;
 
 import java.util.List;
 

@@ -5,8 +5,8 @@ import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
-import ru.spbstu.rakitin.commonstarter.dto.JobDto;
-import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.dto.JobDto;
+import ru.spbstu.rakitin.dto.MapJson;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;

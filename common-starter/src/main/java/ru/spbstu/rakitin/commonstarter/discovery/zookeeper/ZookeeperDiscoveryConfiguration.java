@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.spbstu.rakitin.commonstarter.configuration.InnerRequestConfiguration;
 import ru.spbstu.rakitin.commonstarter.discovery.DiscoveryService;
-import ru.spbstu.rakitin.commonstarter.discovery.ServiceName;
+import ru.spbstu.rakitin.dto.ServiceName;
 import ru.spbstu.rakitin.commonstarter.discovery.ServicePeakStrategy;
 
 import java.io.IOException;

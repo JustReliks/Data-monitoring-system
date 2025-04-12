@@ -8,13 +8,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.discovery.AdminUserService;
 import ru.spbstu.rakitin.commonstarter.discovery.InnerServiceRequestFactory;
-import ru.spbstu.rakitin.commonstarter.discovery.ServiceName;
-import ru.spbstu.rakitin.commonstarter.dto.monitoring.*;
+import ru.spbstu.rakitin.dto.ServiceName;
 import ru.spbstu.rakitin.commonstarter.utils.Utils;
+import ru.spbstu.rakitin.dto.monitoring.*;
 
 import java.util.List;
 
-import static ru.spbstu.rakitin.commonstarter.discovery.ParametrizedTypes.*;
+import static ru.spbstu.rakitin.dto.ParametrizedTypes.*;
 
 @Service
 @RequiredArgsConstructor

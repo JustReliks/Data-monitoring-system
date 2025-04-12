@@ -2,8 +2,8 @@ package ru.spbstu.rakitin.management.engine.processors;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.streams.kstream.ForeachAction;
-import ru.spbstu.rakitin.commonstarter.dto.TaskSchemaDto;
-import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.dto.TaskSchemaDto;
+import ru.spbstu.rakitin.dto.MapJson;
 
 @RequiredArgsConstructor
 public class RemoveExtraFieldsAction implements ForeachAction<String, MapJson> {

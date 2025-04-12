@@ -2,7 +2,7 @@ package ru.spbstu.rakitin.fulltext_service.service;
 
 import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.security.core.Authentication;
-import ru.spbstu.rakitin.commonstarter.dto.TaskStatus;
+import ru.spbstu.rakitin.dto.TaskStatus;
 import ru.spbstu.rakitin.commonstarter.exception.InstanceInitiationFailedException;
 import ru.spbstu.rakitin.fulltext_service.exception.*;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskInstance;

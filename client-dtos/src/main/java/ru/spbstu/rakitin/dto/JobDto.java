@@ -1,0 +1,21 @@
+package ru.spbstu.rakitin.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class JobDto<T extends TaskSchemaDto> {
+
+    private long projectId;
+    private long instanceId;
+    private long topicId;
+    private String taskName;
+    private boolean needUpdate;
+    private T schema;
+
+}

@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.spbstu.rakitin.commonstarter.dto.monitoring.ApiKeyDto;
-import ru.spbstu.rakitin.commonstarter.dto.monitoring.CreateReadApiKeyDto;
+import ru.spbstu.rakitin.dto.monitoring.ApiKeyDto;
+import ru.spbstu.rakitin.dto.monitoring.CreateReadApiKeyDto;
 import ru.spbstu.rakitin.commonstarter.monitoring.MonitoringServiceManager;
 
 @RestController

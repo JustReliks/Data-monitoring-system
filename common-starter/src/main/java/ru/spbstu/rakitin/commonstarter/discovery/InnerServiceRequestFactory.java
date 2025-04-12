@@ -17,6 +17,7 @@ import ru.spbstu.rakitin.commonstarter.admin.auth.SecurityUserDetails;
 import ru.spbstu.rakitin.commonstarter.admin.exception.InternalRequestException;
 import ru.spbstu.rakitin.commonstarter.configuration.InnerRequestConfiguration;
 import ru.spbstu.rakitin.commonstarter.exception.ServiceNotFoundException;
+import ru.spbstu.rakitin.dto.ServiceName;
 
 import java.net.ConnectException;
 import java.net.http.HttpClient;

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonentites.model.Project;
 import ru.spbstu.rakitin.commonstarter.admin.auth.SecurityUserDetails;
-import ru.spbstu.rakitin.commonstarter.dto.AuthUserDto;
+import ru.spbstu.rakitin.dto.AuthUserDto;
 
 @Service
 @RequiredArgsConstructor

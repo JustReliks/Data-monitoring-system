@@ -1,5 +1,6 @@
 package ru.spbstu.rakitin.administration.service.auth.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.administration.exceptions.ProjectNotFoundException;
@@ -24,6 +25,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public Long saveProject(Project project) {
         return projectRepository.save(project).getId();
     }

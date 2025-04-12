@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ru.spbstu.rakitin.commonstarter.admin.AdminRequestFactory;
-import ru.spbstu.rakitin.commonstarter.dto.UserDto;
+import ru.spbstu.rakitin.dto.UserDto;
 
 //@Service
 @RequiredArgsConstructor

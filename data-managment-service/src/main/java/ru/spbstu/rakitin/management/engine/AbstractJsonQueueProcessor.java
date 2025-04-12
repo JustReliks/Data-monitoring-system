@@ -1,7 +1,7 @@
 package ru.spbstu.rakitin.management.engine;
 
-import ru.spbstu.rakitin.commonstarter.dto.JobDto;
-import ru.spbstu.rakitin.commonstarter.utils.MapJson;
+import ru.spbstu.rakitin.dto.JobDto;
+import ru.spbstu.rakitin.dto.MapJson;
 import ru.spbstu.rakitin.management.engine.processors.AbstractQueueProcessor;
 
 public abstract class AbstractJsonQueueProcessor<T extends JobDto<?>> extends AbstractQueueProcessor<MapJson, T> {
