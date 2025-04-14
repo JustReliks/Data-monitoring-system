@@ -27,7 +27,7 @@ public class KafkaServiceImpl implements KafkaService {
     private final Admin admin;
 
     @Override
-    public void createTopic(Topic topic) throws KafkaTopicCreationException, TopicAlreadyCreatedException, TopicQuotaLimitException {
+    public Topic createTopic(Topic topic) throws KafkaTopicCreationException, TopicAlreadyCreatedException, TopicQuotaLimitException {
         String kafkaTopicName = KafkaTopicUtils.createKafkaTopicName(topic);
         Optional<Topic> findTopic = topicRepository.findByNameInKafka(kafkaTopicName);
         if (findTopic.isPresent()) {
@@ -45,7 +45,7 @@ public class KafkaServiceImpl implements KafkaService {
         } catch (InterruptedException | ExecutionException e) {
             throw new KafkaTopicCreationException(String.format("Unable to create topic %s!", topic.getName()), e);
         }
-        topicRepository.save(topic);
+        return topicRepository.save(topic);
     }
 
     @Override

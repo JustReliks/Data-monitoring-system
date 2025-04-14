@@ -55,5 +55,15 @@ public class MonitoringConfigController {
         monitoringServiceManager.updateConfig(configId, configDto, authentication);
     }
 
+    @GetMapping("/{taskId}")
+    public MonitoringTaskResponse findById(@PathVariable long taskId, Authentication authentication) {
+        return monitoringServiceManager.findById(taskId, authentication);
+    }
+
+    @GetMapping("/name/{taskName}")
+    public MonitoringTaskResponse findByName(@PathVariable String taskName, @RequestParam("projectId") Long projectId, Authentication authentication) {
+        return monitoringServiceManager.findByName(taskName, projectId, authentication);
+    }
+
 
 }

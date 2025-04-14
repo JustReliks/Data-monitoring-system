@@ -13,6 +13,7 @@ import ru.spbstu.rakitin.commonstarter.datamanagement.DataManagementManager;
 import ru.spbstu.rakitin.dto.*;
 import ru.spbstu.rakitin.dto.archive.ArchiveJobDto;
 import ru.spbstu.rakitin.dto.archive.ArchiveTaskConfigDto;
+import ru.spbstu.rakitin.dto.archive.ArchiveTaskResponse;
 import ru.spbstu.rakitin.dto.archive.ArchiveTaskSchemaDto;
 
 import java.util.Optional;
@@ -112,4 +113,14 @@ public class ArchiveTaskConfigMapper {
     }
 
 
+    public ArchiveTaskResponse mapArchiveTaskConfigAndInstanceToResponse(ArchiveTaskConfig config, Optional<ArchiveTaskInstance> instance) {
+        ArchiveTaskResponse archiveTaskResponse = new ArchiveTaskResponse();
+        archiveTaskResponse.setConfig(mapArchiveTaskConfigToDto(config));
+        archiveTaskResponse.setId(config.getId());
+
+        instance.
+                ifPresent(archiveTaskInstance -> archiveTaskResponse.setInstance(mapArchiveTaskInstanceToTaskInstanceResponse(archiveTaskInstance)));
+
+        return archiveTaskResponse;
+    }
 }

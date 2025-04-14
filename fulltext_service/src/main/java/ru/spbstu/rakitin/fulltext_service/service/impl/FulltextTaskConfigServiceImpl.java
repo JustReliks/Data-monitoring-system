@@ -9,13 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.admin.exception.ForbiddenRequestException;
-import ru.spbstu.rakitin.dto.TaskSchemaDto;
-import ru.spbstu.rakitin.dto.TaskStatus;
 import ru.spbstu.rakitin.commonstarter.exception.ConfigAlreadyExists;
 import ru.spbstu.rakitin.commonstarter.exception.InvalidSchemaException;
 import ru.spbstu.rakitin.commonstarter.exception.QuotaExceededException;
 import ru.spbstu.rakitin.commonstarter.exception.UnavailableTopicException;
 import ru.spbstu.rakitin.commonstarter.service.SchemaValidationService;
+import ru.spbstu.rakitin.dto.TaskSchemaDto;
 import ru.spbstu.rakitin.fulltext_service.dto.FulltextTaskConfigMapper;
 import ru.spbstu.rakitin.fulltext_service.exception.*;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskConfig;
@@ -138,6 +137,12 @@ public class FulltextTaskConfigServiceImpl implements FulltextTaskConfigService 
             }
         });
         saveConfig(config);
+    }
+
+    @Override
+    public FulltextTaskConfig findByName(Long projectId, String taskName, Authentication authentication) throws FulltextConfigNotFoundException {
+        adminManager.checkAccessThrowable(authentication, projectId, PermissionTypeEnum.FULL_TEXT_VIEW_TASK);
+        return fulltextTaskConfigRepository.findByProject_IdAndName(projectId, taskName).orElseThrow(() -> new FulltextConfigNotFoundException(String.format("Fulltext config with name %s not found in project with id %s", taskName, projectId)));
     }
 
 

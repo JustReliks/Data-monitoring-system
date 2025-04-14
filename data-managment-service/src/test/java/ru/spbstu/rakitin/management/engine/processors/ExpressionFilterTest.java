@@ -5,7 +5,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import ru.spbstu.rakitin.dto.MapJson;
+import ru.spbstu.rakitin.dto.*;
 
 import java.nio.charset.Charset;
 import java.util.List;
@@ -116,12 +116,6 @@ class ExpressionFilterTest {
 
     private static SchemaFieldDto createField(String fieldName, FieldType fieldType) {
         return createField(fieldName, fieldType, null);
-    }
-
-    @Test
-    public void testLeet() {
-//        List<Long> longs = minOperations(new int[]{3, 1, 6, 8}, new int[]{1, 5});
-//        System.out.println(longs);
     }
 
 

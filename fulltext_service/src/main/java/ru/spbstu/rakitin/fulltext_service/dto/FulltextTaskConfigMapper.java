@@ -10,6 +10,7 @@ import ru.spbstu.rakitin.commonstarter.datamanagement.DataManagementManager;
 import ru.spbstu.rakitin.dto.*;
 import ru.spbstu.rakitin.dto.fulltext.FulltextJobDto;
 import ru.spbstu.rakitin.dto.fulltext.FulltextTaskConfigDto;
+import ru.spbstu.rakitin.dto.fulltext.FulltextTaskResponse;
 import ru.spbstu.rakitin.fulltext_service.engine.utils.SolrUtils;
 import ru.spbstu.rakitin.fulltext_service.model.*;
 
@@ -31,6 +32,16 @@ public class FulltextTaskConfigMapper {
                 .shardsCount(dto.getShardsCount())
                 .schema(Optional.of(dto.getSchema()).map(this::mapDtoToFulltextTaskSchema).orElseThrow(() -> new IllegalArgumentException("Schema must be defined"))).build();
     }
+
+    public FulltextTaskResponse mapFulltextTaskConfigAndInstanceToResponse(FulltextTaskConfig fulltextTaskConfig, Optional<FulltextTaskInstance> fulltextTaskInstance) {
+        FulltextTaskResponse response = new FulltextTaskResponse();
+        FulltextTaskConfigDto fulltextTaskConfigDto = mapFulltextTaskConfigToDto(fulltextTaskConfig);
+        response.setId(fulltextTaskConfig.getId());
+        response.setConfig(fulltextTaskConfigDto);
+        fulltextTaskInstance.ifPresent(fulltextTaskInstanceResponse -> response.setInstance(mapFulltextTaskInstanceToTaskInstanceResponse(fulltextTaskInstanceResponse)));
+        return response;
+    }
+
 
     public FulltextTaskConfigDto mapFulltextTaskConfigToDto(FulltextTaskConfig fulltextTaskConfig) {
         return FulltextTaskConfigDto.builder()

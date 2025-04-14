@@ -55,4 +55,15 @@ public class FulltextConfigController {
         fulltextServiceManager.updateConfig(configId, configDto, authentication);
     }
 
+    @GetMapping("/{taskId}")
+    public FulltextTaskResponse findById(@PathVariable long taskId, Authentication authentication) {
+        return fulltextServiceManager.findById(taskId, authentication);
+    }
+
+    @GetMapping("/name/{taskName}")
+    public FulltextTaskResponse findByName(@PathVariable String taskName, @RequestParam("projectId") Long projectId, Authentication authentication)  {
+        return fulltextServiceManager.findByName(taskName, projectId, authentication);
+    }
+
+
 }

@@ -14,9 +14,10 @@ import ru.spbstu.rakitin.commonstarter.exception.InvalidSchemaException;
 import ru.spbstu.rakitin.commonstarter.exception.QuotaExceededException;
 import ru.spbstu.rakitin.commonstarter.exception.UnavailableTopicException;
 import ru.spbstu.rakitin.dto.fulltext.FulltextTaskConfigDto;
-import ru.spbstu.rakitin.fulltext_service.dto.FulltextTaskConfigMapper;
 import ru.spbstu.rakitin.dto.fulltext.FulltextTaskResponse;
+import ru.spbstu.rakitin.fulltext_service.dto.FulltextTaskConfigMapper;
 import ru.spbstu.rakitin.fulltext_service.exception.*;
+import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskConfig;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskInstance;
 import ru.spbstu.rakitin.fulltext_service.service.FulltextTaskConfigService;
 import ru.spbstu.rakitin.fulltext_service.service.FulltextTaskInstanceService;
@@ -42,21 +43,29 @@ public class FulltextTaskController {
         return fulltextTaskConfigService.createConfig(fulltextTaskConfigMapper.mapDtoToFulltextTaskConfig(configDto, authentication), authentication);
     }
 
+    @GetMapping("/{taskId}")
+    public FulltextTaskResponse findById(@PathVariable long taskId, Authentication authentication) throws FulltextConfigNotFoundException {
+        return fulltextTaskConfigMapper.mapFulltextTaskConfigAndInstanceToResponse(fulltextTaskConfigService.findById(taskId, authentication), fulltextTaskInstanceService.findByConfigIdOptionally(taskId));
+    }
+
+    @GetMapping("/name/{taskName}")
+    public FulltextTaskResponse findByName(@PathVariable String taskName, @RequestParam("projectId") long projectId, Authentication authentication) throws FulltextConfigNotFoundException {
+        FulltextTaskConfig config = fulltextTaskConfigService.findByName(projectId, taskName, authentication);
+        return fulltextTaskConfigMapper.mapFulltextTaskConfigAndInstanceToResponse(config, fulltextTaskInstanceService.findByConfigIdOptionally(config.getId()));
+    }
+
+
     @GetMapping("/list")
     @LogController
     public List<FulltextTaskResponse> list(Authentication authentication, @RequestParam List<Long> projects) {
 
         return fulltextTaskConfigService.findForProjects(projects, authentication)
                 .stream().map(fulltextTaskConfig -> {
-                    FulltextTaskResponse response = new FulltextTaskResponse();
-                    FulltextTaskConfigDto fulltextTaskConfigDto = fulltextTaskConfigMapper.mapFulltextTaskConfigToDto(fulltextTaskConfig);
-                    response.setId(fulltextTaskConfig.getId());
-                    response.setConfig(fulltextTaskConfigDto);
                     Optional<FulltextTaskInstance> fulltextTaskInstance = fulltextTaskInstanceService.findByConfigIdOptionally(fulltextTaskConfig.getId());
-                    fulltextTaskInstance.ifPresent(fulltextTaskInstanceResponse -> response.setInstance(fulltextTaskConfigMapper.mapFulltextTaskInstanceToTaskInstanceResponse(fulltextTaskInstanceResponse)));
-                    return response;
+                    return fulltextTaskConfigMapper.mapFulltextTaskConfigAndInstanceToResponse(fulltextTaskConfig, fulltextTaskInstance);
                 }).toList();
     }
+
 
     @DeleteMapping("/{configId}/delete")
     @LogController

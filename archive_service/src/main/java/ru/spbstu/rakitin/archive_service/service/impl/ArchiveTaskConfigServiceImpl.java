@@ -14,13 +14,13 @@ import ru.spbstu.rakitin.archive_service.service.ArchiveTaskConfigService;
 import ru.spbstu.rakitin.archive_service.service.ArchiveTaskInstanceService;
 import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
-import ru.spbstu.rakitin.dto.TaskStatus;
-import ru.spbstu.rakitin.dto.archive.ArchiveTaskSchemaDto;
 import ru.spbstu.rakitin.commonstarter.exception.ConfigAlreadyExists;
 import ru.spbstu.rakitin.commonstarter.exception.InvalidSchemaException;
 import ru.spbstu.rakitin.commonstarter.exception.QuotaExceededException;
 import ru.spbstu.rakitin.commonstarter.exception.UnavailableTopicException;
 import ru.spbstu.rakitin.commonstarter.service.SchemaValidationService;
+import ru.spbstu.rakitin.dto.TaskStatus;
+import ru.spbstu.rakitin.dto.archive.ArchiveTaskSchemaDto;
 
 import java.io.IOException;
 import java.util.List;
@@ -96,6 +96,12 @@ public class ArchiveTaskConfigServiceImpl implements ArchiveTaskConfigService {
         archiveTaskConfig.setId(configId);
 
         return archiveTaskConfigRepository.save(config);
+    }
+
+    @Override
+    public ArchiveTaskConfig findByName(Long projectId, String taskName, Authentication authentication) throws ArchiveConfigNotFoundException {
+        adminManager.checkAccessThrowable(authentication, projectId, PermissionTypeEnum.ARCHIVE_VIEW_TASK);
+        return archiveTaskConfigRepository.findByProject_IdAndName(projectId, taskName).orElseThrow(() -> new ArchiveConfigNotFoundException(String.format("Archive config with name %s not found in project with id %s", taskName, projectId)));
     }
 
     @Override

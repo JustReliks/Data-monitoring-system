@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Scope;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 @Configuration
 @ConfigurationProperties("dms.kafka")
@@ -23,15 +22,20 @@ public class KafkaConfiguration {
 
     @Bean("kafkaProperties")
     @Scope("prototype")
-    public Map<String,Object> kafkaProperties() {
-        Map<String, Object> properties = new HashMap<>();
-        properties.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        properties.put("key.deserializer", StringDeserializer.class);
-        properties.put("value.deserializer", StringDeserializer.class);
+    public Map<String, Object> kafkaProperties() {
+        Map<String, Object> properties = getPublicProperties();
         properties.put("auto.offset.reset", "latest");
         properties.put("enable.auto.commit", true);
         properties.put("application.id", "DataManagementApplication");
 
+        return properties;
+    }
+
+    public Map<String, Object> getPublicProperties() {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        properties.put("key.deserializer", StringDeserializer.class);
+        properties.put("value.deserializer", StringDeserializer.class);
         return properties;
     }
 

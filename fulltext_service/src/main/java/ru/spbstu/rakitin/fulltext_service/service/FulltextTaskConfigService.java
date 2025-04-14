@@ -25,4 +25,6 @@ public interface FulltextTaskConfigService {
     void removeConfig(Long configId, boolean forceDelete, Authentication authentication) throws FulltextConfigNotFoundException, FulltextConfigDeletionForbiddenException, FulltextStatusWontChangedException, FulltextTaskInstanceNotFoundException, SolrServerException, IOException;
 
     void updateConfig(long configId, FulltextTaskConfig fulltextTaskConfig, Authentication authentication) throws FulltextConfigNotFoundException, FulltextConfigUpdateException, QuotaExceededException, InvalidSchemaException, ConfigAlreadyExists, UnavailableTopicException;
+
+    FulltextTaskConfig findByName(Long projectId, String taskName, Authentication authentication) throws FulltextConfigNotFoundException;
 }

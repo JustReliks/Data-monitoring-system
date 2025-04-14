@@ -11,6 +11,7 @@ import ru.spbstu.rakitin.commonstarter.datamanagement.DataManagementManager;
 import ru.spbstu.rakitin.dto.*;
 import ru.spbstu.rakitin.dto.monitoring.MonitoringJobDto;
 import ru.spbstu.rakitin.dto.monitoring.MonitoringTaskConfigDto;
+import ru.spbstu.rakitin.dto.monitoring.MonitoringTaskResponse;
 import ru.spbstu.rakitin.monitoring_service.model.*;
 
 import java.util.Optional;
@@ -123,5 +124,15 @@ public class MonitoringTaskConfigMapper {
                 .id(monitoringTaskInstance.getId())
                 .needUpdate(monitoringTaskInstance.isNeedUpdate())
                 .status(monitoringTaskInstance.getTaskStatus()).build();
+    }
+
+    public MonitoringTaskResponse mapMonitoringTaskConfigAndInstanceToResponse(MonitoringTaskConfig monitoringTaskConfig, Optional<MonitoringTaskInstance> monitoringTaskInstanceOptional) {
+        MonitoringTaskConfigDto monitoringTaskConfigDto = mapMonitoringTaskConfigToDto(monitoringTaskConfig);
+        MonitoringTaskResponse response = new MonitoringTaskResponse();
+        response.setId(monitoringTaskConfig.getId());
+        response.setConfig(monitoringTaskConfigDto);
+        monitoringTaskInstanceOptional.ifPresent(monitoringTaskInstance -> response.setInstance(mapMonitoringInstanceToTaskInstanceResponse(monitoringTaskInstance)));
+        return response;
+
     }
 }

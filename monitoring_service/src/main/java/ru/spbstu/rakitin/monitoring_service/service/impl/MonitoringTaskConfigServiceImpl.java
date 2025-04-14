@@ -127,4 +127,11 @@ public class MonitoringTaskConfigServiceImpl implements MonitoringTaskConfigServ
         monitoringTaskConfigRepository.save(config);
 
     }
+
+    @Override
+    public MonitoringTaskConfig findByName(Long projectId, String taskName, Authentication authentication) throws MonitoringTaskConfigNotFoundException {
+        adminManager.checkAccessThrowable(authentication, projectId, PermissionTypeEnum.ARCHIVE_VIEW_TASK);
+        return monitoringTaskConfigRepository.findByProject_IdAndName(projectId, taskName).orElseThrow(() -> new MonitoringTaskConfigNotFoundException(String.format("Archive config with name %s not found in project with id %s", taskName, projectId)));
+
+    }
 }

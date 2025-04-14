@@ -6,6 +6,7 @@ import ru.spbstu.rakitin.monitoring_service.model.MonitoringTaskConfig;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MonitoringTaskConfigRepository extends JpaRepository<MonitoringTaskConfig, Long> {
@@ -14,4 +15,6 @@ public interface MonitoringTaskConfigRepository extends JpaRepository<Monitoring
     int countByProjectId(Long id);
 
     List<MonitoringTaskConfig> findByProject_IdIn(Collection<Long> projectIds);
+
+    Optional<MonitoringTaskConfig> findByProject_IdAndName(Long id, String name);
 }

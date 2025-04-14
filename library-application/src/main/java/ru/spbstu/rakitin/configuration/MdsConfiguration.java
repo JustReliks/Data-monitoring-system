@@ -5,9 +5,10 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.spbstu.rakitin.AuthProperties;
-import ru.spbstu.rakitin.MdsClient;
-import ru.spbstu.rakitin.RequestProperties;
+import ru.spbstu.rakitin.client.AuthProperties;
+import ru.spbstu.rakitin.client.MdsClient;
+import ru.spbstu.rakitin.client.MdsClientImpl;
+import ru.spbstu.rakitin.client.RequestProperties;
 
 @Configuration
 @Getter
@@ -22,6 +23,7 @@ public class MdsConfiguration {
     private long retryCount = 5;
     private int threadsCount = 10;
 
+
     @Bean
     public AuthProperties authProperties() {
         return new AuthProperties(username, password);
@@ -34,7 +36,7 @@ public class MdsConfiguration {
 
     @Bean
     public MdsClient mdsClient(AuthProperties authProperties, RequestProperties requestProperties) {
-        return new MdsClient(authProperties, requestProperties);
+        return new MdsClientImpl(authProperties, requestProperties);
     }
 
 

@@ -25,6 +25,15 @@ public class ParametrizedTypes {
     };
     public static final ParameterizedTypeReference<List<MonitoringTaskResponse>> LIST_MONITORING_TASK_RESPONSE_TYPE_REFERENCE = new ParameterizedTypeReference<>() {
     };
+
+    public static final ParameterizedTypeReference<MonitoringTaskResponse> MONITORING_TASK_RESPONSE = new ParameterizedTypeReference<>() {
+    };
+    public static final ParameterizedTypeReference<ArchiveTaskResponse> ARCHIVE_TASK_RESPONSE = new ParameterizedTypeReference<>() {
+    };
+    public static final ParameterizedTypeReference<FulltextTaskResponse> FULLTEXT_TASK_RESPONSE = new ParameterizedTypeReference<>() {
+    };
+
+
     public static final ParameterizedTypeReference<ApiKeyDto> API_KEY_REFERENCE = new ParameterizedTypeReference<>() {
     };
 
@@ -36,6 +45,13 @@ public class ParametrizedTypes {
     public static final ParameterizedTypeReference<FileDto> FILE = new ParameterizedTypeReference<>() {
     };
     public static final ParameterizedTypeReference<Double> DOUBLE = new ParameterizedTypeReference<>() {
+    };
+    public static final ParameterizedTypeReference<List<LightWeightTopicDto>> LIST_LIGHT_WEIGHT_TOPIC = new ParameterizedTypeReference<>() {
+    };
+    public static final ParameterizedTypeReference<LightWeightTopicDto> LIGHT_WEIGHT_TOPIC = new ParameterizedTypeReference<>() {
+    };
+
+    public static final ParameterizedTypeReference<MapJson> MAP_JSON = new ParameterizedTypeReference<>() {
     };
 
 }

@@ -1,4 +1,4 @@
-package ru.spbstu.rakitin;
+package ru.spbstu.rakitin.client;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -20,7 +20,8 @@ public abstract class MdsRequest<T, R> {
     }
 
     public ParameterizedTypeReference<R> getResponseClass() {
-        return null;
+        return new ParameterizedTypeReference<R>() {
+        };
     }
 
     public MultiValueMap<String, String> getRequestParams() {

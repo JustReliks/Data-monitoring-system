@@ -19,7 +19,7 @@ public class InternalTopicController {
 
     @GetMapping("/{id}")
     public Topic findTopicById(@PathVariable("id") long id, Authentication authentication) throws TopicNotFoundException {
-        return topicService.findTopicById(id);
+        return topicService.findTopicById(id, authentication);
     }
 
 

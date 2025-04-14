@@ -85,7 +85,7 @@ public class MonitoringTaskInstanceServiceImpl implements MonitoringTaskInstance
         if (instance.getTaskStatus() != TaskStatus.RUNNING) {
             throw new MonitoringStatusWontChangedException(String.format("Can't change status for task with id %s to %s because its status already equal to it", instance.getId(), TaskStatus.SUSPENDED));
         }
-        dataManagementManager.stopArchiveJob(JobNameDto.builder()
+        dataManagementManager.stopMonitoringJob(JobNameDto.builder()
                 .projectName(config.getProject().getProjectName())
                 .taskName(config.getName()).build(), authentication);
         forceChangeMonitoringInstanceStatus(instance.getId(), TaskStatus.SUSPENDED);

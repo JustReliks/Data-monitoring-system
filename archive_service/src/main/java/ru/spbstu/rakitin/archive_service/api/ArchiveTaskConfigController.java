@@ -7,21 +7,23 @@ import org.springframework.web.bind.annotation.*;
 import ru.spbstu.rakitin.archive_service.dto.ArchiveTaskConfigMapper;
 import ru.spbstu.rakitin.archive_service.exception.*;
 import ru.spbstu.rakitin.archive_service.model.ArchiveTaskConfig;
+import ru.spbstu.rakitin.archive_service.model.ArchiveTaskInstance;
 import ru.spbstu.rakitin.archive_service.service.ArchiveTaskConfigService;
 import ru.spbstu.rakitin.archive_service.service.ArchiveTaskInstanceService;
 import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.CheckPermission;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.ProjectIdContainer;
-import ru.spbstu.rakitin.dto.archive.ArchiveTaskConfigDto;
-import ru.spbstu.rakitin.dto.archive.ArchiveTaskResponse;
 import ru.spbstu.rakitin.commonstarter.exception.ConfigAlreadyExists;
 import ru.spbstu.rakitin.commonstarter.exception.InvalidSchemaException;
 import ru.spbstu.rakitin.commonstarter.exception.QuotaExceededException;
 import ru.spbstu.rakitin.commonstarter.exception.UnavailableTopicException;
+import ru.spbstu.rakitin.dto.archive.ArchiveTaskConfigDto;
+import ru.spbstu.rakitin.dto.archive.ArchiveTaskResponse;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,6 +41,18 @@ public class ArchiveTaskConfigController {
         return archiveTaskConfigService.createArchiveTaskConfig(archiveTaskConfigMapper.mapDtoToArchiveTaskConfig(archiveTaskConfigDto, authentication));
     }
 
+    @GetMapping("/{taskId}")
+    public ArchiveTaskResponse findById(@PathVariable long taskId, Authentication authentication) throws ArchiveConfigNotFoundException {
+        return archiveTaskConfigMapper.mapArchiveTaskConfigAndInstanceToResponse(archiveTaskConfigService.findById(taskId, authentication), archiveTaskInstanceService.findByConfigIdOptionally(taskId));
+    }
+
+    @GetMapping("/name/{taskName}")
+    public ArchiveTaskResponse findByName(@PathVariable String taskName, @RequestParam("projectId") long projectId, Authentication authentication) throws ArchiveConfigNotFoundException {
+        ArchiveTaskConfig config = archiveTaskConfigService.findByName(projectId, taskName, authentication);
+        return archiveTaskConfigMapper.mapArchiveTaskConfigAndInstanceToResponse(config, archiveTaskInstanceService.findByConfigIdOptionally(config.getId()));
+    }
+
+
     @LogController
     @DeleteMapping("/{configId}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -52,15 +66,11 @@ public class ArchiveTaskConfigController {
         List<ArchiveTaskConfig> configs = archiveTaskConfigService.findForProjects(projectIds, authentication);
 
         return configs.stream().map(config -> {
-            ArchiveTaskResponse archiveTaskResponse = new ArchiveTaskResponse();
-            archiveTaskResponse.setConfig(archiveTaskConfigMapper.mapArchiveTaskConfigToDto(config));
-            archiveTaskResponse.setId(config.getId());
-            archiveTaskInstanceService.findByConfigIdOptionally(config.getId())
-                    .ifPresent(archiveTaskInstance -> archiveTaskResponse.setInstance(archiveTaskConfigMapper.mapArchiveTaskInstanceToTaskInstanceResponse(archiveTaskInstance)));
-
-            return archiveTaskResponse;
+            Optional<ArchiveTaskInstance> instanceOptional = archiveTaskInstanceService.findByConfigIdOptionally(config.getId());
+            return archiveTaskConfigMapper.mapArchiveTaskConfigAndInstanceToResponse(config, instanceOptional);
         }).toList();
     }
+
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{configId}/update")

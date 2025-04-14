@@ -55,4 +55,15 @@ public class ArchiveConfigController {
         archiveServiceManager.updateConfig(configId, configDto, authentication);
     }
 
+    @GetMapping("/{taskId}")
+    public ArchiveTaskResponse findById(@PathVariable long taskId, Authentication authentication)  {
+        return archiveServiceManager.findById(taskId, authentication);
+    }
+
+    @GetMapping("/name/{taskName}")
+    public ArchiveTaskResponse findByName(@PathVariable String taskName, @RequestParam("projectId") Long projectId, Authentication authentication)  {
+        return archiveServiceManager.findByName(taskName, projectId, authentication);
+    }
+
+
 }

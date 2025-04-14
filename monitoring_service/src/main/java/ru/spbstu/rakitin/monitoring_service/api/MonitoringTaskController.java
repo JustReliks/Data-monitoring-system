@@ -8,14 +8,15 @@ import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.CheckPermission;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.ProjectIdContainer;
-import ru.spbstu.rakitin.dto.monitoring.MonitoringTaskConfigDto;
-import ru.spbstu.rakitin.dto.monitoring.MonitoringTaskResponse;
 import ru.spbstu.rakitin.commonstarter.exception.ConfigAlreadyExists;
 import ru.spbstu.rakitin.commonstarter.exception.InvalidSchemaException;
 import ru.spbstu.rakitin.commonstarter.exception.QuotaExceededException;
 import ru.spbstu.rakitin.commonstarter.exception.UnavailableTopicException;
+import ru.spbstu.rakitin.dto.monitoring.MonitoringTaskConfigDto;
+import ru.spbstu.rakitin.dto.monitoring.MonitoringTaskResponse;
 import ru.spbstu.rakitin.monitoring_service.dto.MonitoringTaskConfigMapper;
 import ru.spbstu.rakitin.monitoring_service.exception.*;
+import ru.spbstu.rakitin.monitoring_service.model.MonitoringTaskConfig;
 import ru.spbstu.rakitin.monitoring_service.model.MonitoringTaskInstance;
 import ru.spbstu.rakitin.monitoring_service.service.MonitoringTaskConfigService;
 import ru.spbstu.rakitin.monitoring_service.service.MonitoringTaskInstanceService;
@@ -45,15 +46,23 @@ public class MonitoringTaskController {
 
         return monitoringTaskConfigService.findForProjects(projects, authentication)
                 .stream().map(monitoringTaskConfig -> {
-                    MonitoringTaskResponse response = new MonitoringTaskResponse();
-                    MonitoringTaskConfigDto monitoringTaskConfigDto = monitoringTaskConfigMapper.mapMonitoringTaskConfigToDto(monitoringTaskConfig);
-                    response.setId(monitoringTaskConfig.getId());
-                    response.setConfig(monitoringTaskConfigDto);
-                    Optional<MonitoringTaskInstance> fulltextTaskInstance = monitoringTaskInstanceService.findByConfigIdOptionally(monitoringTaskConfig.getId());
-                    fulltextTaskInstance.ifPresent(monitoringTaskInstance -> response.setInstance(monitoringTaskConfigMapper.mapMonitoringInstanceToTaskInstanceResponse(monitoringTaskInstance)));
-                    return response;
+                    Optional<MonitoringTaskInstance> monitoringTaskInstance = monitoringTaskInstanceService.findByConfigIdOptionally(monitoringTaskConfig.getId());
+                    return monitoringTaskConfigMapper.mapMonitoringTaskConfigAndInstanceToResponse(monitoringTaskConfig, monitoringTaskInstance);
                 }).toList();
     }
+
+
+    @GetMapping("/{taskId}")
+    public MonitoringTaskResponse findById(@PathVariable long taskId, Authentication authentication) throws MonitoringTaskConfigNotFoundException {
+        return monitoringTaskConfigMapper.mapMonitoringTaskConfigAndInstanceToResponse(monitoringTaskConfigService.findById(taskId, authentication), monitoringTaskInstanceService.findByConfigIdOptionally(taskId));
+    }
+
+    @GetMapping("/name/{taskName}")
+    public MonitoringTaskResponse findByName(@PathVariable String taskName, @RequestParam("projectId") long projectId, Authentication authentication) throws MonitoringTaskConfigNotFoundException {
+        MonitoringTaskConfig config = monitoringTaskConfigService.findByName(projectId, taskName, authentication);
+        return monitoringTaskConfigMapper.mapMonitoringTaskConfigAndInstanceToResponse(config, monitoringTaskInstanceService.findByConfigIdOptionally(config.getId()));
+    }
+
 
     @DeleteMapping("/{configId}/delete")
     @LogController

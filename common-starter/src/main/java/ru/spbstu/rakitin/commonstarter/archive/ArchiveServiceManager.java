@@ -8,8 +8,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.discovery.AdminUserService;
 import ru.spbstu.rakitin.commonstarter.discovery.InnerServiceRequestFactory;
-import ru.spbstu.rakitin.dto.ServiceName;
 import ru.spbstu.rakitin.commonstarter.utils.Utils;
+import ru.spbstu.rakitin.dto.ServiceName;
 import ru.spbstu.rakitin.dto.archive.*;
 
 import java.util.List;
@@ -31,6 +31,8 @@ public class ArchiveServiceManager {
     private static final String UPDATE = "/api/v1/archive/instance/update/%s";
     private static final String FILE_LIST = "/api/v1/archive/query/%s/list";
     private static final String GET_FILE = "/api/v1/archive/query/%s/file/%s";
+    private static final String FIND_BY_ID = "/api/v1/archive/config/%s";
+    private static final String FIND_BY_NAME = "/api/v1/archive/config/name/%s?projects=%s";
 
     private final InnerServiceRequestFactory requestFactory;
     private final AdminUserService adminUserService;
@@ -84,5 +86,13 @@ public class ArchiveServiceManager {
 
     public FileDto getFile(long configId, String filename, Authentication authentication) {
         return requestFactory.doGet(ServiceName.ARCHIVE, authentication, String.format(GET_FILE, configId, filename), FILE);
+    }
+
+    public ArchiveTaskResponse findById(long taskId, Authentication authentication) {
+        return requestFactory.doGet(ServiceName.ARCHIVE, authentication, String.format(FIND_BY_ID, taskId), ARCHIVE_TASK_RESPONSE);
+    }
+
+    public ArchiveTaskResponse findByName(String taskName, Long projectId, Authentication authentication) {
+        return requestFactory.doGet(ServiceName.ARCHIVE, authentication, String.format(FIND_BY_NAME, taskName, projectId), ARCHIVE_TASK_RESPONSE);
     }
 }

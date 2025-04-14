@@ -3,8 +3,8 @@ package ru.spbstu.rakitin.requests;
 import lombok.Builder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
-import ru.spbstu.rakitin.ApiName;
-import ru.spbstu.rakitin.MdsRequest;
+import ru.spbstu.rakitin.client.ApiName;
+import ru.spbstu.rakitin.client.MdsRequest;
 import ru.spbstu.rakitin.dto.ParametrizedTypes;
 import ru.spbstu.rakitin.dto.AuthUserDto;
 

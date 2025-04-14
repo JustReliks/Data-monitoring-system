@@ -3,8 +3,8 @@ package ru.spbstu.rakitin.requests.fulltext;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.MultiValueMap;
-import ru.spbstu.rakitin.ApiName;
-import ru.spbstu.rakitin.MdsRequest;
+import ru.spbstu.rakitin.client.ApiName;
+import ru.spbstu.rakitin.client.MdsRequest;
 import ru.spbstu.rakitin.dto.ParametrizedTypes;
 import ru.spbstu.rakitin.dto.fulltext.FulltextTaskResponse;
 

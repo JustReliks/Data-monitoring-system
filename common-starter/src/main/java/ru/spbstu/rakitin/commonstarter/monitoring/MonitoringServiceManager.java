@@ -8,8 +8,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.discovery.AdminUserService;
 import ru.spbstu.rakitin.commonstarter.discovery.InnerServiceRequestFactory;
-import ru.spbstu.rakitin.dto.ServiceName;
 import ru.spbstu.rakitin.commonstarter.utils.Utils;
+import ru.spbstu.rakitin.dto.ServiceName;
 import ru.spbstu.rakitin.dto.monitoring.*;
 
 import java.util.List;
@@ -30,6 +30,9 @@ public class MonitoringServiceManager {
     private static final String SUSPEND = "/api/v1/monitoring/instance/suspend/%s";
     private static final String UPDATE = "/api/v1/monitoring/instance/update/%s";
     private static final String CREATE_API_KEY = "/api/v1/monitoring/key/create";
+    private static final String FIND_BY_ID = "/api/v1/monitoring/config/%s";
+    private static final String FIND_BY_NAME = "/api/v1/monitoring/config/name/%s?projects=%s";
+
 
     private final InnerServiceRequestFactory requestFactory;
     private final AdminUserService adminUserService;
@@ -79,5 +82,13 @@ public class MonitoringServiceManager {
 
     public ApiKeyDto createApiKey(CreateReadApiKeyDto createReadApiKeyDto, Authentication authentication) {
         return requestFactory.doPost(ServiceName.MONITORING, authentication, CREATE_API_KEY, createReadApiKeyDto, API_KEY_REFERENCE);
+    }
+
+    public MonitoringTaskResponse findById(long taskId, Authentication authentication) {
+        return requestFactory.doGet(ServiceName.MONITORING, authentication, String.format(FIND_BY_ID, taskId), MONITORING_TASK_RESPONSE);
+    }
+
+    public MonitoringTaskResponse findByName(String taskName, Long projectId, Authentication authentication) {
+        return requestFactory.doGet(ServiceName.MONITORING, authentication, String.format(FIND_BY_NAME, taskName, projectId), MONITORING_TASK_RESPONSE);
     }
 }

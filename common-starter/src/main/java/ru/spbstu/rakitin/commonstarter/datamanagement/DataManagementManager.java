@@ -3,17 +3,15 @@ package ru.spbstu.rakitin.commonstarter.datamanagement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import ru.spbstu.rakitin.commonentites.model.Topic;
 import ru.spbstu.rakitin.commonstarter.discovery.InnerServiceRequestFactory;
-import ru.spbstu.rakitin.dto.ServiceName;
-import ru.spbstu.rakitin.dto.JobNameDto;
-import ru.spbstu.rakitin.dto.TopicDto;
+import ru.spbstu.rakitin.dto.*;
 import ru.spbstu.rakitin.dto.archive.ArchiveJobDto;
 import ru.spbstu.rakitin.dto.fulltext.FulltextJobDto;
 import ru.spbstu.rakitin.dto.monitoring.MonitoringJobDto;
 
-import static ru.spbstu.rakitin.dto.ParametrizedTypes.TOPIC_TYPE;
-import static ru.spbstu.rakitin.dto.ParametrizedTypes.VOID_TYPE;
+import java.util.List;
+
+import static ru.spbstu.rakitin.dto.ParametrizedTypes.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +24,10 @@ public class DataManagementManager {
     private static final String START_ARCHIVE_JOB = "/api/v1/job/archive/start";
     private static final String STOP_MONITORING_JOB = "/api/v1/job/monitoring/stop";
     private static final String START_MONITORING_JOB = "/api/v1/job/monitoring/start";
+    private static final String FIND_TOPIC_BY_ID_EXTERNAL = "/api/v1/topic/%s";
+    private static final String CREATE_TOPIC = "/api/v1/topic/";
+    private static final String LIST_TOPIC_BY_PROJECT_ID = "/api/v1/topic/list?projectId=%s";
+    private static final String PUBLIC_KAFKA_PROPERTIES = "/api/v1/kafka/properties";
 
     private final InnerServiceRequestFactory innerServiceRequestFactory;
 
@@ -58,4 +60,19 @@ public class DataManagementManager {
     }
 
 
+    public Long createTopic(LightWeightTopicDto topicDto, Authentication authentication) {
+        return innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, CREATE_TOPIC, topicDto, LONG_TYPE);
+    }
+
+    public List<LightWeightTopicDto> getAllTopicsForProjectId(long projectId, Authentication authentication) {
+        return innerServiceRequestFactory.doGet(ServiceName.DATA_MANAGEMENT, authentication, String.format(LIST_TOPIC_BY_PROJECT_ID, projectId), LIST_LIGHT_WEIGHT_TOPIC);
+    }
+
+    public LightWeightTopicDto findTopicByIdExternal(long topicId, Authentication authentication) {
+        return innerServiceRequestFactory.doGet(ServiceName.DATA_MANAGEMENT, authentication, String.format(FIND_TOPIC_BY_ID_EXTERNAL, topicId), LIGHT_WEIGHT_TOPIC);
+    }
+
+    public MapJson getPublicProperties(Authentication authentication) {
+        return innerServiceRequestFactory.doGet(ServiceName.DATA_MANAGEMENT, authentication, PUBLIC_KAFKA_PROPERTIES, MAP_JSON);
+    }
 }

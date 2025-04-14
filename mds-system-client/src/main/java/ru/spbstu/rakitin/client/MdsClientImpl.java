@@ -1,4 +1,4 @@
-package ru.spbstu.rakitin;
+package ru.spbstu.rakitin.client;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -8,34 +8,65 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import ru.spbstu.rakitin.dto.TaskClientDto;
 import ru.spbstu.rakitin.exception.MdsRequestException;
 import ru.spbstu.rakitin.requests.LoginRequest;
+import ru.spbstu.rakitin.requests.kafka.GetPublicKafkaProperties;
 
 import java.net.ConnectException;
+import java.util.LinkedHashMap;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Getter
 @Slf4j
-public class MdsClient {
+public class MdsClientImpl implements MdsClient {
+
 
     private final AuthProperties authProperties;
     private final RestTemplate restTemplate;
     private final RequestProperties requestProperties;
     private final String baseUrl;
     private final ExecutorService executor;
+    private final KafkaProducerService kafkaProducerService;
+    private final TaskResolver taskResolver;
 
-    public MdsClient(AuthProperties authProperties, RequestProperties requestProperties) {
+    public MdsClientImpl(AuthProperties authProperties, RequestProperties requestProperties, Properties kafkaClientProperties) {
         this.authProperties = authProperties;
         this.requestProperties = requestProperties;
         this.baseUrl = requestProperties.getBaseUrl();
         this.restTemplate = new RestTemplate();
         executor = Executors.newFixedThreadPool(requestProperties.getThreadsCount());
+        if (kafkaClientProperties != null) {
+            this.kafkaProducerService = new KafkaProducerService(kafkaClientProperties);
+        } else {
+            kafkaProducerService = tryCreateKafkaProducerServiceFromWithApi();
+        }
+        this.taskResolver = new TaskResolverImpl(this);
+    }
+
+    private KafkaProducerService tryCreateKafkaProducerServiceFromWithApi() {
+        GetPublicKafkaProperties getPublicKafkaProperties = new GetPublicKafkaProperties();
+        try {
+            LinkedHashMap<String, String> mapJsonMdsResponse = sendRequest(getPublicKafkaProperties).getResponse().get();
+            Properties props = new Properties();
+            props.putAll(mapJsonMdsResponse);
+            return new KafkaProducerService(props);
+        } catch (Exception e) {
+            log.error("Unable to get public kafka properties with api. KafkaProcuderService will not configured", e);
+        }
+        return null;
+    }
+
+    public MdsClientImpl(AuthProperties authProperties, RequestProperties requestProperties) {
+        this(authProperties, requestProperties, null);
     }
 
     @SneakyThrows
+    @Override
     public <T, R> MdsResponse<R> sendRequest(MdsRequest<T, R> request) {
         String fullPath = baseUrl + request.buildFullPath();
         HttpHeaders headers = new HttpHeaders();
@@ -62,6 +93,16 @@ public class MdsClient {
             throw new MdsRequestException(String.format("Unable to execute request %s", fullPath), mdsResponse.getException().get());
         }
         return mdsResponse;
+    }
+
+    @Override
+    public <T> void sendMessageToTask(TaskClientDto taskClientDto, T data) {
+        if (kafkaProducerService == null) {
+            throw new MdsRequestException("Kafka is not configured for this mds client");
+        }
+
+        String topic = taskResolver.resolveTopicName(taskClientDto);
+        kafkaProducerService.sendDataToTopic(topic, data);
     }
 
 

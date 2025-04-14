@@ -23,4 +23,6 @@ public interface MonitoringTaskConfigService {
     MonitoringTaskConfig findById(Long configId, Authentication authentication) throws MonitoringTaskConfigNotFoundException;
 
     void updateConfig(long configId, MonitoringTaskConfig monitoringTaskConfig, Authentication authentication) throws MonitoringTaskConfigNotFoundException, InvalidSchemaException, MonitoringConfigUpdateException;
+
+    MonitoringTaskConfig findByName(Long projectId, String taskName, Authentication authentication) throws MonitoringTaskConfigNotFoundException;
 }

@@ -23,4 +23,6 @@ public interface ArchiveTaskConfigService {
     List<ArchiveTaskConfig> findForProjects(List<Long> projectIds, Authentication authentication);
 
     ArchiveTaskConfig updateArchiveTaskConfig(long configId, ArchiveTaskConfig archiveTaskConfig, Authentication authentication) throws ArchiveConfigNotFoundException, ArchiveTaskInstanceNotFoundException, ArchiveConfigUpdateException, InvalidSchemaException;
+
+    ArchiveTaskConfig findByName(Long projectId, String taskName, Authentication authentication) throws ArchiveConfigNotFoundException;
 }

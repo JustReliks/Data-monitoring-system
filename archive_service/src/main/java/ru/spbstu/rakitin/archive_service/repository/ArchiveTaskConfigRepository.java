@@ -7,6 +7,7 @@ import ru.spbstu.rakitin.archive_service.model.ArchiveTaskConfig;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ArchiveTaskConfigRepository extends JpaRepository<ArchiveTaskConfig, Long> {
@@ -15,4 +16,6 @@ public interface ArchiveTaskConfigRepository extends JpaRepository<ArchiveTaskCo
     int countByProjectId(Long projectId);
 
     List<ArchiveTaskConfig> findByProject_IdIn(Collection<Long> projectIds);
+
+    Optional<ArchiveTaskConfig> findByProject_IdAndName(Long projectId, @NotNull String name);
 }

@@ -8,6 +8,6 @@ import ru.spbstu.rakitin.management.exception.TopicQuotaLimitException;
 
 public interface KafkaService {
 
-    void createTopic(Topic topic) throws KafkaTopicCreationException, TopicAlreadyCreatedException, TopicQuotaLimitException;
+    Topic createTopic(Topic topic) throws KafkaTopicCreationException, TopicAlreadyCreatedException, TopicQuotaLimitException;
     Topic findTopicById(long id) throws TopicNotFoundException;
 }

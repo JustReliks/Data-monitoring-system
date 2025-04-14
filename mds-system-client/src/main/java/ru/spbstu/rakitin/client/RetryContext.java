@@ -1,4 +1,4 @@
-package ru.spbstu.rakitin;
+package ru.spbstu.rakitin.client;
 
 import lombok.Data;
 
