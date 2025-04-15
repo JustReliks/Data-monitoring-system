@@ -85,7 +85,7 @@ public class FulltextServiceManager {
 
 
     public List<MapJson> query(SolrQueryDto solrQuery, long taskId, Authentication authentication) {
-        return requestFactory.doPut(ServiceName.FULL_TEXT, authentication, String.format(QUERY, taskId), solrQuery, MAP_JSON_LIST);
+        return requestFactory.doPost(ServiceName.FULL_TEXT, authentication, String.format(QUERY, taskId), solrQuery, MAP_JSON_LIST);
     }
 
     public FulltextTaskResponse findById(long taskId, Authentication authentication) {

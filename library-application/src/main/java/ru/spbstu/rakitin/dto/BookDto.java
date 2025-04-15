@@ -1,8 +1,10 @@
 package ru.spbstu.rakitin.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class BookDto {
 
     private String title;

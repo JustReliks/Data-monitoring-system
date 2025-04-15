@@ -70,7 +70,6 @@ public class MdsClientImpl implements MdsClient {
     @SneakyThrows
     @Override
     public <T, R> MdsResponse<R> sendRequest(MdsRequest<T, R> request) {
-        String fullPath = baseUrl + request.buildFullPath();
         HttpHeaders headers = new HttpHeaders();
         if (request.needAuthentication()) {
             String apiKey;
@@ -85,10 +84,15 @@ public class MdsClientImpl implements MdsClient {
             }
             headers.add("Authorization", String.format("Bearer %s", apiKey));
         }
+        if (request instanceof TaskTarget taskTarget &&
+                taskTarget.getTask() == null) {
+            taskTarget.setTask(taskResolver.resolveTaskInformation(taskTarget.getTaskClientDto()));
+        }
         HttpEntity<?> entity = new HttpEntity<>(null, headers);
         if (request.hasBody()) {
-            entity = new HttpEntity<>(request.getBody());
+            entity = new HttpEntity<>(request.getBody(), headers);
         }
+        String fullPath = baseUrl + request.buildFullPath();
 
         MdsResponse<R> mdsResponse = executor.submit(new RetryRequestSender<>(
                 request,
@@ -113,7 +117,6 @@ public class MdsClientImpl implements MdsClient {
         String topic = taskResolver.resolveTopicName(taskClientDto);
         kafkaProducerService.sendDataToTopic(topic, data);
     }
-
 
     private record RetryRequestSender<T, R>(MdsRequest<T, R> request, long maxAttempts, long delay, String fullPath,
                                             HttpEntity<?> entity,
