@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LightWeightTopicDto {
 
-    private long id;
+    private Long id;
     private String name;
     private String nameInKafka;
-    private long projectId;
-    private int partitions;
-    private int replicationFactor;
+    private Long projectId;
+    private Integer partitions;
+    private Integer replicationFactor;
 
 }

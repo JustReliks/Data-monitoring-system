@@ -1,4 +1,35 @@
 {
+  "name": "books",
   "projectId": 3,
-  "topicId": 2
+  "topicId": 5,
+  "replicationFactor": 2,
+  "shardsCount": 2,
+  "schema": {
+    "fields": [
+      {
+        "fieldName": "title",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "description",
+        "fieldType": "TEXT"
+      },
+      {
+        "fieldName": "author",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "publisher",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "publishedDate",
+        "fieldType": "DATE"
+      },
+      {
+        "fieldName": "price",
+        "fieldType": "DOUBLE"
+      }
+    ]
+  }
 }

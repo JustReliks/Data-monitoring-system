@@ -33,8 +33,10 @@ public class MdsClientImpl implements MdsClient {
     private final ExecutorService executor;
     private final KafkaProducerService kafkaProducerService;
     private final TaskResolver taskResolver;
+    private final ApiKeyStorage apiKeyStorage;
 
-    public MdsClientImpl(AuthProperties authProperties, RequestProperties requestProperties, Properties kafkaClientProperties) {
+    public MdsClientImpl(AuthProperties authProperties, RequestProperties requestProperties, ApiKeyStorageProperties apiKeyStorageProperties, Properties kafkaClientProperties) {
+        this.apiKeyStorage = new ApiKeyStorage(apiKeyStorageProperties);
         this.authProperties = authProperties;
         this.requestProperties = requestProperties;
         this.baseUrl = requestProperties.getBaseUrl();
@@ -51,7 +53,7 @@ public class MdsClientImpl implements MdsClient {
     private KafkaProducerService tryCreateKafkaProducerServiceFromWithApi() {
         GetPublicKafkaProperties getPublicKafkaProperties = new GetPublicKafkaProperties();
         try {
-            LinkedHashMap<String, String> mapJsonMdsResponse = sendRequest(getPublicKafkaProperties).getResponse().get();
+            LinkedHashMap<String, Object> mapJsonMdsResponse = sendRequest(getPublicKafkaProperties).getResponse().get();
             Properties props = new Properties();
             props.putAll(mapJsonMdsResponse);
             return new KafkaProducerService(props);
@@ -61,8 +63,8 @@ public class MdsClientImpl implements MdsClient {
         return null;
     }
 
-    public MdsClientImpl(AuthProperties authProperties, RequestProperties requestProperties) {
-        this(authProperties, requestProperties, null);
+    public MdsClientImpl(AuthProperties authProperties, RequestProperties requestProperties, ApiKeyStorageProperties apiKeyStorageProperties) {
+        this(authProperties, requestProperties, apiKeyStorageProperties, null);
     }
 
     @SneakyThrows
@@ -71,10 +73,17 @@ public class MdsClientImpl implements MdsClient {
         String fullPath = baseUrl + request.buildFullPath();
         HttpHeaders headers = new HttpHeaders();
         if (request.needAuthentication()) {
-            MdsResponse<String> response = sendRequest(LoginRequest.builder()
-                    .username(authProperties.getUsername())
-                    .password(authProperties.getPassword()).build());
-            headers.add("Authorization", String.format("Bearer %s", response.getResponse().get()));
+            String apiKey;
+            if (apiKeyStorage.isValid()) {
+                apiKey = apiKeyStorage.getApiKey();
+            } else {
+                MdsResponse<String> response = sendRequest(LoginRequest.builder()
+                        .username(authProperties.getUsername())
+                        .password(authProperties.getPassword()).build());
+                apiKey = response.getResponse().get();
+                apiKeyStorage.setApiKey(apiKey);
+            }
+            headers.add("Authorization", String.format("Bearer %s", apiKey));
         }
         HttpEntity<?> entity = new HttpEntity<>(null, headers);
         if (request.hasBody()) {

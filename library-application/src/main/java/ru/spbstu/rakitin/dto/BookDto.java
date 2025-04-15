@@ -1,5 +1,8 @@
 package ru.spbstu.rakitin.dto;
 
+import lombok.Data;
+
+@Data
 public class BookDto {
 
     private String title;

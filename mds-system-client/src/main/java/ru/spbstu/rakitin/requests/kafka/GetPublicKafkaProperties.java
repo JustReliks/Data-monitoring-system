@@ -1,12 +1,19 @@
 package ru.spbstu.rakitin.requests.kafka;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import ru.spbstu.rakitin.client.ApiName;
 import ru.spbstu.rakitin.client.MdsRequest;
 
 import java.util.LinkedHashMap;
 
-public class GetPublicKafkaProperties extends MdsRequest<Void, LinkedHashMap<String, String>> {
+public class GetPublicKafkaProperties extends MdsRequest<Void, LinkedHashMap<String, Object>> {
+    @Override
+    public ParameterizedTypeReference<LinkedHashMap<String, Object>> getResponseClass() {
+        return new ParameterizedTypeReference<LinkedHashMap<String, Object>>() {
+        };
+    }
+
     @Override
     public boolean hasResponse() {
         return true;

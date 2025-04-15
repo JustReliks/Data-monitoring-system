@@ -3,6 +3,7 @@ package ru.spbstu.rakitin.management.configuration;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -36,6 +37,9 @@ public class KafkaConfiguration {
         properties.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         properties.put("key.deserializer", StringDeserializer.class);
         properties.put("value.deserializer", StringDeserializer.class);
+        properties.put("key.serializer", StringSerializer.class);
+        properties.put("value.serializer", StringSerializer.class);
+
         return properties;
     }
 

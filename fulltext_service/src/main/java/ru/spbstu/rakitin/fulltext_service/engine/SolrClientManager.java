@@ -15,10 +15,10 @@ import org.apache.solr.client.solrj.response.CollectionAdminResponse;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.util.ContentStreamBase;
 import org.springframework.stereotype.Component;
-import ru.spbstu.rakitin.dto.fulltext.SolrQueryDto;
 import ru.spbstu.rakitin.commonstarter.sequence.engine.SequentialEngine;
 import ru.spbstu.rakitin.commonstarter.sequence.engine.SequentialTask;
 import ru.spbstu.rakitin.dto.MapJson;
+import ru.spbstu.rakitin.dto.fulltext.SolrQueryDto;
 import ru.spbstu.rakitin.fulltext_service.engine.schema.SolrSchema;
 import ru.spbstu.rakitin.fulltext_service.engine.utils.SolrUtils;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskConfig;
@@ -44,7 +44,7 @@ public class SolrClientManager {
     public void initiateFulltextInstance(FulltextTaskConfig fulltextTaskConfig) throws Exception {
         SolrSchema schema = solrSchemaService.createSolrSchema(fulltextTaskConfig.getSchema());
         String collectionName = SolrUtils.buildCollectionName(fulltextTaskConfig);
-        String basePath = fulltextTaskConfig.getProject().getProjectName() + "." + collectionName;
+        String basePath = getTaskFullName(fulltextTaskConfig);
         Queue<SequentialTask> tasks = getSequentialTasksForInitiateFulltextInstance(fulltextTaskConfig, collectionName, basePath, schema);
         sequentialEngine.performSequential(tasks);
     }
@@ -59,37 +59,6 @@ public class SolrClientManager {
         }).toList();
     }
 
-    private static SolrQuery getSolrQueryFromDto(SolrQueryDto solrQueryDto) {
-        SolrQuery query = new SolrQuery(solrQueryDto.getQuery());
-        if (solrQueryDto.getSort() != null) {
-            solrQueryDto.getSort().forEach(solrSort -> query.setSort(solrSort.getField(), SolrQuery.ORDER.valueOf(solrSort.getOrder().name())));
-        }
-        if (solrQueryDto.getFilters() != null) {
-            query.setFilterQueries(solrQueryDto.getFilters().toArray(new String[0]));
-        }
-        if (solrQueryDto.getReqFields() != null) {
-            query.setFields(solrQueryDto.getReqFields().toArray(new String[0]));
-        }
-        return query;
-    }
-
-
-    private static String getTaskFullName(FulltextTaskConfig fulltextTaskConfig) {
-        return fulltextTaskConfig.getProject().getProjectName() + "." + fulltextTaskConfig.getName();
-    }
-
-
-    private <T extends SolrResponse> T sendRequest(SolrRequest<T> request) throws SolrServerException, IOException {
-        return sendRequest(request, null);
-    }
-
-    private <T extends SolrResponse> T sendRequest(SolrRequest<T> request, String collection) throws SolrServerException, IOException {
-        if (collection != null) {
-            return request.process(solrClient, collection);
-        }
-
-        return request.process(solrClient);
-    }
 
     public void removeFulltextTaskInstance(FulltextTaskConfig config) throws SolrServerException, IOException {
         CollectionAdminRequest.ListAliases listAliases = new CollectionAdminRequest.ListAliases();
@@ -314,5 +283,38 @@ public class SolrClientManager {
         CollectionAdminResponse collectionAdminResponse = sendRequest(listAliases);
         return collectionAdminResponse.getAliasesAsLists().get(alias);
     }
+
+    private static SolrQuery getSolrQueryFromDto(SolrQueryDto solrQueryDto) {
+        SolrQuery query = new SolrQuery(solrQueryDto.getQuery());
+        if (solrQueryDto.getSort() != null) {
+            solrQueryDto.getSort().forEach(solrSort -> query.setSort(solrSort.getField(), SolrQuery.ORDER.valueOf(solrSort.getOrder().name())));
+        }
+        if (solrQueryDto.getFilters() != null) {
+            query.setFilterQueries(solrQueryDto.getFilters().toArray(new String[0]));
+        }
+        if (solrQueryDto.getReqFields() != null) {
+            query.setFields(solrQueryDto.getReqFields().toArray(new String[0]));
+        }
+        return query;
+    }
+
+
+    private static String getTaskFullName(FulltextTaskConfig fulltextTaskConfig) {
+        return fulltextTaskConfig.getProject().getProjectName() + "." + fulltextTaskConfig.getName();
+    }
+
+
+    private <T extends SolrResponse> T sendRequest(SolrRequest<T> request) throws SolrServerException, IOException {
+        return sendRequest(request, null);
+    }
+
+    private <T extends SolrResponse> T sendRequest(SolrRequest<T> request, String collection) throws SolrServerException, IOException {
+        if (collection != null) {
+            return request.process(solrClient, collection);
+        }
+
+        return request.process(solrClient);
+    }
+
 
 }

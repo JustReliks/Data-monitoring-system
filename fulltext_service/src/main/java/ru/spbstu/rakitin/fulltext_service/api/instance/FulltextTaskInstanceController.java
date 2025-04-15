@@ -18,8 +18,7 @@ public class FulltextTaskInstanceController {
 
     @PostMapping("/resume/{configId}")
     @LogController
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public long resume(@PathVariable("configId") long configId, Authentication authentication) throws FulltextConfigNotFoundException, FulltextTaskInstanceAlreadyRunningException, IllegalAccessException, InstanceInitiationFailedException, FulltextTaskInstanceResumeException {
+    public Long resume(@PathVariable("configId") long configId, Authentication authentication) throws FulltextConfigNotFoundException, FulltextTaskInstanceAlreadyRunningException, IllegalAccessException, InstanceInitiationFailedException, FulltextTaskInstanceResumeException {
         return fulltextTaskInstanceService.resume(configId, authentication);
     }
 

@@ -19,11 +19,7 @@ public abstract class MdsRequest<T, R> {
         return uriComponentsBuilder.build().toString();
     }
 
-    public ParameterizedTypeReference<R> getResponseClass() {
-        return new ParameterizedTypeReference<R>() {
-        };
-    }
-
+    public abstract ParameterizedTypeReference<R> getResponseClass();
     public MultiValueMap<String, String> getRequestParams() {
         return new LinkedMultiValueMap<>();
     }

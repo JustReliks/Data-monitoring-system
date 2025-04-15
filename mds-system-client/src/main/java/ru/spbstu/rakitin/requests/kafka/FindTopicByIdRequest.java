@@ -1,6 +1,7 @@
 package ru.spbstu.rakitin.requests.kafka;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import ru.spbstu.rakitin.client.ApiName;
 import ru.spbstu.rakitin.client.MdsRequest;
@@ -31,6 +32,12 @@ public class FindTopicByIdRequest extends MdsRequest<Void, LightWeightTopicDto> 
     @Override
     public String buildPath() {
         return "/{topicId}";
+    }
+
+    @Override
+    public ParameterizedTypeReference<LightWeightTopicDto> getResponseClass() {
+        return new ParameterizedTypeReference<LightWeightTopicDto>() {
+        };
     }
 
     @Override

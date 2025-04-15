@@ -40,6 +40,7 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public long createTopic(Topic topic, Authentication authentication) throws KafkaTopicCreationException, TopicAlreadyCreatedException, TopicQuotaLimitException {
+        topic.setId(null);
         adminManager.checkAccessThrowable(authentication, topic.getProject().getId(), PermissionTypeEnum.TOPIC_CREATE);
         return kafkaService.createTopic(topic).getId();
     }

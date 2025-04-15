@@ -19,7 +19,6 @@ public class FulltextInstanceController {
 
     @PostMapping("/resume/{configId}")
     @LogController
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(description = "Запуск полнотекстовой задачи по id конфигурации")
     public long resume(@PathVariable("configId") long configId, Authentication authentication) {
         return fulltextServiceManager.resume(configId, authentication);

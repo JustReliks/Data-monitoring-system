@@ -19,7 +19,6 @@ public class ArchiveInstanceController {
 
     @PostMapping("/resume/{configId}")
     @LogController
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(description = "Запуск архивных задачи по id конфигурации")
     public long resume(@PathVariable("configId") long configId, Authentication authentication) {
         return archiveServiceManager.resume(configId, authentication);
