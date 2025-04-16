@@ -7,28 +7,16 @@
   "schema": {
     "fields": [
       {
+        "fieldName": "libraryId",
+        "fieldType": "LONG"
+      },
+      {
         "fieldName": "title",
         "fieldType": "STRING"
       },
       {
         "fieldName": "description",
         "fieldType": "TEXT"
-      },
-      {
-        "fieldName": "author",
-        "fieldType": "STRING"
-      },
-      {
-        "fieldName": "publisher",
-        "fieldType": "STRING"
-      },
-      {
-        "fieldName": "publishedDate",
-        "fieldType": "DATE"
-      },
-      {
-        "fieldName": "price",
-        "fieldType": "DOUBLE"
       }
     ]
   }

@@ -1,0 +1,28 @@
+package ru.spbstu.rakitin.service.impl;
+
+import org.springframework.stereotype.Service;
+import ru.spbstu.rakitin.model.Book;
+import ru.spbstu.rakitin.repository.BookRepository;
+import ru.spbstu.rakitin.service.BookService;
+
+import java.util.Optional;
+
+@Service
+public class BookServiceImpl implements BookService {
+
+    private final BookRepository bookRepository;
+
+    public BookServiceImpl(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
+
+    @Override
+    public Book saveBook(Book book) {
+        return bookRepository.save(book);
+    }
+
+    @Override
+    public Optional<Book> getBook(Long id) {
+        return bookRepository.findById(id);
+    }
+}

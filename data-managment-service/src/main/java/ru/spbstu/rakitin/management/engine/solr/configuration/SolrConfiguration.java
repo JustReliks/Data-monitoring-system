@@ -1,15 +1,12 @@
 package ru.spbstu.rakitin.management.engine.solr.configuration;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.solr.client.solrj.impl.CloudLegacySolrClient;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.impl.Http2SolrClient;
-import org.apache.solr.client.solrj.impl.LBHttpSolrClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import ru.spbstu.rakitin.management.engine.solr.client.DockerHttp2SolrClient;
-import ru.spbstu.rakitin.management.engine.solr.client.DockerLBHttpClient;
 
 import java.util.concurrent.TimeUnit;
 
@@ -24,7 +21,7 @@ public class SolrConfiguration {
     public Http2SolrClient http2SolrClient() {
         return new Http2SolrClient.Builder()
                 .withBasicAuthCredentials("solr", "SolrRocks")
-                .withRequestTimeout(10, TimeUnit.SECONDS)
+                .withRequestTimeout(100, TimeUnit.SECONDS)
                 .build();
     }
 
@@ -33,9 +30,9 @@ public class SolrConfiguration {
     public Http2SolrClient dockerHttp2SolrClient() {
         return new DockerHttp2SolrClient.Builder()
                 .withBasicAuthCredentials("solr", "SolrRocks")
-                .withRequestTimeout(10, TimeUnit.SECONDS)
-                .withIdleTimeout(10, TimeUnit.MINUTES)
-                .withConnectionTimeout(10, TimeUnit.SECONDS)
+                .withRequestTimeout(100, TimeUnit.SECONDS)
+                .withIdleTimeout(10 * 365, TimeUnit.DAYS)
+                .withConnectionTimeout(100, TimeUnit.SECONDS)
                 .build();
     }
 
