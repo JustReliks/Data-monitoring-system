@@ -1,0 +1,19 @@
+{
+  "name": "library-sell-metrics",
+  "projectId": 3,
+  "topicId": 6,
+  "retentionTimeSeconds": 30000,
+  "shardGroupDurationSeconds": 30000,
+  "schema": {
+    "fields": [
+      {
+        "fieldName": "bookName",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "sells",
+        "fieldType": "DOUBLE"
+      }
+    ]
+  }
+}

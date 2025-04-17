@@ -1,18 +1,19 @@
 package ru.spbstu.rakitin.monitoring_service.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
-import ru.spbstu.rakitin.dto.TaskSchemaDto;
-import ru.spbstu.rakitin.dto.TaskStatus;
 import ru.spbstu.rakitin.commonstarter.exception.ConfigAlreadyExists;
 import ru.spbstu.rakitin.commonstarter.exception.InvalidSchemaException;
 import ru.spbstu.rakitin.commonstarter.exception.QuotaExceededException;
 import ru.spbstu.rakitin.commonstarter.exception.UnavailableTopicException;
 import ru.spbstu.rakitin.commonstarter.service.SchemaValidationService;
+import ru.spbstu.rakitin.dto.TaskSchemaDto;
+import ru.spbstu.rakitin.dto.TaskStatus;
 import ru.spbstu.rakitin.monitoring_service.dto.MonitoringTaskConfigMapper;
 import ru.spbstu.rakitin.monitoring_service.exception.*;
 import ru.spbstu.rakitin.monitoring_service.model.MonitoringTaskConfig;
@@ -25,7 +26,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class MonitoringTaskConfigServiceImpl implements MonitoringTaskConfigService {
 
@@ -33,7 +33,19 @@ public class MonitoringTaskConfigServiceImpl implements MonitoringTaskConfigServ
     private final MonitoringTaskConfigRepository monitoringTaskConfigRepository;
     private final MonitoringTaskConfigMapper monitoringTaskConfigMapper;
     private final AdminManager adminManager;
-    private final MonitoringTaskInstanceService monitoringTaskInstanceService;
+    private MonitoringTaskInstanceService monitoringTaskInstanceService;
+
+    public MonitoringTaskConfigServiceImpl(SchemaValidationService<TaskSchemaDto> schemaValidationService, MonitoringTaskConfigRepository monitoringTaskConfigRepository, MonitoringTaskConfigMapper monitoringTaskConfigMapper, AdminManager adminManager) {
+        this.schemaValidationService = schemaValidationService;
+        this.monitoringTaskConfigRepository = monitoringTaskConfigRepository;
+        this.monitoringTaskConfigMapper = monitoringTaskConfigMapper;
+        this.adminManager = adminManager;
+    }
+
+    @Autowired
+    public void setMonitoringTaskInstanceService(@Lazy MonitoringTaskInstanceService monitoringTaskInstanceService) {
+        this.monitoringTaskInstanceService = monitoringTaskInstanceService;
+    }
 
     @Override
     public long createConfig(MonitoringTaskConfig config, Authentication authentication) throws ConfigAlreadyExists, QuotaExceededException, UnavailableTopicException, InvalidSchemaException {

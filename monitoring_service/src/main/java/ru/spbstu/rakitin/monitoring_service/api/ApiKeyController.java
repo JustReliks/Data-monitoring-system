@@ -14,7 +14,7 @@ import ru.spbstu.rakitin.monitoring_service.exception.OrganizationNotFoundExcept
 import ru.spbstu.rakitin.monitoring_service.service.ApiKeyService;
 
 @RestController
-@RequestMapping("/api/v1/monitoring/api")
+@RequestMapping("/api/v1/monitoring/key")
 @RequiredArgsConstructor
 public class ApiKeyController {
 

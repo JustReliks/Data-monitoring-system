@@ -49,7 +49,7 @@ public class InfluxDBManager {
                     organization = Optional.of(organizationsApi.createOrganization(organizationName));
                     context.put(ORGANIZATION_CREATED, true);
                 }
-                context.put(ORGANIZATION, organization);
+                context.put(ORGANIZATION, organization.get());
 
             }
 

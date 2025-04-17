@@ -1,16 +1,10 @@
 package ru.spbstu.rakitin.controller;
 
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.spbstu.rakitin.client.MdsClient;
 import ru.spbstu.rakitin.client.MdsResponse;
-import ru.spbstu.rakitin.dto.BookDto;
-import ru.spbstu.rakitin.dto.BookSearchRequestDto;
-import ru.spbstu.rakitin.dto.MdsBookDto;
-import ru.spbstu.rakitin.dto.TaskClientDto;
+import ru.spbstu.rakitin.dto.*;
 import ru.spbstu.rakitin.model.Book;
 import ru.spbstu.rakitin.requests.fulltext.FulltextQueryRequest;
 import ru.spbstu.rakitin.service.BookService;
@@ -28,11 +22,15 @@ public class BookController {
 
 
     private final TaskClientDto fulltextTask;
+    private final TaskClientDto monitoringTask;
     private final BookService bookService;
 
-    public BookController(MdsClient mdsClient, @Qualifier("taskClientDtoFulltext") TaskClientDto fulltextTask, BookService bookService) {
+    public BookController(MdsClient mdsClient,
+                          @Qualifier("taskClientDtoFulltext") TaskClientDto fulltextTask,
+                          @Qualifier("taskClientDtoMonitoring") TaskClientDto monitoringTask, BookService bookService) {
         this.mdsClient = mdsClient;
         this.fulltextTask = fulltextTask;
+        this.monitoringTask = monitoringTask;
         this.bookService = bookService;
     }
 
@@ -53,6 +51,13 @@ public class BookController {
             Optional<Book> book = bookService.getBook(id);
             return book.map(BookDto::fromBook).orElse(null);
         }).filter(Objects::nonNull).distinct().toList();
+    }
+
+    @PostMapping("/buy/{id}")
+    public void buyBook(@PathVariable long id, @RequestParam(required = false, defaultValue = "1", name = "quantity") int quantity) {
+        Book book = bookService.getBook(id).orElseThrow();
+        BookSellMetricDto bookSellMetricDto = new BookSellMetricDto(book.getTitle(), quantity);
+        mdsClient.sendMessageToTask(monitoringTask, bookSellMetricDto);
     }
 
 }

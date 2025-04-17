@@ -8,9 +8,9 @@ import ru.spbstu.rakitin.dto.TaskClientDto;
 import ru.spbstu.rakitin.dto.TaskType;
 
 @Configuration
-@ConfigurationProperties(prefix = "library.task")
+@ConfigurationProperties(prefix = "library.fulltext.task")
 @Data
-public class TaskConfiguration {
+public class FulltextTaskConfiguration {
 
     private long projectId;
     private String taskName;

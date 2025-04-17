@@ -32,7 +32,7 @@ public class ArchiveServiceManager {
     private static final String FILE_LIST = "/api/v1/archive/query/%s/list";
     private static final String GET_FILE = "/api/v1/archive/query/%s/file/%s";
     private static final String FIND_BY_ID = "/api/v1/archive/config/%s";
-    private static final String FIND_BY_NAME = "/api/v1/archive/config/name/%s?projects=%s";
+    private static final String FIND_BY_NAME = "/api/v1/archive/config/name/%s?projectId=%s";
 
     private final InnerServiceRequestFactory requestFactory;
     private final AdminUserService adminUserService;

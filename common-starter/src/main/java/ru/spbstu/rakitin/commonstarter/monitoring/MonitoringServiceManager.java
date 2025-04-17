@@ -31,7 +31,7 @@ public class MonitoringServiceManager {
     private static final String UPDATE = "/api/v1/monitoring/instance/update/%s";
     private static final String CREATE_API_KEY = "/api/v1/monitoring/key/create";
     private static final String FIND_BY_ID = "/api/v1/monitoring/config/%s";
-    private static final String FIND_BY_NAME = "/api/v1/monitoring/config/name/%s?projects=%s";
+    private static final String FIND_BY_NAME = "/api/v1/monitoring/config/name/%s?projectId=%s";
 
 
     private final InnerServiceRequestFactory requestFactory;

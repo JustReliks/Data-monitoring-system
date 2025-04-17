@@ -1,0 +1,35 @@
+{
+  "name": "library-logs",
+  "projectId": 3,
+  "topicId": 7,
+  "replicationFactor": 1,
+  "shardsCount": 2,
+  "schema": {
+    "fields": [
+      {
+        "fieldName": "@timestamp",
+        "fieldType": "DATE"
+      },
+      {
+        "fieldName": "@version",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "message",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "logger_name",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "thread_name",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "level",
+        "fieldType": "STRING"
+      }
+    ]
+  }
+}
