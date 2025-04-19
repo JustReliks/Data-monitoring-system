@@ -9,11 +9,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import ru.spbstu.rakitin.commonstarter.admin.auth.JwtAuthenticationFilter;
+
+import java.util.List;
 
 @ConditionalOnMissingBean(WebSecurityConfigurationBean.class)
 @Configuration
-public class DefaultWebSecurityConfiguration {
+public class DefaultWebSecurityConfiguration implements WebMvcConfigurer {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -22,9 +28,24 @@ public class DefaultWebSecurityConfiguration {
     }
 
     @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("*")); // Можно ограничить например: List.of("http://localhost:5173")
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+//        config.setAllowCredentials(true); // Убери если не используешь куки
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .cors(AbstractHttpConfigurer::disable)
+                .cors()
+                .and()
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(manager ->

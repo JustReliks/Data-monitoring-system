@@ -6,7 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.admin.exception.ForbiddenRequestException;
 import ru.spbstu.rakitin.commonstarter.exception.ConfigAlreadyExists;
@@ -15,6 +15,7 @@ import ru.spbstu.rakitin.commonstarter.exception.QuotaExceededException;
 import ru.spbstu.rakitin.commonstarter.exception.UnavailableTopicException;
 import ru.spbstu.rakitin.commonstarter.service.SchemaValidationService;
 import ru.spbstu.rakitin.dto.TaskSchemaDto;
+import ru.spbstu.rakitin.dto.TaskStatus;
 import ru.spbstu.rakitin.fulltext_service.dto.FulltextTaskConfigMapper;
 import ru.spbstu.rakitin.fulltext_service.exception.*;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskConfig;
@@ -98,8 +99,8 @@ public class FulltextTaskConfigServiceImpl implements FulltextTaskConfigService 
         Optional<FulltextTaskInstance> fulltextTaskInstanceOptionally = fulltextTaskInstanceService.findByConfigIdOptionally(configId);
         if (fulltextTaskInstanceOptionally.isPresent()) {
             FulltextTaskInstance fulltextTaskInstance = fulltextTaskInstanceOptionally.get();
-            if (!forceDelete) {
-                throw new FulltextConfigDeletionForbiddenException(String.format("Fulltext task config with id %s have instance with id %s with status %s. Delete it or use flag [forceDelete=true]",
+            if (!forceDelete && fulltextTaskInstance.getTaskStatus() == TaskStatus.RUNNING) {
+                throw new FulltextConfigDeletionForbiddenException(String.format("Fulltext task config with id %s have running instance with id %s with status %s. Delete it or use flag [forceDelete=true]",
                         config.getId(),
                         fulltextTaskInstance.getId(),
                         fulltextTaskInstance.getTaskStatus()));

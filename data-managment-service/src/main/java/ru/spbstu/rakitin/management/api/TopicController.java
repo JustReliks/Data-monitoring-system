@@ -3,7 +3,7 @@ package ru.spbstu.rakitin.management.api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.CheckPermission;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.ProjectIdContainer;
@@ -13,7 +13,6 @@ import ru.spbstu.rakitin.management.exception.KafkaTopicCreationException;
 import ru.spbstu.rakitin.management.exception.TopicAlreadyCreatedException;
 import ru.spbstu.rakitin.management.exception.TopicNotFoundException;
 import ru.spbstu.rakitin.management.exception.TopicQuotaLimitException;
-import ru.spbstu.rakitin.management.service.KafkaService;
 import ru.spbstu.rakitin.management.service.TopicService;
 
 import java.util.List;

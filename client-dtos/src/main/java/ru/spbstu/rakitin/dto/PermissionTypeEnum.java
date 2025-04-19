@@ -1,4 +1,4 @@
-package ru.spbstu.rakitin.commonentites.model;
+package ru.spbstu.rakitin.dto;
 
 public enum PermissionTypeEnum {
     FULL_TEXT_CREATE_TASK,

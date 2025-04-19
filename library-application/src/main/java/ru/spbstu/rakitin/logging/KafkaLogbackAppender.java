@@ -51,10 +51,9 @@ public class KafkaLogbackAppender extends AppenderBase<ILoggingEvent> {
 
         producer = new KafkaProducer<>(props);
 
-        // Logstash encoder with UTC timestamp formatting
         LogstashLayout layout = new LogstashLayout();
         layout.setContext(getContext());
-        layout.setTimeZone("UTC"); // 👈 ключевой момент — формат с "Z"
+        layout.setTimeZone("UTC");
         layout.start();
 
         encoder = new LayoutWrappingEncoder<>();

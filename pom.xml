@@ -25,8 +25,8 @@
         <module>administration_service</module>
         <module>data-managment-service</module>
         <module>user_api_service</module>
-        <module>fulltext_service</module>
         <module>archive_service</module>
+        <module>fulltext_service</module>
         <module>monitoring_service</module>
         <module>mds-system-client</module>
     </modules>

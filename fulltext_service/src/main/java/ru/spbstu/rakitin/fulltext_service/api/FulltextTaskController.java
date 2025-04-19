@@ -5,7 +5,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.CheckPermission;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.ProjectIdContainer;

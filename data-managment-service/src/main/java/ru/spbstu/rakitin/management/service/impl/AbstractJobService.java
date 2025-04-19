@@ -16,6 +16,7 @@ import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.transaction.TransactionManager;
 import ru.spbstu.rakitin.commonentites.model.Project;
 import ru.spbstu.rakitin.commonentites.model.Topic;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
@@ -31,7 +32,10 @@ import ru.spbstu.rakitin.management.exception.TaskAlreadyInContextException;
 import ru.spbstu.rakitin.management.service.JobService;
 import ru.spbstu.rakitin.management.service.KafkaService;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -44,6 +48,7 @@ public abstract class AbstractJobService<T extends JobDto<?>> implements JobServ
     private final BeanFactory beanFactory;
     private final KafkaService kafkaService;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final TransactionManager transactionManager;
 
     private static final MapJson INVALID_JSON_FILTER = new MapJson();
 
@@ -111,7 +116,13 @@ public abstract class AbstractJobService<T extends JobDto<?>> implements JobServ
     @Override
     public void stopJob(JobNameDto jobName) {
         String taskName = jobName.getProjectName() + "." + jobName.getTaskName();
-        KafkaStreams streams = Objects.requireNonNull(this.runningKafkaStreams.get(taskName), String.format("Job with name %s not found in tasks list", taskName)).getKafkaStreams();
+
+        KafkaJobStream stream = this.runningKafkaStreams.get(taskName);
+        if (stream == null) {
+            log.warn("Job with name {} not found in tasks list", taskName);
+            return;
+        }
+        KafkaStreams streams = stream.getKafkaStreams();
         streams.close();
         this.runningKafkaStreams.remove(taskName);
     }

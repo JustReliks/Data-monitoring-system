@@ -21,12 +21,11 @@ import ru.spbstu.rakitin.administration.service.auth.JwtService;
 import ru.spbstu.rakitin.administration.service.auth.PermissionService;
 import ru.spbstu.rakitin.administration.service.auth.UserService;
 import ru.spbstu.rakitin.commonentites.model.Permission;
+import ru.spbstu.rakitin.commonentites.model.Project;
 import ru.spbstu.rakitin.commonentites.model.User;
-import ru.spbstu.rakitin.dto.AuthUserDto;
-import ru.spbstu.rakitin.dto.UserDto;
-import ru.spbstu.rakitin.dto.ValidateUserTokenDto;
+import ru.spbstu.rakitin.dto.*;
 
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/admin/user")
@@ -120,5 +119,39 @@ public class UserController {
                 .id(userByUsername.getId())
                 .authorities(userByUsername.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList()).
                 build();
+    }
+
+    @GetMapping("/{userId}/projects/list")
+    public List<UserProjectAccessDto> listProjectAccess(@PathVariable Long userId) throws UserNotFoundException {
+        User userById = userService.findUserById(userId);
+        List<Permission> permissions = userById.getPermissions();
+        Map<Long, Set<PermissionTypeEnum>> permissionsByProjectId = new HashMap<>();
+        Map<Long, Project> projectsById = new HashMap<>();
+        permissions.forEach(permission -> {
+            Project project = permission.getProject();
+            PermissionTypeEnum permission1 = permission.getPermission();
+            permissionsByProjectId.computeIfAbsent(project.getId(), k -> new HashSet<>());
+            permissionsByProjectId.get(project.getId()).add(permission1);
+
+            projectsById.put(project.getId(), project);
+        });
+
+        List<UserProjectAccessDto> projectAccessDtos = new ArrayList<>();
+        permissionsByProjectId.forEach((projectId, permissionSet) -> {
+            Project project = projectsById.get(projectId);
+            UserProjectAccessDto userProjectAccessDto = new UserProjectAccessDto();
+            ProjectDto projectDto = new ProjectDto();
+            projectDto.setId(projectId);
+            projectDto.setProjectName(project.getProjectName());
+            projectDto.setArchiveQuota(project.getArchiveQuota());
+            projectDto.setMonitoringQuota(project.getMonitoringQuota());
+            projectDto.setFulltextQuota(project.getFulltextQuota());
+            projectDto.setTopicQuota(project.getTopicQuota());
+            userProjectAccessDto.setProject(projectDto);
+            userProjectAccessDto.setPermissions(permissionSet);
+            projectAccessDtos.add(userProjectAccessDto);
+        });
+
+        return projectAccessDtos;
     }
 }

@@ -16,10 +16,10 @@ import ru.spbstu.rakitin.archive_service.model.ArchiveTaskInstance;
 import ru.spbstu.rakitin.archive_service.repository.ArchiveTaskInstanceRepository;
 import ru.spbstu.rakitin.archive_service.service.ArchiveTaskConfigService;
 import ru.spbstu.rakitin.archive_service.service.ArchiveTaskInstanceService;
-import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.datamanagement.DataManagementManager;
 import ru.spbstu.rakitin.dto.JobNameDto;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.dto.TaskStatus;
 
 import java.io.IOException;
@@ -61,7 +61,7 @@ public class ArchiveTaskInstanceServiceImpl implements ArchiveTaskInstanceServic
             newArchiveTaskInstance.setConfig(archiveTaskConfig);
             newArchiveTaskInstance.setStatus(TaskStatus.CREATED);
 
-            return newArchiveTaskInstance;
+            return archiveTaskInstanceRepository.save(newArchiveTaskInstance);
         });
 
         if (archiveTaskInstance.getStatus() == TaskStatus.RUNNING) {
@@ -99,9 +99,13 @@ public class ArchiveTaskInstanceServiceImpl implements ArchiveTaskInstanceServic
         if (instance.getStatus() != TaskStatus.RUNNING) {
             throw new ArchiveStatusWontChangedException(String.format("Can't change status for task with id %s to %s because its status already equal to it", instance.getId(), TaskStatus.SUSPENDED));
         }
-        dataManagementManager.stopArchiveJob(JobNameDto.builder()
-                .projectName(config.getProject().getProjectName())
-                .taskName(config.getName()).build(), authentication);
+        try {
+            dataManagementManager.stopArchiveJob(JobNameDto.builder()
+                    .projectName(config.getProject().getProjectName())
+                    .taskName(config.getName()).build(), authentication);
+        }catch (Exception e) {
+            System.out.println(e);
+        }
         forceChangeArchiveInstanceStatus(instance.getId(), TaskStatus.SUSPENDED);
 
     }

@@ -1,7 +1,7 @@
 package ru.spbstu.rakitin.administration.repository.auth;
 
 import ru.spbstu.rakitin.commonentites.model.Permission;
-import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

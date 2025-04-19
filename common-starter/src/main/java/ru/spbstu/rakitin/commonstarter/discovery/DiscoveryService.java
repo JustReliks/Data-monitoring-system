@@ -8,5 +8,5 @@ import java.util.List;
 public interface DiscoveryService {
 
     String findServiceHost(ServiceName serviceName, List<String> deadServers) throws ServiceNotFoundException;
-
+    boolean isServiceAvailable(ServiceName serviceName);
 }

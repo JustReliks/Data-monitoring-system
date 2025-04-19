@@ -1,6 +1,7 @@
 package ru.spbstu.rakitin.commonstarter.admin;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
@@ -54,6 +55,26 @@ public class AdminRequestFactory {
 
     public <RESULT, BODY> RESULT doDelete(String uri, BODY body, Class<RESULT> responseClass) {
         return sendRequest(uri, body, HttpMethod.DELETE, responseClass);
+    }
+
+    public <RESULT> RESULT doGet(String uri, ParameterizedTypeReference<RESULT> typeReference) {
+        return sendRequest(uri, null, HttpMethod.GET, typeReference);
+    }
+
+    public <RESULT, BODY> RESULT sendRequest(String path, BODY body, HttpMethod method, ParameterizedTypeReference<RESULT> typeReference, Object... uriVariables) {
+        try {
+            if (method == HttpMethod.GET) {
+                if (body != null) {
+                    log.warn("The request body for the GET method was set. It will be ignored.");
+                }
+                ResponseEntity<RESULT> response = adminRestTemplate.exchange(path, HttpMethod.GET, null, typeReference, uriVariables);
+                return response.getBody();
+            }
+            ResponseEntity<RESULT> response = adminRestTemplate.exchange(path, method, new HttpEntity<>(body), typeReference, uriVariables);
+            return response.getBody();
+        } catch (Exception e) {
+            throw new InternalRequestException(String.format("Exception during request to %s. Message: %s", path, e.getMessage()), e);
+        }
     }
 
 

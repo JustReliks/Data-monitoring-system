@@ -8,7 +8,7 @@ import ru.spbstu.rakitin.administration.repository.auth.PermissionRepository;
 import ru.spbstu.rakitin.administration.service.auth.PermissionService;
 import ru.spbstu.rakitin.administration.service.auth.UserService;
 import ru.spbstu.rakitin.commonentites.model.Permission;
-import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 
 import java.util.List;
 

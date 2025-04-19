@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.spbstu.rakitin.administration.exceptions.UserNotFoundException;
-import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.administration.service.auth.PermissionService;
 
 import java.util.Arrays;

@@ -12,7 +12,7 @@ import ru.spbstu.rakitin.archive_service.model.ArchiveTaskConfig;
 import ru.spbstu.rakitin.archive_service.model.ArchiveTaskInstance;
 import ru.spbstu.rakitin.archive_service.service.ArchiveTaskInstanceService;
 import ru.spbstu.rakitin.archive_service.service.ArchiveTaskQueryService;
-import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.dto.TaskStatus;
 

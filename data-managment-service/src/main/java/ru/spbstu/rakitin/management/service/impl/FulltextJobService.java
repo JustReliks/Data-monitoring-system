@@ -3,17 +3,18 @@ package ru.spbstu.rakitin.management.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.processor.api.Processor;
-import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionManager;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
-import ru.spbstu.rakitin.dto.TaskType;
-import ru.spbstu.rakitin.dto.fulltext.FulltextJobDto;
 import ru.spbstu.rakitin.commonstarter.fulltext.FulltextServiceManager;
 import ru.spbstu.rakitin.dto.MapJson;
+import ru.spbstu.rakitin.dto.TaskType;
+import ru.spbstu.rakitin.dto.fulltext.FulltextJobDto;
 import ru.spbstu.rakitin.management.configuration.FulltextJobProperties;
 import ru.spbstu.rakitin.management.engine.processors.fulltext.FulltextJobProcessor;
+import ru.spbstu.rakitin.management.engine.solr.client.CloudSolrClientFactory;
 import ru.spbstu.rakitin.management.service.KafkaService;
 
 import java.util.List;
@@ -28,19 +29,17 @@ public class FulltextJobService extends AbstractJobService<FulltextJobDto> {
 
     private final FulltextServiceManager fulltextServiceManager;
 
-    private final CloudSolrClient cloudSolrClient;
+    private final CloudSolrClientFactory cloudSolrClientFactory;
 
     private final FulltextJobProperties fulltextJobProperties;
 
-    public FulltextJobService(AdminManager adminManager, BeanFactory beanFactory,
-                              KafkaService kafkaService,
-                              FulltextServiceManager fulltextServiceManager,
-                              CloudSolrClient cloudSolrClient, FulltextJobProperties fulltextJobProperties) {
-        super(adminManager, beanFactory, kafkaService);
+    public FulltextJobService(AdminManager adminManager, BeanFactory beanFactory, KafkaService kafkaService, TransactionManager transactionManager, FulltextServiceManager fulltextServiceManager, CloudSolrClientFactory cloudSolrClientFactory, FulltextJobProperties fulltextJobProperties) {
+        super(adminManager, beanFactory, kafkaService, transactionManager);
         this.fulltextServiceManager = fulltextServiceManager;
-        this.cloudSolrClient = cloudSolrClient;
+        this.cloudSolrClientFactory = cloudSolrClientFactory;
         this.fulltextJobProperties = fulltextJobProperties;
     }
+
 
     @Override
     protected List<FulltextJobDto> fetchRunningTasks() {
@@ -54,7 +53,7 @@ public class FulltextJobService extends AbstractJobService<FulltextJobDto> {
 
     @Override
     protected Processor<String, MapJson, String, String> getTaskProcessor(FulltextJobDto job, String taskName) {
-        return new FulltextJobProcessor(job, cloudSolrClient, taskName);
+        return new FulltextJobProcessor(job, cloudSolrClientFactory, taskName);
     }
 
     @Override

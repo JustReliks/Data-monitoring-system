@@ -4,6 +4,7 @@ import org.apache.kafka.streams.processor.api.Processor;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionManager;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.dto.TaskType;
 import ru.spbstu.rakitin.dto.monitoring.MonitoringJobDto;
@@ -22,11 +23,12 @@ public class MonitoringJobService extends AbstractJobService<MonitoringJobDto> {
     private final InfluxDbClientFactory influxDbClientFactory;
     private final MonitoringServiceManager monitoringServiceManager;
 
-    public MonitoringJobService(AdminManager adminManager, BeanFactory beanFactory, KafkaService kafkaService, InfluxDbClientFactory influxDbClientFactory, MonitoringServiceManager monitoringServiceManager) {
-        super(adminManager, beanFactory, kafkaService);
+    public MonitoringJobService(AdminManager adminManager, BeanFactory beanFactory, KafkaService kafkaService, TransactionManager transactionManager, InfluxDbClientFactory influxDbClientFactory, MonitoringServiceManager monitoringServiceManager) {
+        super(adminManager, beanFactory, kafkaService, transactionManager);
         this.influxDbClientFactory = influxDbClientFactory;
         this.monitoringServiceManager = monitoringServiceManager;
     }
+
 
     @Override
     protected List<MonitoringJobDto> fetchRunningTasks() {

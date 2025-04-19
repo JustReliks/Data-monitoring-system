@@ -1,14 +1,13 @@
 package ru.spbstu.rakitin.management.engine.processors.fulltext;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.request.UpdateRequest;
 import org.apache.solr.common.SolrInputDocument;
-import ru.spbstu.rakitin.dto.fulltext.FulltextJobDto;
 import ru.spbstu.rakitin.dto.MapJson;
+import ru.spbstu.rakitin.dto.fulltext.FulltextJobDto;
 import ru.spbstu.rakitin.management.engine.AbstractJsonQueueProcessor;
+import ru.spbstu.rakitin.management.engine.solr.client.CloudSolrClientFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,14 +18,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class FulltextJobProcessor extends AbstractJsonQueueProcessor<FulltextJobDto> {
 
     private final FulltextJobDto fulltextJobDto;
-    private final CloudSolrClient cloudSolrClient;
+    private final CloudSolrClientFactory cloudSolrClientFactory;
 
     private final String taskName;
 
-    public FulltextJobProcessor(FulltextJobDto fulltextJobDto, CloudSolrClient cloudSolrClient, String taskName) {
+    public FulltextJobProcessor(FulltextJobDto fulltextJobDto, CloudSolrClientFactory cloudSolrClientFactory, String taskName) {
         super(fulltextJobDto, taskName);
         this.fulltextJobDto = fulltextJobDto;
-        this.cloudSolrClient = cloudSolrClient;
+        this.cloudSolrClientFactory = cloudSolrClientFactory;
         this.taskName = taskName;
     }
 
@@ -40,7 +39,7 @@ public class FulltextJobProcessor extends AbstractJsonQueueProcessor<FulltextJob
             log.info("[{}] Sending {} documents to {}", taskName, solrInputDocuments.size(), fulltextJobDto.getCollectionName());
             UpdateRequest request = new UpdateRequest();
             request.add(solrInputDocuments);
-            request.commit(cloudSolrClient, fulltextJobDto.getCollectionName());
+            request.commit(cloudSolrClientFactory.buildCloudSolrClient(), fulltextJobDto.getCollectionName());
         }
 
     }
@@ -57,14 +56,4 @@ public class FulltextJobProcessor extends AbstractJsonQueueProcessor<FulltextJob
         return solrInputDocument;
     }
 
-    @Override
-    public void close() {
-        super.close();
-        try {
-            cloudSolrClient.close();
-        } catch (IOException e) {
-            log.error("Unable to close cloud solr client", e);
-            throw new RuntimeException(e);
-        }
-    }
 }

@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.exception.ConfigAlreadyExists;
 import ru.spbstu.rakitin.commonstarter.exception.InvalidSchemaException;
@@ -91,8 +91,8 @@ public class MonitoringTaskConfigServiceImpl implements MonitoringTaskConfigServ
         Optional<MonitoringTaskInstance> monitoringTaskInstanceOptional = monitoringTaskInstanceService.findByConfigIdOptionally(configId);
         if (monitoringTaskInstanceOptional.isPresent()) {
             MonitoringTaskInstance monitoringTaskInstance = monitoringTaskInstanceOptional.get();
-            if (!forceDelete) {
-                throw new MonitoringConfigDeletionForbiddenException(String.format("Fulltext task config with id %s have instance with id %s with status %s. Delete it or use flag [forceDelete=true]",
+            if (!forceDelete && monitoringTaskInstance.getTaskStatus() == TaskStatus.RUNNING) {
+                throw new MonitoringConfigDeletionForbiddenException(String.format("Monitoring task config with id %s have running instance with id %s with status %s. Delete it or use flag [forceDelete=true]",
                         config.getId(),
                         monitoringTaskInstance.getId(),
                         monitoringTaskInstance.getTaskStatus()));

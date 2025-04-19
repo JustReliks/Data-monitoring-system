@@ -1,6 +1,6 @@
 package ru.spbstu.rakitin.commonstarter.admin.aspect;
 
-import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

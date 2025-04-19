@@ -27,6 +27,12 @@ public abstract class AbstractDiscoveryService implements DiscoveryService {
 
     }
 
+    @Override
+    public boolean isServiceAvailable(ServiceName serviceName) {
+        List<String> servers = getServers(serviceName);
+        return !servers.isEmpty();
+    }
+
     protected ServicePeakStrategy getServicePeakStrategy(ServiceName serviceName) {
         return servicePeakStrategy;
     }

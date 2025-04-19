@@ -3,6 +3,7 @@ package ru.spbstu.rakitin.commonentites.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 
 @Table(schema = "dms", name = "t_user_project_permissions")
 @Getter

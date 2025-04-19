@@ -10,7 +10,7 @@ import ru.spbstu.rakitin.archive_service.model.ArchiveTaskConfig;
 import ru.spbstu.rakitin.archive_service.model.ArchiveTaskInstance;
 import ru.spbstu.rakitin.archive_service.service.ArchiveTaskConfigService;
 import ru.spbstu.rakitin.archive_service.service.ArchiveTaskInstanceService;
-import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.CheckPermission;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.ProjectIdContainer;
@@ -35,7 +35,7 @@ public class ArchiveTaskConfigController {
     private final ArchiveTaskInstanceService archiveTaskInstanceService;
 
     @LogController
-    @PostMapping("/")
+    @PostMapping("/create")
     @CheckPermission(permission = PermissionTypeEnum.ARCHIVE_CREATE_TASK, userIdField = "authentication", projectIdField = "archiveTaskConfigDto")
     public long createConfig(Authentication authentication, @RequestBody @ProjectIdContainer(innerFieldName = "projectId") ArchiveTaskConfigDto archiveTaskConfigDto) throws InvalidSchemaException, QuotaExceededException, ConfigAlreadyExists, UnavailableTopicException {
         return archiveTaskConfigService.createArchiveTaskConfig(archiveTaskConfigMapper.mapDtoToArchiveTaskConfig(archiveTaskConfigDto, authentication));

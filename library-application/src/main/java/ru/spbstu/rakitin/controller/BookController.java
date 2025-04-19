@@ -43,14 +43,20 @@ public class BookController {
     }
 
     @PostMapping("/find")
-    public List<BookDto> findBooksByDescription(@RequestBody BookSearchRequestDto bookSearchRequestDto) {
+    public List<BookDto> findBooksByDescription(@RequestBody BookSearchRequestDto bookSearchRequestDto,
+                                                @RequestParam(required = false, defaultValue = "false") boolean db) {
         MdsResponse<List<Map<String, Object>>> mapMdsResponse = mdsClient.sendRequest(new FulltextQueryRequest(fulltextTask, BookSearchRequestDto.mapToSolrQueryDto(bookSearchRequestDto)));
 
-        return mapMdsResponse.getResponse().get().stream().map(stringObjectMap -> {
-            Long id = Long.valueOf(stringObjectMap.get("libraryId").toString());
-            Optional<Book> book = bookService.getBook(id);
-            return book.map(BookDto::fromBook).orElse(null);
-        }).filter(Objects::nonNull).distinct().toList();
+        if (db) {
+            List<Book> books = bookService.findByDescription(bookSearchRequestDto.getDescription());
+            return books.stream().map(BookDto::fromBook).toList();
+        } else {
+            return mapMdsResponse.getResponse().get().stream().map(stringObjectMap -> {
+                Long id = Long.valueOf(stringObjectMap.get("libraryId").toString());
+                Optional<Book> book = bookService.getBook(id);
+                return book.map(BookDto::fromBook).orElse(null);
+            }).filter(Objects::nonNull).distinct().toList();
+        }
     }
 
     @PostMapping("/buy/{id}")

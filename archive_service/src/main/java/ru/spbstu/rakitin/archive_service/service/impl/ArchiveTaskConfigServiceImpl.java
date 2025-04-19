@@ -12,7 +12,7 @@ import ru.spbstu.rakitin.archive_service.model.ArchiveTaskInstance;
 import ru.spbstu.rakitin.archive_service.repository.ArchiveTaskConfigRepository;
 import ru.spbstu.rakitin.archive_service.service.ArchiveTaskConfigService;
 import ru.spbstu.rakitin.archive_service.service.ArchiveTaskInstanceService;
-import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.exception.ConfigAlreadyExists;
 import ru.spbstu.rakitin.commonstarter.exception.InvalidSchemaException;
@@ -111,8 +111,8 @@ public class ArchiveTaskConfigServiceImpl implements ArchiveTaskConfigService {
         Optional<ArchiveTaskInstance> archiveTaskInstanceOptional = archiveTaskInstanceService.findByConfigIdOptionally(configId);
         if (archiveTaskInstanceOptional.isPresent()) {
             ArchiveTaskInstance archiveTaskInstance = archiveTaskInstanceOptional.get();
-            if (!forceDelete) {
-                throw new ArchiveConfigDeletionForbiddenException(String.format("Archive task config with id %s have instance with id %s with status %s. Delete it or use flag [forceDelete=true]",
+            if (!forceDelete && archiveTaskInstance.getStatus() == TaskStatus.RUNNING) {
+                throw new ArchiveConfigDeletionForbiddenException(String.format("Archive task config with id %s have running instance with id %s with status %s. Delete it or use flag [forceDelete=true]",
                         config.getId(),
                         archiveTaskInstance.getId(),
                         archiveTaskInstance.getStatus()));

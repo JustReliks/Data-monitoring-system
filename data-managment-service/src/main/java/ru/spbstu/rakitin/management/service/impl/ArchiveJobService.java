@@ -6,6 +6,7 @@ import org.apache.kafka.streams.processor.api.Processor;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionManager;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.archive.ArchiveServiceManager;
 import ru.spbstu.rakitin.dto.TaskStatus;
@@ -27,12 +28,13 @@ public class ArchiveJobService extends AbstractJobService<ArchiveJobDto> {
     private final HdfsConfigurationProperties hdfsConfigurationProperties;
     private final ArchiveServiceManager archiveServiceManager;
 
-    public ArchiveJobService(AdminManager adminManager, BeanFactory beanFactory, KafkaService kafkaService, FileSystem fileSystem, HdfsConfigurationProperties hdfsConfigurationProperties, ArchiveServiceManager archiveServiceManager) {
-        super(adminManager, beanFactory, kafkaService);
+    public ArchiveJobService(AdminManager adminManager, BeanFactory beanFactory, KafkaService kafkaService, TransactionManager transactionManager, FileSystem fileSystem, HdfsConfigurationProperties hdfsConfigurationProperties, ArchiveServiceManager archiveServiceManager) {
+        super(adminManager, beanFactory, kafkaService, transactionManager);
         this.fileSystem = fileSystem;
         this.hdfsConfigurationProperties = hdfsConfigurationProperties;
         this.archiveServiceManager = archiveServiceManager;
     }
+
 
     @Override
     protected List<ArchiveJobDto> fetchRunningTasks() {

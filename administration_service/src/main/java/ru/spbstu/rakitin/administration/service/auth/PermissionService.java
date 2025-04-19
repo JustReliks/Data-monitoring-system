@@ -3,7 +3,7 @@ package ru.spbstu.rakitin.administration.service.auth;
 import ru.spbstu.rakitin.administration.exceptions.PermissionAlreadyExistsException;
 import ru.spbstu.rakitin.administration.exceptions.UserNotFoundException;
 import ru.spbstu.rakitin.commonentites.model.Permission;
-import ru.spbstu.rakitin.commonentites.model.PermissionTypeEnum;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 
 import java.util.List;
 
