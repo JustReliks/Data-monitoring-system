@@ -16,4 +16,6 @@ public interface TopicService {
     List<Topic> getAllTopicsForProjectId(long projectId, Authentication authentication);
 
     long createTopic(Topic topic, Authentication authentication) throws KafkaTopicCreationException, TopicAlreadyCreatedException, TopicQuotaLimitException;
+
+    void deleteTopic(long topicId, Authentication authentication) throws TopicNotFoundException;
 }

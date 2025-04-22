@@ -5,10 +5,11 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class BookSellMetricDto {
+public class SearchTimeDto {
 
-    private String bookName;
-    private int sells;
+    private String searchType;
+    private long booksCount;
+    private long searchTime;
     private String timestamp;
 
 }

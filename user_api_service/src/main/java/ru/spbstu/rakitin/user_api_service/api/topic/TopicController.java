@@ -30,4 +30,9 @@ public class TopicController {
         return dataManagementManager.findTopicByIdExternal(topicId, authentication);
     }
 
+    @DeleteMapping("/{topicId}")
+    public void deleteTopic(@PathVariable long topicId, Authentication authentication) {
+        dataManagementManager.deleteTopic(topicId, authentication);
+    }
+
 }

@@ -14,5 +14,6 @@ public class ArchiveTaskSchema {
     private TimestampFieldDto timestampField;
     private FilterExpression filter;
     private String filenameFieldName;
+    private String directoryFieldName;
 
 }

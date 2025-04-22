@@ -3,9 +3,9 @@ package ru.spbstu.rakitin.management.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonentites.model.Topic;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.management.exception.KafkaTopicCreationException;
 import ru.spbstu.rakitin.management.exception.TopicAlreadyCreatedException;
 import ru.spbstu.rakitin.management.exception.TopicNotFoundException;
@@ -43,6 +43,14 @@ public class TopicServiceImpl implements TopicService {
         topic.setId(null);
         adminManager.checkAccessThrowable(authentication, topic.getProject().getId(), PermissionTypeEnum.TOPIC_CREATE);
         return kafkaService.createTopic(topic).getId();
+    }
+
+    @Override
+    public void deleteTopic(long topicId, Authentication authentication) throws TopicNotFoundException {
+        Topic topic = findTopicById(topicId, authentication);
+        adminManager.checkAccessThrowable(authentication, topic.getProject().getId(), PermissionTypeEnum.TOPIC_CREATE);
+        kafkaService.deleteTopic(topic);
+        topicRepository.delete(topic);
     }
 
 }

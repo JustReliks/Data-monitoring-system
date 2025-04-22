@@ -28,7 +28,7 @@ public class MonitoringTaskInstanceController {
         monitoringTaskInstanceService.suspendTask(configId, authentication);
     }
 
-    @PutMapping("/suspend/{configId}")
+    @PutMapping("/update/{configId}")
     @LogController
     public void update(@PathVariable("configId") long configId, Authentication authentication) throws Exception {
         monitoringTaskInstanceService.update(configId, authentication);

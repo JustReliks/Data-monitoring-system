@@ -24,4 +24,13 @@ public class MonitoringTaskConfiguration {
         return taskClientDto;
     }
 
+    @Bean
+    public TaskClientDto taskClientDtoSearchTimeMonitoring() {
+        TaskClientDto taskClientDto = new TaskClientDto();
+        taskClientDto.setTaskType(TaskType.MONITORING);
+        taskClientDto.setProjectId(projectId);
+        taskClientDto.setTaskName("library-search-monitoring");
+        return taskClientDto;
+    }
+
 }

@@ -5,15 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.exception.ConfigAlreadyExists;
 import ru.spbstu.rakitin.commonstarter.exception.InvalidSchemaException;
 import ru.spbstu.rakitin.commonstarter.exception.QuotaExceededException;
 import ru.spbstu.rakitin.commonstarter.exception.UnavailableTopicException;
 import ru.spbstu.rakitin.commonstarter.service.SchemaValidationService;
-import ru.spbstu.rakitin.dto.TaskSchemaDto;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.dto.TaskStatus;
+import ru.spbstu.rakitin.dto.monitoring.MonitoringTaskSchemaDto;
 import ru.spbstu.rakitin.monitoring_service.dto.MonitoringTaskConfigMapper;
 import ru.spbstu.rakitin.monitoring_service.exception.*;
 import ru.spbstu.rakitin.monitoring_service.model.MonitoringTaskConfig;
@@ -29,13 +29,13 @@ import java.util.Optional;
 @Slf4j
 public class MonitoringTaskConfigServiceImpl implements MonitoringTaskConfigService {
 
-    private final SchemaValidationService<TaskSchemaDto> schemaValidationService;
+    private final SchemaValidationService<MonitoringTaskSchemaDto> schemaValidationService;
     private final MonitoringTaskConfigRepository monitoringTaskConfigRepository;
     private final MonitoringTaskConfigMapper monitoringTaskConfigMapper;
     private final AdminManager adminManager;
     private MonitoringTaskInstanceService monitoringTaskInstanceService;
 
-    public MonitoringTaskConfigServiceImpl(SchemaValidationService<TaskSchemaDto> schemaValidationService, MonitoringTaskConfigRepository monitoringTaskConfigRepository, MonitoringTaskConfigMapper monitoringTaskConfigMapper, AdminManager adminManager) {
+    public MonitoringTaskConfigServiceImpl(SchemaValidationService<MonitoringTaskSchemaDto> schemaValidationService, MonitoringTaskConfigRepository monitoringTaskConfigRepository, MonitoringTaskConfigMapper monitoringTaskConfigMapper, AdminManager adminManager) {
         this.schemaValidationService = schemaValidationService;
         this.monitoringTaskConfigRepository = monitoringTaskConfigRepository;
         this.monitoringTaskConfigMapper = monitoringTaskConfigMapper;

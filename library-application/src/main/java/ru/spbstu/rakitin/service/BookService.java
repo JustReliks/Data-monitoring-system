@@ -12,5 +12,5 @@ public interface BookService {
 
     Optional<Book> getBook(Long id);
 
-    List<Book> findByDescription(String description);
+    List<Book> findByDescription(String description, int limit);
 }

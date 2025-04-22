@@ -8,6 +8,7 @@ import java.util.List;
 public class SolrQueryDto {
 
     private String query;
+    private Integer rows;
     private List<SolrSort> sort;
     private List<String> filters;
     private List<String> reqFields;

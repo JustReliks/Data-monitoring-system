@@ -1,10 +1,9 @@
 package ru.spbstu.rakitin.archive_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import ru.spbstu.rakitin.dto.archive.FileDto;
-import ru.spbstu.rakitin.dto.archive.FileInformationDto;
 import ru.spbstu.rakitin.archive_service.engine.HdfsManager;
 import ru.spbstu.rakitin.archive_service.exception.ArchiveTaskInstanceNotFoundException;
 import ru.spbstu.rakitin.archive_service.exception.FileNotFoundInArchiveException;
@@ -12,9 +11,11 @@ import ru.spbstu.rakitin.archive_service.model.ArchiveTaskConfig;
 import ru.spbstu.rakitin.archive_service.model.ArchiveTaskInstance;
 import ru.spbstu.rakitin.archive_service.service.ArchiveTaskInstanceService;
 import ru.spbstu.rakitin.archive_service.service.ArchiveTaskQueryService;
-import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.dto.TaskStatus;
+import ru.spbstu.rakitin.dto.archive.FileDto;
+import ru.spbstu.rakitin.dto.archive.FileInformationDto;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,17 +31,25 @@ public class ArchiveTaskQueryServiceImpl implements ArchiveTaskQueryService {
     private final HdfsManager hdfsManager;
 
     @Override
-    public List<FileInformationDto> getAllFilesForTask(long configId, Authentication authentication) throws ArchiveTaskInstanceNotFoundException, IOException {
+    public List<FileInformationDto> getAllFilesForTask(long configId, String directory, Authentication authentication) throws ArchiveTaskInstanceNotFoundException, IOException {
         ArchiveTaskInstance archiveTaskInstance = getArchiveTaskInstance(configId, authentication);
 
-        return hdfsManager.getAllFilesInDirectory(getJobFolderName(archiveTaskInstance));
+        String jobFolderName = getJobFolderName(archiveTaskInstance);
+        if (!StringUtils.isEmpty(directory)) {
+            jobFolderName += "/" + directory;
+        }
+        return hdfsManager.getAllFilesInDirectory(jobFolderName);
     }
 
     @Override
-    public FileDto getFile(long configId, String filename, Authentication authentication) throws ArchiveTaskInstanceNotFoundException, IOException, FileNotFoundInArchiveException {
+    public FileDto getFile(long configId, String filename, String directory, Authentication authentication) throws ArchiveTaskInstanceNotFoundException, IOException, FileNotFoundInArchiveException {
         ArchiveTaskInstance archiveTaskInstance = getArchiveTaskInstance(configId, authentication);
 
-        return hdfsManager.getFile(getJobFolderName(archiveTaskInstance) + "/" + filename + ".json");
+        String path = getJobFolderName(archiveTaskInstance);
+        if (!StringUtils.isEmpty(directory)) {
+            path += "/" + directory;
+        }
+        return hdfsManager.getFile(path + "/" + filename + ".json");
 
     }
 

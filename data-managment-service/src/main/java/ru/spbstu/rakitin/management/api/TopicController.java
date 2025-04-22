@@ -3,11 +3,11 @@ package ru.spbstu.rakitin.management.api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.CheckPermission;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.ProjectIdContainer;
 import ru.spbstu.rakitin.dto.LightWeightTopicDto;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.management.dto.mapping.TopicMapping;
 import ru.spbstu.rakitin.management.exception.KafkaTopicCreationException;
 import ru.spbstu.rakitin.management.exception.TopicAlreadyCreatedException;
@@ -30,6 +30,12 @@ public class TopicController {
     @LogController
     public Long createTopic(@ProjectIdContainer(innerFieldName = "projectId") @RequestBody LightWeightTopicDto topicDto, Authentication authentication) throws KafkaTopicCreationException, TopicAlreadyCreatedException, TopicQuotaLimitException {
         return topicService.createTopic(topicMapping.topicDtoToTopic(topicDto), authentication);
+    }
+
+    @DeleteMapping("/{topicId}")
+    @LogController
+    public void deleteTopic(@PathVariable long topicId, Authentication authentication) throws TopicNotFoundException {
+        topicService.deleteTopic(topicId, authentication);
     }
 
     @GetMapping("/list")

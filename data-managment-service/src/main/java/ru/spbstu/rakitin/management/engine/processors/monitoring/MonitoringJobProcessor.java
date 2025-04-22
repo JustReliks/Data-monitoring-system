@@ -6,9 +6,9 @@ import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.client.write.Point;
 import lombok.extern.slf4j.Slf4j;
 import ru.spbstu.rakitin.dto.FieldType;
+import ru.spbstu.rakitin.dto.MapJson;
 import ru.spbstu.rakitin.dto.SchemaFieldDto;
 import ru.spbstu.rakitin.dto.monitoring.MonitoringJobDto;
-import ru.spbstu.rakitin.dto.MapJson;
 import ru.spbstu.rakitin.management.engine.influxdb.InfluxDbClientFactory;
 import ru.spbstu.rakitin.management.engine.processors.AbstractQueueProcessor;
 
@@ -44,13 +44,21 @@ public class MonitoringJobProcessor extends AbstractQueueProcessor<Point, Monito
         value.forEach((k, v) -> {
             if (k.equals(getJobDto().getSchema().getTimestampField().getFieldName())) {
                 point.time(DateTimeFormatter.ISO_INSTANT.parse(value.get(getJobDto().getSchema().getTimestampField().getFieldName()).toString()).getLong(ChronoField.INSTANT_SECONDS), WritePrecision.S);
-
             } else {
+                List<String> tags = getJobDto().getSchema().getTags();
                 SchemaFieldDto schemaFieldDto = getJobDto().getSchema().getField(k).get();
-                if (schemaFieldDto.getFieldType().isCompatibleWith(FieldType.STRING)) {
-                    point.addTag(k, v.toString());
-                } else if (schemaFieldDto.getFieldType().isCompatibleWith(FieldType.DOUBLE)) {
-                    point.addField(k, Double.valueOf(v.toString()));
+                if (tags == null) {
+                    if (schemaFieldDto.getFieldType().isCompatibleWith(FieldType.STRING)) {
+                        point.addTag(k, v.toString());
+                    } else if (schemaFieldDto.getFieldType().isCompatibleWith(FieldType.DOUBLE)) {
+                        point.addField(k, Double.valueOf(v.toString()));
+                    }
+                } else {
+                    if (tags.contains(k) || !schemaFieldDto.getFieldType().isCompatibleWith(FieldType.DOUBLE)) {
+                        point.addTag(k, v.toString());
+                    } else {
+                        point.addField(k, Double.valueOf(v.toString()));
+                    }
                 }
             }
         });

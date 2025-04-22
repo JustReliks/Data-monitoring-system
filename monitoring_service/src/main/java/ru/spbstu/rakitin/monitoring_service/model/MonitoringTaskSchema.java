@@ -11,5 +11,6 @@ public class MonitoringTaskSchema {
     private List<SchemaField> schema;
     private TimestampField timestampField;
     private FilterExpression filter;
+    private List<String> tags;
 
 }

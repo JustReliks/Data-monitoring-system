@@ -6,11 +6,12 @@ import ru.spbstu.rakitin.client.ApiName;
 import ru.spbstu.rakitin.client.TaskTargetMdsRequest;
 import ru.spbstu.rakitin.dto.TaskClientDto;
 import ru.spbstu.rakitin.dto.fulltext.SolrQueryDto;
+import ru.spbstu.rakitin.dto.fulltext.SolrQueryResponseDto;
 
 import java.util.List;
 import java.util.Map;
 
-public class FulltextQueryRequest extends TaskTargetMdsRequest<SolrQueryDto, List<Map<String, Object>>> {
+public class FulltextQueryRequest extends TaskTargetMdsRequest<SolrQueryDto, SolrQueryResponseDto> {
 
     private final SolrQueryDto solrQueryDto;
 
@@ -20,7 +21,7 @@ public class FulltextQueryRequest extends TaskTargetMdsRequest<SolrQueryDto, Lis
     }
 
     @Override
-    public ParameterizedTypeReference<List<Map<String, Object>>> getResponseClass() {
+    public ParameterizedTypeReference<SolrQueryResponseDto> getResponseClass() {
         return new ParameterizedTypeReference<>() {
         };
     }

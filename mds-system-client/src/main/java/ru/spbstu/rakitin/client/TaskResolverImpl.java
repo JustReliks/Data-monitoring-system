@@ -13,11 +13,13 @@ import ru.spbstu.rakitin.dto.fulltext.FulltextTaskResponse;
 import ru.spbstu.rakitin.dto.monitoring.MonitoringTaskResponse;
 import ru.spbstu.rakitin.requests.kafka.FindTopicByIdRequest;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class TaskResolverImpl implements TaskResolver {
 
     private final MdsClient mdsClient;
+    private final Map<TaskClientDto, String> topicNameCache = new HashMap<>();
 
     public TaskResolverImpl(MdsClient mdsClient) {
         this.mdsClient = mdsClient;
@@ -25,10 +27,16 @@ public class TaskResolverImpl implements TaskResolver {
 
     @Override
     public String resolveTopicName(TaskClientDto taskClientDto) {
+        if (topicNameCache.containsKey(taskClientDto)) {
+            return topicNameCache.get(taskClientDto);
+        }
+
         TaskInformator taskInformator = resolveTaskInformation(taskClientDto);
         long topicId = taskInformator.getTopicId();
         MdsResponse<LightWeightTopicDto> topic = mdsClient.sendRequest(new FindTopicByIdRequest(topicId));
-        return topic.getResponse().get().getNameInKafka();
+        String nameInKafka = topic.getResponse().get().getNameInKafka();
+        topicNameCache.put(taskClientDto, nameInKafka);
+        return nameInKafka;
     }
 
     @Override

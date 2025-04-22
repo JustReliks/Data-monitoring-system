@@ -28,6 +28,7 @@ public class DataManagementManager {
     private static final String CREATE_TOPIC = "/api/v1/topic/";
     private static final String LIST_TOPIC_BY_PROJECT_ID = "/api/v1/topic/list?projectId=%s";
     private static final String PUBLIC_KAFKA_PROPERTIES = "/api/v1/kafka/properties";
+    private static final String DELETE_TOPIC = "/api/v1/topic/%s";
 
     private final InnerServiceRequestFactory innerServiceRequestFactory;
 
@@ -74,5 +75,9 @@ public class DataManagementManager {
 
     public MapJson getPublicProperties(Authentication authentication) {
         return innerServiceRequestFactory.doGet(ServiceName.DATA_MANAGEMENT, authentication, PUBLIC_KAFKA_PROPERTIES, MAP_JSON);
+    }
+
+    public void deleteTopic(long topicId, Authentication authentication) {
+        innerServiceRequestFactory.doDelete(ServiceName.DATA_MANAGEMENT, authentication, String.format(DELETE_TOPIC, topicId), null, VOID_TYPE);
     }
 }

@@ -1,5 +1,6 @@
 package ru.spbstu.rakitin.service.impl;
 
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.model.Book;
 import ru.spbstu.rakitin.repository.BookRepository;
@@ -28,7 +29,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> findByDescription(String description) {
-        return bookRepository.findByDescriptionLike(description);
+    public List<Book> findByDescription(String description, int limit) {
+        return bookRepository.findByDescriptionLike(description, Limit.of(limit));
     }
 }

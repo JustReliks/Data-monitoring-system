@@ -9,12 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionManager;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.archive.ArchiveServiceManager;
+import ru.spbstu.rakitin.dto.MapJson;
 import ru.spbstu.rakitin.dto.TaskStatus;
 import ru.spbstu.rakitin.dto.TaskType;
 import ru.spbstu.rakitin.dto.archive.ArchiveJobDto;
-import ru.spbstu.rakitin.dto.MapJson;
 import ru.spbstu.rakitin.management.engine.hdfs.HdfsConfigurationProperties;
 import ru.spbstu.rakitin.management.engine.processors.archive.ArchiveJobProcessor;
+import ru.spbstu.rakitin.management.engine.processors.archive.ValidateDirectoryFilter;
 import ru.spbstu.rakitin.management.engine.processors.archive.ValidateFilenameFilter;
 import ru.spbstu.rakitin.management.service.KafkaService;
 
@@ -54,7 +55,8 @@ public class ArchiveJobService extends AbstractJobService<ArchiveJobDto> {
     @Override
     protected KStream<String, MapJson> decorateStream(ArchiveJobDto job, String taskName, KStream<String, MapJson> stream) {
         stream = super.decorateStream(job, taskName, stream)
-                .filter(new ValidateFilenameFilter(job));
+                .filter(new ValidateFilenameFilter(job))
+                .filter(new ValidateDirectoryFilter(job));
 
         return stream;
     }

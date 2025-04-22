@@ -8,6 +8,7 @@ import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.dto.MapJson;
 import ru.spbstu.rakitin.dto.fulltext.SolrQueryDto;
+import ru.spbstu.rakitin.dto.fulltext.SolrQueryResponseDto;
 import ru.spbstu.rakitin.fulltext_service.engine.SolrClientManager;
 import ru.spbstu.rakitin.fulltext_service.exception.FulltextConfigNotFoundException;
 import ru.spbstu.rakitin.fulltext_service.exception.FulltextTaskInstanceNotFoundException;
@@ -32,7 +33,7 @@ public class FulltextTaskServiceImpl implements FulltextTaskService {
     private final AdminManager adminManager;
 
     @Override
-    public List<MapJson> query(SolrQueryDto query, long taskId, Authentication authentication) throws FulltextConfigNotFoundException, FulltextTaskInstanceNotFoundException, FulltextTaskInstanceNotRunningException, SolrServerException, IOException {
+    public SolrQueryResponseDto query(SolrQueryDto query, long taskId, Authentication authentication) throws FulltextConfigNotFoundException, FulltextTaskInstanceNotFoundException, FulltextTaskInstanceNotRunningException, SolrServerException, IOException {
         FulltextTaskConfig config = fulltextTaskConfigService.findById(taskId, authentication);
         adminManager.checkAccessThrowable(authentication, config.getProject().getId(), PermissionTypeEnum.FULL_TEXT_VIEW_TASK);
         FulltextTaskInstance instance = fulltextTaskInstanceService.findByConfigId(taskId);

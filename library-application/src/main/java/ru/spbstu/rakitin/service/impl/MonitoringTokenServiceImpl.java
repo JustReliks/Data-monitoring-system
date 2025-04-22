@@ -40,6 +40,7 @@ public class MonitoringTokenServiceImpl implements MonitoringTokenService {
         } else {
             log.info("Creating monitoring token");
             MdsResponse<ApiKeyDto> apiTokenForLibrary = mdsClient.sendRequest(new CreateApiKey(taskClientDto, "Api token for library"));
+
             MonitoringToken monitoringToken = new MonitoringToken();
             monitoringToken.setCreatedAt(new Date());
             monitoringToken.setToken(apiTokenForLibrary.getResponse().get().getApiKey());
@@ -48,4 +49,13 @@ public class MonitoringTokenServiceImpl implements MonitoringTokenService {
         }
     }
 
+    @Override
+    public String refresh() {
+        MdsResponse<ApiKeyDto> apiTokenForLibrary = mdsClient.sendRequest(new CreateApiKey(taskClientDto, "Api token for library"));
+        MonitoringToken monitoringToken = new MonitoringToken();
+        monitoringToken.setCreatedAt(new Date());
+        monitoringToken.setToken(apiTokenForLibrary.getResponse().get().getApiKey());
+        monitoringTokenRepository.save(monitoringToken);
+        return monitoringToken.getToken();
+    }
 }

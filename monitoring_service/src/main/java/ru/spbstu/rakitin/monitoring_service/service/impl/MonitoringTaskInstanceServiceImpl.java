@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.commonstarter.admin.AdminManager;
 import ru.spbstu.rakitin.commonstarter.datamanagement.DataManagementManager;
 import ru.spbstu.rakitin.dto.JobNameDto;
+import ru.spbstu.rakitin.dto.PermissionTypeEnum;
 import ru.spbstu.rakitin.dto.TaskStatus;
 import ru.spbstu.rakitin.monitoring_service.dto.MonitoringTaskConfigMapper;
 import ru.spbstu.rakitin.monitoring_service.engine.InfluxDBManager;
@@ -99,6 +99,8 @@ public class MonitoringTaskInstanceServiceImpl implements MonitoringTaskInstance
         if (instance.getTaskStatus() == TaskStatus.RUNNING) {
             suspendTask(configId, authentication);
             resume(configId, authentication);
+            instance.setNeedUpdate(false);
+            monitoringTaskInstanceRepository.save(instance);
         }
     }
 
@@ -135,7 +137,7 @@ public class MonitoringTaskInstanceServiceImpl implements MonitoringTaskInstance
 
     @Override
     public Optional<MonitoringTaskInstance> findByConfigIdOptionally(Long id) {
-        return monitoringTaskInstanceRepository.findById(id);
+        return monitoringTaskInstanceRepository.findFirstByConfigId(id);
     }
 
     @Override

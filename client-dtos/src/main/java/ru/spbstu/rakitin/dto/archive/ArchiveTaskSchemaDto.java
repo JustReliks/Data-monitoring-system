@@ -20,10 +20,12 @@ public class ArchiveTaskSchemaDto extends TaskSchemaDto {
 
     @NotNull
     private String filenameFieldName;
+    private String directoryFieldName;
 
-    public ArchiveTaskSchemaDto(List<SchemaFieldDto> fields, TimestampFieldDto timestampField, FilterExpression filterExpression, String filenameFieldName) {
+    public ArchiveTaskSchemaDto(List<SchemaFieldDto> fields, TimestampFieldDto timestampField, FilterExpression filterExpression, String filenameFieldName, String directoryFieldName) {
         super(fields, timestampField, filterExpression);
         this.filenameFieldName = filenameFieldName;
+        this.directoryFieldName = directoryFieldName;
     }
 
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.discovery.AdminUserService;
@@ -80,12 +81,20 @@ public class ArchiveServiceManager {
         requestFactory.doPut(ServiceName.ARCHIVE, authentication, String.format(UPDATE, configId), null, VOID_TYPE);
     }
 
-    public List<FileInformationDto> getAllFilesForTask(long configId, Authentication authentication) {
-        return requestFactory.doGet(ServiceName.ARCHIVE, authentication, String.format(FILE_LIST, configId), FILE_INFORMATION_LIST);
+    public List<FileInformationDto> getAllFilesForTask(long configId, String directory, Authentication authentication) {
+        String format = String.format(FILE_LIST, configId);
+        if (!StringUtils.isEmpty(directory)) {
+            format += "?directory=" + directory;
+        }
+        return requestFactory.doGet(ServiceName.ARCHIVE, authentication, format, FILE_INFORMATION_LIST);
     }
 
-    public FileDto getFile(long configId, String filename, Authentication authentication) {
-        return requestFactory.doGet(ServiceName.ARCHIVE, authentication, String.format(GET_FILE, configId, filename), FILE);
+    public FileDto getFile(long configId, String filename, String directory, Authentication authentication) {
+        String format = String.format(GET_FILE, configId, filename);
+        if (!StringUtils.isEmpty(directory)) {
+            format += "?directory=" + directory;
+        }
+        return requestFactory.doGet(ServiceName.ARCHIVE, authentication, format, FILE);
     }
 
     public ArchiveTaskResponse findById(long taskId, Authentication authentication) {

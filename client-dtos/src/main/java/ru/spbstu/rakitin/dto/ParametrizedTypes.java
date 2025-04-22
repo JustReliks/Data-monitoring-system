@@ -5,6 +5,7 @@ import ru.spbstu.rakitin.dto.archive.ArchiveTaskResponse;
 import ru.spbstu.rakitin.dto.archive.FileDto;
 import ru.spbstu.rakitin.dto.archive.FileInformationDto;
 import ru.spbstu.rakitin.dto.fulltext.FulltextTaskResponse;
+import ru.spbstu.rakitin.dto.fulltext.SolrQueryResponseDto;
 import ru.spbstu.rakitin.dto.monitoring.ApiKeyDto;
 import ru.spbstu.rakitin.dto.monitoring.MonitoringTaskResponse;
 
@@ -38,6 +39,9 @@ public class ParametrizedTypes {
     };
 
     public static final ParameterizedTypeReference<List<MapJson>> MAP_JSON_LIST = new ParameterizedTypeReference<>() {
+    };
+
+    public static final ParameterizedTypeReference<SolrQueryResponseDto> SOLR_QUERY_RESPONSE = new ParameterizedTypeReference<>() {
     };
 
     public static final ParameterizedTypeReference<List<FileInformationDto>> FILE_INFORMATION_LIST = new ParameterizedTypeReference<>() {

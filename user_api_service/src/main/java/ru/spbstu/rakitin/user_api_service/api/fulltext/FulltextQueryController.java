@@ -8,6 +8,7 @@ import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
 import ru.spbstu.rakitin.dto.fulltext.SolrQueryDto;
 import ru.spbstu.rakitin.commonstarter.fulltext.FulltextServiceManager;
 import ru.spbstu.rakitin.dto.MapJson;
+import ru.spbstu.rakitin.dto.fulltext.SolrQueryResponseDto;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class FulltextQueryController {
 
     @PostMapping("/{taskId}")
     @LogController
-    public List<MapJson> query(@RequestBody SolrQueryDto solrQuery, @PathVariable long taskId, Authentication authentication) {
+    public SolrQueryResponseDto query(@RequestBody SolrQueryDto solrQuery, @PathVariable long taskId, Authentication authentication) {
         return fulltextServiceManager.query(solrQuery, taskId, authentication);
 
 

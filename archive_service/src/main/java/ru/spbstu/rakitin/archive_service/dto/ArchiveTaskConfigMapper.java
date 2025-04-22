@@ -40,6 +40,7 @@ public class ArchiveTaskConfigMapper {
         schema.setSchema(schemaDto.getFields());
         schema.setTimestampField(Optional.ofNullable(schemaDto.getTimestampField()).orElse(new TimestampFieldDto()));
         schema.setFilter(schemaDto.getFilterExpression());
+        schema.setDirectoryFieldName(schemaDto.getDirectoryFieldName());
         schema.setFilenameFieldName(schemaDto.getFilenameFieldName());
         return schema;
     }
@@ -88,7 +89,8 @@ public class ArchiveTaskConfigMapper {
                 .fields(archiveTaskSchema.getSchema())
                 .filterExpression(archiveTaskSchema.getFilter())
                 .timestampField(archiveTaskSchema.getTimestampField())
-                .filenameFieldName(archiveTaskSchema.getFilenameFieldName()).build();
+                .filenameFieldName(archiveTaskSchema.getFilenameFieldName())
+                .directoryFieldName(archiveTaskSchema.getDirectoryFieldName()).build();
     }
 
     public ArchiveJobDto mapArchiveTaskToArchiveJobDto(final ArchiveTaskInstance archiveTaskInstance) {

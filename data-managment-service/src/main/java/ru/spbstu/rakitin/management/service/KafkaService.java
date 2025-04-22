@@ -10,4 +10,6 @@ public interface KafkaService {
 
     Topic createTopic(Topic topic) throws KafkaTopicCreationException, TopicAlreadyCreatedException, TopicQuotaLimitException;
     Topic findTopicById(long id) throws TopicNotFoundException;
+
+    void deleteTopic(Topic topic);
 }

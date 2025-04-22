@@ -77,7 +77,7 @@ public class MonitoringServiceManager {
     }
 
     public void update(long configId, Authentication authentication) {
-        requestFactory.doPost(ServiceName.MONITORING, authentication, String.format(UPDATE, configId), null, VOID_TYPE);
+        requestFactory.doPut(ServiceName.MONITORING, authentication, String.format(UPDATE, configId), null, VOID_TYPE);
     }
 
     public ApiKeyDto createApiKey(CreateReadApiKeyDto createReadApiKeyDto, Authentication authentication) {

@@ -5,13 +5,13 @@ import jakarta.validation.constraints.NotNull;
 import org.apache.hadoop.fs.*;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.archive_service.configuration.HdfsProperties;
-import ru.spbstu.rakitin.dto.archive.FileDto;
-import ru.spbstu.rakitin.dto.archive.FileInformationDto;
 import ru.spbstu.rakitin.archive_service.exception.FileNotFoundInArchiveException;
 import ru.spbstu.rakitin.archive_service.model.ArchiveTaskConfig;
 import ru.spbstu.rakitin.commonstarter.sequence.engine.SequentialEngine;
 import ru.spbstu.rakitin.commonstarter.sequence.engine.SequentialTask;
 import ru.spbstu.rakitin.dto.MapJson;
+import ru.spbstu.rakitin.dto.archive.FileDto;
+import ru.spbstu.rakitin.dto.archive.FileInformationDto;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -84,10 +84,13 @@ public class HdfsManager {
         List<FileInformationDto> result = new ArrayList<>();
         while (locatedFileStatusRemoteIterator.hasNext()) {
             LocatedFileStatus next = locatedFileStatusRemoteIterator.next();
-
-            result.add(FileInformationDto.builder()
-                    .filename(next.getPath().getName().replace(".json", ""))
-                    .size(next.getLen()).build());
+            if (next.isDirectory()) {
+                result.addAll(getAllFilesInDirectory(next.getPath().toString()));
+            } else {
+                result.add(FileInformationDto.builder()
+                        .filename(next.getPath().getName().replace(".json", ""))
+                        .size(next.getLen()).build());
+            }
         }
         return result;
     }

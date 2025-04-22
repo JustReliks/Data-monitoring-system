@@ -52,4 +52,9 @@ public class KafkaServiceImpl implements KafkaService {
     public Topic findTopicById(long id) throws TopicNotFoundException {
         return topicRepository.findById(id).orElseThrow(() -> new TopicNotFoundException(String.format("Topic with id %s not found!", id)));
     }
+
+    @Override
+    public void deleteTopic(Topic topic) {
+        admin.deleteTopics(Collections.singleton(topic.getNameInKafka()));
+    }
 }

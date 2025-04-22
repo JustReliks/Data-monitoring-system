@@ -6,6 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.spbstu.rakitin.client.*;
+import ru.spbstu.rakitin.dto.TaskClientDto;
+import ru.spbstu.rakitin.dto.TaskType;
 
 @Configuration
 @Getter
@@ -40,6 +42,15 @@ public class MdsConfiguration {
     @Bean
     public MdsClient mdsClient(AuthProperties authProperties, RequestProperties requestProperties, ApiKeyStorageProperties apiKeyStorageProperties) {
         return new MdsClientImpl(authProperties, requestProperties, apiKeyStorageProperties);
+    }
+
+    @Bean
+    public TaskClientDto pageTaskClientDto() {
+        TaskClientDto taskClientDto = new TaskClientDto();
+        taskClientDto.setTaskType(TaskType.ARCHIVE);
+        taskClientDto.setTaskName("books-pages-archive");
+        taskClientDto.setProjectId(3L);
+        return taskClientDto;
     }
 
 

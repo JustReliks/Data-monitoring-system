@@ -12,6 +12,7 @@ import ru.spbstu.rakitin.dto.*;
 import ru.spbstu.rakitin.dto.monitoring.MonitoringJobDto;
 import ru.spbstu.rakitin.dto.monitoring.MonitoringTaskConfigDto;
 import ru.spbstu.rakitin.dto.monitoring.MonitoringTaskResponse;
+import ru.spbstu.rakitin.dto.monitoring.MonitoringTaskSchemaDto;
 import ru.spbstu.rakitin.monitoring_service.model.*;
 
 import java.util.Optional;
@@ -33,7 +34,7 @@ public class MonitoringTaskConfigMapper {
                 .schema(Optional.of(dto.getSchema()).map(this::mapDtoToMonitoringTaskSchema).orElseThrow(() -> new IllegalArgumentException("Schema must be defined"))).build();
     }
 
-    public MonitoringTaskSchema mapDtoToMonitoringTaskSchema(TaskSchemaDto schemaDto) {
+    public MonitoringTaskSchema mapDtoToMonitoringTaskSchema(MonitoringTaskSchemaDto schemaDto) {
         MonitoringTaskSchema schema = new MonitoringTaskSchema();
         schema.setSchema(schemaDto.getFields().stream().map(schemaFieldDto -> SchemaField.builder().fieldName(schemaFieldDto.getFieldName()).fieldType(mapFieldTypeDtoToFieldType(schemaFieldDto.getFieldType())).subType(mapFieldTypeDtoToFieldType(schemaFieldDto.getSubType())).build()).toList());
         schema.setTimestampField(
@@ -45,6 +46,7 @@ public class MonitoringTaskConfigMapper {
                                         .build())
                         .orElse(new TimestampField()));
         schema.setFilter(schemaDto.getFilterExpression());
+        schema.setTags(schemaDto.getTags());
         return schema;
     }
 
@@ -60,11 +62,12 @@ public class MonitoringTaskConfigMapper {
                 .schema(mapMonitoringSchemaToSchemaDto(config.getSchema())).build();
     }
 
-    public TaskSchemaDto mapMonitoringSchemaToSchemaDto(MonitoringTaskSchema schema) {
-        return TaskSchemaDto.builder()
+    public MonitoringTaskSchemaDto mapMonitoringSchemaToSchemaDto(MonitoringTaskSchema schema) {
+        return MonitoringTaskSchemaDto.builder()
                 .timestampField(mapTimestampFieldToDto(schema))
                 .fields(schema.getSchema().stream().map(this::mapSchemaFieldToDto).toList())
-                .filterExpression(schema.getFilter()).build();
+                .filterExpression(schema.getFilter())
+                .tags(schema.getTags()).build();
     }
 
     private TimestampFieldDto mapTimestampFieldToDto(MonitoringTaskSchema schema) {

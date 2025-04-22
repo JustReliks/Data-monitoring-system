@@ -7,8 +7,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import ru.spbstu.rakitin.dto.archive.ArchiveJobDto;
 import ru.spbstu.rakitin.dto.MapJson;
+import ru.spbstu.rakitin.dto.archive.ArchiveJobDto;
 import ru.spbstu.rakitin.management.engine.AbstractJsonQueueProcessor;
 import ru.spbstu.rakitin.management.engine.hdfs.HdfsConfigurationProperties;
 
@@ -50,7 +50,7 @@ public class ArchiveJobProcessor extends AbstractJsonQueueProcessor<ArchiveJobDt
         collection.forEach(mapJson -> {
             try {
                 String filename = getFilename(mapJson);
-                String dirName = getDirName();
+                String dirName = getDirName(mapJson);
                 if (fileSystem.exists(new Path(dirName + filename))) {
                     if (archiveJobDto.isAccessOverwriting()) {
                         log.info("Overwriting archive file {} at {}", filename, dirName);
@@ -86,11 +86,17 @@ public class ArchiveJobProcessor extends AbstractJsonQueueProcessor<ArchiveJobDt
         }
     }
 
-    private String getDirName() {
+    private String getDirName(MapJson mapJson) {
         String folderName = archiveJobDto.getJobFolderName();
         String basePath = hdfsConfigurationProperties.getBasePath();
 
-        return basePath + "/" + folderName + "/";
+        String pathToTask = basePath + "/" + folderName;
+        String directoryFieldName = archiveJobDto.getSchema().getDirectoryFieldName();
+        if (directoryFieldName != null) {
+            String path = mapJson.get(directoryFieldName).toString();
+            return pathToTask + path;
+        }
+        return pathToTask + "/";
     }
 
     private String getFilename(MapJson mapJson) {

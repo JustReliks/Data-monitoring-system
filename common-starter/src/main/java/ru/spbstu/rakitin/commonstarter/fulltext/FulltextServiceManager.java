@@ -9,12 +9,8 @@ import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonstarter.discovery.AdminUserService;
 import ru.spbstu.rakitin.commonstarter.discovery.InnerServiceRequestFactory;
 import ru.spbstu.rakitin.commonstarter.utils.Utils;
-import ru.spbstu.rakitin.dto.MapJson;
 import ru.spbstu.rakitin.dto.ServiceName;
-import ru.spbstu.rakitin.dto.fulltext.FulltextJobDto;
-import ru.spbstu.rakitin.dto.fulltext.FulltextTaskConfigDto;
-import ru.spbstu.rakitin.dto.fulltext.FulltextTaskResponse;
-import ru.spbstu.rakitin.dto.fulltext.SolrQueryDto;
+import ru.spbstu.rakitin.dto.fulltext.*;
 
 import java.util.List;
 
@@ -84,8 +80,8 @@ public class FulltextServiceManager {
     }
 
 
-    public List<MapJson> query(SolrQueryDto solrQuery, long taskId, Authentication authentication) {
-        return requestFactory.doPost(ServiceName.FULL_TEXT, authentication, String.format(QUERY, taskId), solrQuery, MAP_JSON_LIST);
+    public SolrQueryResponseDto query(SolrQueryDto solrQuery, long taskId, Authentication authentication) {
+        return requestFactory.doPost(ServiceName.FULL_TEXT, authentication, String.format(QUERY, taskId), solrQuery, SOLR_QUERY_RESPONSE);
     }
 
     public FulltextTaskResponse findById(long taskId, Authentication authentication) {

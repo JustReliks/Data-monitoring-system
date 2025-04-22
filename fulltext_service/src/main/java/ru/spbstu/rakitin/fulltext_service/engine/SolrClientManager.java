@@ -19,6 +19,7 @@ import ru.spbstu.rakitin.commonstarter.sequence.engine.SequentialEngine;
 import ru.spbstu.rakitin.commonstarter.sequence.engine.SequentialTask;
 import ru.spbstu.rakitin.dto.MapJson;
 import ru.spbstu.rakitin.dto.fulltext.SolrQueryDto;
+import ru.spbstu.rakitin.dto.fulltext.SolrQueryResponseDto;
 import ru.spbstu.rakitin.fulltext_service.engine.schema.SolrSchema;
 import ru.spbstu.rakitin.fulltext_service.engine.utils.SolrUtils;
 import ru.spbstu.rakitin.fulltext_service.model.FulltextTaskConfig;
@@ -49,14 +50,20 @@ public class SolrClientManager {
         sequentialEngine.performSequential(tasks);
     }
 
-    public List<MapJson> query(FulltextTaskConfig fulltextTaskConfig, SolrQueryDto solrQueryDto) throws SolrServerException, IOException {
+    public SolrQueryResponseDto query(FulltextTaskConfig fulltextTaskConfig, SolrQueryDto solrQueryDto) throws SolrServerException, IOException {
         QueryRequest request = new QueryRequest(getSolrQueryFromDto(solrQueryDto));
         QueryResponse response = this.sendRequest(request, SolrUtils.buildReadCollectionName(fulltextTaskConfig.getProject().getProjectName(), fulltextTaskConfig.getName()));
-        return response.getResults().stream().map(entries -> {
+        SolrQueryResponseDto responseDto = new SolrQueryResponseDto();
+        List<MapJson> list = response.getResults().stream().map(entries -> {
             MapJson mapJson = new MapJson();
             mapJson.putAll(entries);
             return mapJson;
         }).toList();
+
+        responseDto.setResponseSize(response.getResults().size());
+        responseDto.setQTime(response.getQTime());
+        responseDto.setResponse(list);
+        return responseDto;
     }
 
 
@@ -286,6 +293,7 @@ public class SolrClientManager {
 
     private static SolrQuery getSolrQueryFromDto(SolrQueryDto solrQueryDto) {
         SolrQuery query = new SolrQuery(solrQueryDto.getQuery());
+        query.setRows(solrQueryDto.getRows() == null ? 10 : solrQueryDto.getRows());
         if (solrQueryDto.getSort() != null) {
             solrQueryDto.getSort().forEach(solrSort -> query.setSort(solrSort.getField(), SolrQuery.ORDER.valueOf(solrSort.getOrder().name())));
         }
