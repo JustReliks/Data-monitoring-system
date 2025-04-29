@@ -19,6 +19,7 @@ import ru.spbstu.rakitin.dto.archive.FileInformationDto;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import static ru.spbstu.rakitin.archive_service.dto.ArchiveTaskConfigMapper.getJobFolderName;
 
@@ -35,10 +36,8 @@ public class ArchiveTaskQueryServiceImpl implements ArchiveTaskQueryService {
         ArchiveTaskInstance archiveTaskInstance = getArchiveTaskInstance(configId, authentication);
 
         String jobFolderName = getJobFolderName(archiveTaskInstance);
-        if (!StringUtils.isEmpty(directory)) {
-            jobFolderName += "/" + directory;
-        }
-        return hdfsManager.getAllFilesInDirectory(jobFolderName);
+
+        return hdfsManager.getAllFilesInDirectory(jobFolderName, StringUtils.isNotEmpty(directory) ? Optional.of(directory) : Optional.empty());
     }
 
     @Override

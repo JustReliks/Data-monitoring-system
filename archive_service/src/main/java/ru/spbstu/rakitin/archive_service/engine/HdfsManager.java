@@ -79,15 +79,27 @@ public class HdfsManager {
         }
     }
 
-    public List<FileInformationDto> getAllFilesInDirectory(String path) throws IOException {
-        RemoteIterator<LocatedFileStatus> locatedFileStatusRemoteIterator = fileSystem.listFiles(new Path(hdfsProperties.getBasePath() + "/" + path), true);
+    public List<FileInformationDto> getAllFilesInDirectory(String basePath, Optional<String> directory) throws IOException {
+        String searchPath = hdfsProperties.getBasePath() + "/" + basePath;
+        if (directory.isPresent()) {
+            searchPath = searchPath + "/" + directory.get();
+        }
+
+        RemoteIterator<LocatedFileStatus> locatedFileStatusRemoteIterator = fileSystem.listFiles(new Path(searchPath), true);
         List<FileInformationDto> result = new ArrayList<>();
         while (locatedFileStatusRemoteIterator.hasNext()) {
             LocatedFileStatus next = locatedFileStatusRemoteIterator.next();
-            if (next.isDirectory()) {
-                result.addAll(getAllFilesInDirectory(next.getPath().toString()));
-            } else {
+            if (!next.isDirectory()) {
+                String path = next.getPath().getParent().toUri().getPath();
+                int i = path.lastIndexOf("/");
+                String fileDirectory;
+                if (i == -1) {
+                    fileDirectory = "";
+                } else {
+                    fileDirectory = path.substring(i + 1);
+                }
                 result.add(FileInformationDto.builder()
+                        .directory(fileDirectory)
                         .filename(next.getPath().getName().replace(".json", ""))
                         .size(next.getLen()).build());
             }

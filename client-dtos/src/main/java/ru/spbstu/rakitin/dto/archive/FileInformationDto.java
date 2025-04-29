@@ -8,6 +8,7 @@ import lombok.Data;
 public class FileInformationDto {
 
     private String filename;
+    private String directory;
     private long size;
 
 }
