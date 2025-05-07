@@ -126,7 +126,6 @@ public class HdfsManager {
 
     }
 
-
     public void removeArchiveInstance(@NotNull ArchiveTaskConfig config) throws IOException {
         String taskFolder = String.format("/%s/%s/%s", hdfsProperties.getBasePath(), config.getProject().getProjectName(), config.getName());
         if (fileSystem.exists(new Path(taskFolder))) {

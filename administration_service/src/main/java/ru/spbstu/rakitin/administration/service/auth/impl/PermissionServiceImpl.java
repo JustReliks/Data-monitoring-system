@@ -21,6 +21,9 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public Long savePermission(Permission permission) throws PermissionAlreadyExistsException {
+        if (permission.getPermission() == PermissionTypeEnum.ANY) {
+            throw new IllegalArgumentException("Can't save permission with type ANY for user");
+        }
         if (permissionRepository.existsPermissionByUser_IdAndProject_IdAndPermission(permission.getUser().getId(), permission.getProject().getId(), permission.getPermission())) {
             throw new PermissionAlreadyExistsException(String.format("User with id %s already have permission %s in project with id %s",
                     permission.getUser().getId(),
