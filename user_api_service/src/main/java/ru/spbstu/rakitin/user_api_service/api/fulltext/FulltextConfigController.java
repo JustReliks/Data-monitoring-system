@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/fulltext/config")
-@Tag(name = "3. Операции с конфигурациями полнотекстовых задач")
+@Tag(name = "4. Операции с конфигурациями полнотекстовых задач")
 @RequiredArgsConstructor
 public class FulltextConfigController {
 
@@ -56,11 +56,13 @@ public class FulltextConfigController {
     }
 
     @GetMapping("/{taskId}")
+    @Operation(description = "Получение полнотекстовой задачи по индентификатору")
     public FulltextTaskResponse findById(@PathVariable long taskId, Authentication authentication) {
         return fulltextServiceManager.findById(taskId, authentication);
     }
 
     @GetMapping("/name/{taskName}")
+    @Operation(description = "Получение полнотекстовой задачи по имени")
     public FulltextTaskResponse findByName(@PathVariable String taskName, @RequestParam("projectId") Long projectId, Authentication authentication)  {
         return fulltextServiceManager.findByName(taskName, projectId, authentication);
     }

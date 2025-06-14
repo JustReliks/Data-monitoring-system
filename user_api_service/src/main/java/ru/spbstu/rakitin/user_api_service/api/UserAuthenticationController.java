@@ -13,23 +13,47 @@ import ru.spbstu.rakitin.dto.AuthUserDto;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
-@Tag(name = "1. Авторизация пользователя")
+@Tag(name = "13. Авторизация пользователя")
 public class UserAuthenticationController {
 
     private final AdminManager adminManager;
 
     @PostMapping("/login")
     @LogController
-    @Operation(description = "Логин пользователя")
+    @Operation(description = "Авторизация пользователя")
     public String login(@RequestBody AuthUserDto authUserDto) {
         return adminManager.login(authUserDto);
     }
 
-    @GetMapping("/hello/{test}")
-    @LogController()
-    @Operation(hidden = true)
-    public String helloWorld(Authentication authentication, @PathVariable(name = "test") String test, @ExcludeFromLog @RequestParam(name = "test2", required = false) String test2) {
-        return "Hello World!" + " " + test;
-    }
-
 }
+//{
+//        "name": "books",
+//        "projectId": 3,
+//        "topicId": 5,
+//        "schema": {
+//        "fields": [
+//        {
+//        "fieldName": "libraryId",
+//        "fieldType": "LONG",
+//        "subType": null
+//        },
+//        {
+//        "fieldName": "description",
+//        "fieldType": "STRING",
+//        "subType": null
+//        },
+//        {
+//        "fieldName": "title",
+//        "fieldType": "STRING",
+//        "subType": null
+//        }
+//        ],
+//        "timestampField": {
+//        "fieldName": "timestamp",
+//        "useInsertionDate": true
+//        },
+//        "filterExpression": null
+//        },
+//        "replicationFactor": 1,
+//        "shardsCount": 1
+//        }

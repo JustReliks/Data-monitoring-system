@@ -12,7 +12,7 @@ import ru.spbstu.rakitin.commonstarter.fulltext.FulltextServiceManager;
 @RestController
 @RequestMapping("/api/v1/fulltext/instance")
 @RequiredArgsConstructor
-@Tag(name = "2. Операции с экземплярами полнотекстовых задач")
+@Tag(name = "5. Операции с экземплярами полнотекстовых задач")
 public class FulltextInstanceController {
 
     private final FulltextServiceManager fulltextServiceManager;

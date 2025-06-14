@@ -34,7 +34,7 @@ public class SolrConfiguration {
     @Profile("!docker")
     public Http2SolrClient http2SolrClient() {
         return new Http2SolrClient.Builder()
-                .withBasicAuthCredentials("solr", "SolrRocks")
+                .withBasicAuthCredentials(solrConfigurationProperties.getUsername(), solrConfigurationProperties.getPassword())
                 .withRequestTimeout(10, TimeUnit.SECONDS)
                 .build();
     }

@@ -12,6 +12,9 @@ import java.util.Optional;
 @Data
 public class SolrConfigurationProperties {
 
+    private String username;
+    private String password;
+
     private ZookeeperProperties zookeeperProperties;
 
     @Data

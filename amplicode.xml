@@ -36,6 +36,16 @@
           <package value="ru.spbstu.rakitin.user_api_service" />
         </packages>
       </persistence-unit>
+      <persistence-unit moduleName="library-application" name="Default">
+        <packages>
+          <package value="ru.spbstu.rakitin" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit moduleName="monitoring_service" name="Default">
+        <packages>
+          <package value="ru.spbstu.rakitin.monitoring_service" />
+        </packages>
+      </persistence-unit>
     </persistence-units>
   </component>
 </project>

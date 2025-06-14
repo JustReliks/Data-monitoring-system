@@ -13,6 +13,9 @@ import ru.spbstu.rakitin.requests.archive.GetFileRequest;
 import ru.spbstu.rakitin.service.BookSearchService;
 import ru.spbstu.rakitin.service.BookService;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -93,11 +96,16 @@ public class BookController {
         return books.stream().map(BookDto::fromBook).collect(Collectors.toList());
     }
 
+    DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
+
+    // Начало предыдущего дня в UTC
+
     @PostMapping("/buy/{id}")
     public void buyBook(@PathVariable long id, @RequestParam(required = false, defaultValue = "1", name = "quantity") int quantity) {
         Book book = bookService.getBook(id).orElseThrow();
-        //BookSellMetricDto bookSellMetricDto = new BookSellMetricDto(book.getTitle(), quantity);
-      //  mdsClient.sendMessageToTask(monitoringTask, bookSellMetricDto);
+        String currentTime = formatter.format(ZonedDateTime.now(ZoneOffset.UTC).toLocalDate());
+        BookSellMetricDto bookSellMetricDto = new BookSellMetricDto(book.getTitle(), quantity, currentTime);
+        mdsClient.sendMessageToTask(monitoringTask, bookSellMetricDto);
     }
 
     Date startDate = new Date(110, 0, 1);  // 2010-01-01

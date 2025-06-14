@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/monitoring/config")
-@Tag(name = "6. Операции с конфигурациями задач мониторинга")
+@Tag(name = "8. Операции с конфигурациями задач мониторинга")
 @RequiredArgsConstructor
 public class MonitoringConfigController {
 
@@ -56,11 +56,13 @@ public class MonitoringConfigController {
     }
 
     @GetMapping("/{taskId}")
+    @Operation(description = "Получение задачи мониторинга по индентификатору")
     public MonitoringTaskResponse findById(@PathVariable long taskId, Authentication authentication) {
         return monitoringServiceManager.findById(taskId, authentication);
     }
 
     @GetMapping("/name/{taskName}")
+    @Operation(description = "Получение задачи мониторинга по имени")
     public MonitoringTaskResponse findByName(@PathVariable String taskName, @RequestParam("projectId") Long projectId, Authentication authentication) {
         return monitoringServiceManager.findByName(taskName, projectId, authentication);
     }

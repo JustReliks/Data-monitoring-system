@@ -12,7 +12,7 @@ import ru.spbstu.rakitin.commonstarter.archive.ArchiveServiceManager;
 @RestController
 @RequestMapping("/api/v1/archive/instance")
 @RequiredArgsConstructor
-@Tag(name = "5. Операции с экземплярами архивных задач")
+@Tag(name = "2. Операции с экземплярами архивных задач")
 public class ArchiveInstanceController {
 
     private final ArchiveServiceManager archiveServiceManager;

@@ -1,5 +1,6 @@
 package ru.spbstu.rakitin.user_api_service.api.monitoring;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ public class ApiKeyController {
     private final MonitoringServiceManager monitoringServiceManager;
 
     @PostMapping("/create")
+    @Operation(description = "Создание API ключа для доступа к данным задачи мониторинга")
     public ApiKeyDto createApiKey(@RequestBody  CreateReadApiKeyDto createReadApiKeyDto, Authentication authentication) {
         return monitoringServiceManager.createApiKey(createReadApiKeyDto, authentication);
     }

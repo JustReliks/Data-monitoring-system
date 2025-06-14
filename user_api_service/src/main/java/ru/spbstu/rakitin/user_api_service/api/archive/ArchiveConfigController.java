@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/archive/config")
-@Tag(name = "4. Операции с конфигурациями архивных задач")
+@Tag(name = "1. Операции с конфигурациями архивных задач")
 @RequiredArgsConstructor
 public class ArchiveConfigController {
 
@@ -56,11 +56,13 @@ public class ArchiveConfigController {
     }
 
     @GetMapping("/{taskId}")
+    @Operation(description = "Получение архивной задачи по индентификатору")
     public ArchiveTaskResponse findById(@PathVariable long taskId, Authentication authentication)  {
         return archiveServiceManager.findById(taskId, authentication);
     }
 
     @GetMapping("/name/{taskName}")
+    @Operation(description = "Получение полнотекстовой задачи по имени")
     public ArchiveTaskResponse findByName(@PathVariable String taskName, @RequestParam("projectId") Long projectId, Authentication authentication)  {
         return archiveServiceManager.findByName(taskName, projectId, authentication);
     }

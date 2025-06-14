@@ -47,9 +47,7 @@ public class BookSearchServiceImpl implements BookSearchService {
     @Override
     public List<Book> findByDescriptionMds(BookSearchRequestDto searchRequestDto) {
         log.info("Searching for books with description in mds {}", searchRequestDto);
-        long count = bookRepository.count();
-        MdsResponse<SolrQueryResponseDto> mapMdsResponse = mdsClient.sendRequest(new FulltextQueryRequest(fulltextTask, BookSearchRequestDto.mapToSolrQueryDto(searchRequestDto)));
-//        mdsClient.sendMessageToTask(searchTimeTask, new SearchTimeDto("mds", count, mapMdsResponse.getResponse().get().getQTime(), DateTimeFormatter.ISO_INSTANT.format(new Date().toInstant())));
+        MdsResponse<SolrQueryResponseDto> mapMdsResponse = mdsClient.sendRequest(new FulltextQueryRequest(fulltextTask, BookSearchRequestDto.mapToSolrQueryDto(searchRequestDto))); // Отправка запроса получению данных из полнотекстового хранилища
         return mapMdsResponse.getResponse().get().getResponse().stream().map(stringObjectMap -> {
                     Long id = Long.valueOf(stringObjectMap.get("libraryId").toString());
                     Optional<Book> book = bookService.getBook(id);
