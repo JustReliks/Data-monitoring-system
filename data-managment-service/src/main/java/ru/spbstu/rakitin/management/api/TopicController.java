@@ -8,11 +8,9 @@ import ru.spbstu.rakitin.commonstarter.admin.aspect.LogController;
 import ru.spbstu.rakitin.commonstarter.admin.aspect.ProjectIdContainer;
 import ru.spbstu.rakitin.dto.LightWeightTopicDto;
 import ru.spbstu.rakitin.dto.PermissionTypeEnum;
+import ru.spbstu.rakitin.dto.kafka.KafkaMessageDto;
 import ru.spbstu.rakitin.management.dto.mapping.TopicMapping;
-import ru.spbstu.rakitin.management.exception.KafkaTopicCreationException;
-import ru.spbstu.rakitin.management.exception.TopicAlreadyCreatedException;
-import ru.spbstu.rakitin.management.exception.TopicNotFoundException;
-import ru.spbstu.rakitin.management.exception.TopicQuotaLimitException;
+import ru.spbstu.rakitin.management.exception.*;
 import ru.spbstu.rakitin.management.service.TopicService;
 
 import java.util.List;
@@ -34,7 +32,7 @@ public class TopicController {
 
     @DeleteMapping("/{topicId}")
     @LogController
-    public void deleteTopic(@PathVariable long topicId, Authentication authentication) throws TopicNotFoundException {
+    public void deleteTopic(@PathVariable long topicId, Authentication authentication) throws TopicNotFoundException, TopicDeleteForbidden {
         topicService.deleteTopic(topicId, authentication);
     }
 
@@ -43,6 +41,11 @@ public class TopicController {
         return topicService.getAllTopicsForProjectId(projectId, authentication).stream().map(
                 topicMapping::topicToTopicDto
         ).toList();
+    }
+
+    @PostMapping("/{topicId}/message")
+    public void sendMessageToTopic(@PathVariable long topicId, @RequestBody KafkaMessageDto message, Authentication authentication) throws TopicNotFoundException {
+        topicService.sendMessageToTopic(topicId, message, authentication);
     }
 
     @GetMapping("/{topicId}")

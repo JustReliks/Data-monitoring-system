@@ -7,6 +7,7 @@ import ru.spbstu.rakitin.commonstarter.discovery.InnerServiceRequestFactory;
 import ru.spbstu.rakitin.dto.*;
 import ru.spbstu.rakitin.dto.archive.ArchiveJobDto;
 import ru.spbstu.rakitin.dto.fulltext.FulltextJobDto;
+import ru.spbstu.rakitin.dto.kafka.KafkaMessageDto;
 import ru.spbstu.rakitin.dto.monitoring.MonitoringJobDto;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class DataManagementManager {
     private static final String STOP_MONITORING_JOB = "/api/v1/job/monitoring/stop";
     private static final String START_MONITORING_JOB = "/api/v1/job/monitoring/start";
     private static final String FIND_TOPIC_BY_ID_EXTERNAL = "/api/v1/topic/%s";
+    private static final String SEND_MESSAGE_TO_TOPIC = "/api/v1/topic/%s/message";
     private static final String CREATE_TOPIC = "/api/v1/topic/";
     private static final String LIST_TOPIC_BY_PROJECT_ID = "/api/v1/topic/list?projectId=%s";
     private static final String PUBLIC_KAFKA_PROPERTIES = "/api/v1/kafka/properties";
@@ -72,6 +74,11 @@ public class DataManagementManager {
     public LightWeightTopicDto findTopicByIdExternal(long topicId, Authentication authentication) {
         return innerServiceRequestFactory.doGet(ServiceName.DATA_MANAGEMENT, authentication, String.format(FIND_TOPIC_BY_ID_EXTERNAL, topicId), LIGHT_WEIGHT_TOPIC);
     }
+
+    public void sendMessageToTopic(long topicId, KafkaMessageDto kafkaMessageDto, Authentication authentication) {
+        innerServiceRequestFactory.doPost(ServiceName.DATA_MANAGEMENT, authentication, String.format(SEND_MESSAGE_TO_TOPIC, topicId), kafkaMessageDto, VOID_TYPE);
+    }
+
 
     public MapJson getPublicProperties(Authentication authentication) {
         return innerServiceRequestFactory.doGet(ServiceName.DATA_MANAGEMENT, authentication, PUBLIC_KAFKA_PROPERTIES, MAP_JSON);

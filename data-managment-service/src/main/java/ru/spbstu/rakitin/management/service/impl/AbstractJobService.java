@@ -96,7 +96,7 @@ public abstract class AbstractJobService<T extends JobDto<?>> implements JobServ
                 .mapValues((readOnlyKey, value) -> {
                     try {
                         return objectMapper.readValue(value, MapJson.class);
-                    } catch (JsonProcessingException e) {
+                    } catch (Exception e) {
                         log.warn("[{}] Skip value [{}]. Unable to parse it to json object.", taskName, value, e);
                         return INVALID_JSON_FILTER;
                     }

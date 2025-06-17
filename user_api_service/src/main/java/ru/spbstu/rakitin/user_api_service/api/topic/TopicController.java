@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.spbstu.rakitin.commonstarter.datamanagement.DataManagementManager;
 import ru.spbstu.rakitin.dto.LightWeightTopicDto;
+import ru.spbstu.rakitin.dto.kafka.KafkaMessageDto;
 
 import java.util.List;
 
@@ -40,6 +41,12 @@ public class TopicController {
     @Operation(description = "Удаление топика")
     public void deleteTopic(@PathVariable long topicId, Authentication authentication) {
         dataManagementManager.deleteTopic(topicId, authentication);
+    }
+
+    @PostMapping("/{topicId}/message")
+    @Operation(description = "Отправка сообщения в топик топика")
+    public void sendMessageToTopic(@PathVariable long topicId, @RequestBody KafkaMessageDto kafkaMessageDto, Authentication authentication) {
+        dataManagementManager.sendMessageToTopic(topicId, kafkaMessageDto, authentication);
     }
 
 }

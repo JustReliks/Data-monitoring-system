@@ -11,4 +11,5 @@ public interface TaskService {
 
     List<TaskDto> list(Authentication authentication, List<Long> projectIds, List<TaskType> taskTypes);
 
+    List<TaskDto> getTasksListForProjectsAndTaskTypes(List<Long> projectIds, List<TaskType> taskTypes);
 }

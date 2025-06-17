@@ -1,11 +1,15 @@
 package ru.spbstu.rakitin.management.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.CreateTopicsResult;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonentites.model.Topic;
+import ru.spbstu.rakitin.management.configuration.KafkaConfiguration;
 import ru.spbstu.rakitin.management.exception.KafkaTopicCreationException;
 import ru.spbstu.rakitin.management.exception.TopicAlreadyCreatedException;
 import ru.spbstu.rakitin.management.exception.TopicNotFoundException;
@@ -18,11 +22,13 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KafkaServiceImpl implements KafkaService {
 
     private final TopicRepository topicRepository;
+    private final KafkaConfiguration kafkaConfiguration;
 
     private final Admin admin;
 
@@ -31,7 +37,7 @@ public class KafkaServiceImpl implements KafkaService {
         String kafkaTopicName = KafkaTopicUtils.createKafkaTopicName(topic);
         Optional<Topic> findTopic = topicRepository.findByNameInKafka(kafkaTopicName);
         if (findTopic.isPresent()) {
-            throw new TopicAlreadyCreatedException("Kafka with name " + topic.getName() + " already exists!");
+            throw new TopicAlreadyCreatedException("Topic with name " + topic.getName() + " already exists!");
         }
         int topicCount = topicRepository.countAllByProject_Id(topic.getProject().getId());
         if (topicCount >= topic.getProject().getTopicQuota()) {
@@ -51,6 +57,14 @@ public class KafkaServiceImpl implements KafkaService {
     @Override
     public Topic findTopicById(long id) throws TopicNotFoundException {
         return topicRepository.findById(id).orElseThrow(() -> new TopicNotFoundException(String.format("Topic with id %s not found!", id)));
+    }
+
+    @Override
+    public void sendMessageToTopic(String topicName, String message, String key) {
+        try (KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(kafkaConfiguration.kafkaProperties())) {
+            log.info("Sending message [{}] to topic {} with key {}", message, topicName, key);
+            kafkaProducer.send(new ProducerRecord<>(topicName, key, message));
+        }
     }
 
     @Override

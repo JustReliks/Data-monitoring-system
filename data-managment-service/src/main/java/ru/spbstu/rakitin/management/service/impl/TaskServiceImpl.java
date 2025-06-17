@@ -35,6 +35,11 @@ public class TaskServiceImpl implements TaskService {
             }
         });
 
+        return getTasksListForProjectsAndTaskTypes(projectIds, taskTypes);
+    }
+
+    @Override
+    public List<TaskDto> getTasksListForProjectsAndTaskTypes(List<Long> projectIds, List<TaskType> taskTypes) {
         return jobServiceMap.values().stream().filter(jobService -> taskTypes.contains(jobService.getTaskType()))
                 .flatMap(jobService -> jobService.getJobs().stream()
                         .filter(jobDto -> projectIds.contains(jobDto.getProjectId()))

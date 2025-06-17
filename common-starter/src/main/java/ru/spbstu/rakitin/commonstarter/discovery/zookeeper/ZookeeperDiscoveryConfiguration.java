@@ -25,7 +25,7 @@ public class ZookeeperDiscoveryConfiguration {
 
     private String zookeeperHost;
     private String basePath;
-    private int sessionTimeoutMs = 5000;
+    private int sessionTimeoutMs = 60000;
     private ServiceName serviceName;
 
 
