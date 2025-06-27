@@ -78,6 +78,7 @@ services:
     restart: unless-stopped
     ports:
       - '9091:9091'
+      - '19101:19101'
     depends_on:
       - zookeeper
     environment:
@@ -109,6 +110,7 @@ services:
     restart: unless-stopped
     ports:
       - '9092:9092'
+      - '19102:19102'
     depends_on:
       - zookeeper
     environment:
@@ -140,6 +142,7 @@ services:
     restart: unless-stopped
     ports:
       - '9093:9093'
+      - '19103:19103'
     depends_on:
       - zookeeper
     environment:

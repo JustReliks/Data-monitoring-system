@@ -7,6 +7,7 @@ import org.apache.kafka.clients.admin.CreateTopicsResult;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.errors.TopicExistsException;
 import org.springframework.stereotype.Service;
 import ru.spbstu.rakitin.commonentites.model.Topic;
 import ru.spbstu.rakitin.management.configuration.KafkaConfiguration;
@@ -19,6 +20,7 @@ import ru.spbstu.rakitin.management.service.KafkaService;
 import ru.spbstu.rakitin.management.utils.KafkaTopicUtils;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -49,7 +51,16 @@ public class KafkaServiceImpl implements KafkaService {
         try {
             topic.setUuid(result.topicId(kafkaTopicName).get().toString());
         } catch (InterruptedException | ExecutionException e) {
-            throw new KafkaTopicCreationException(String.format("Unable to create topic %s!", topic.getName()), e);
+            if(e.getCause() instanceof TopicExistsException) {
+                log.warn("Topic with name {} already exists!", kafkaTopicName);
+                try {
+                    topic.setUuid(admin.describeTopics(List.of(kafkaTopicName)).allTopicNames().get().get(kafkaTopicName).topicId().toString());
+                } catch (InterruptedException | ExecutionException ex) {
+                    throw new KafkaTopicCreationException(String.format("Unable to set topic uuid %s!", topic.getName()), e);
+                }
+            } else {
+                throw new KafkaTopicCreationException(String.format("Unable to create topic %s!", topic.getName()), e);
+            }
         }
         return topicRepository.save(topic);
     }
